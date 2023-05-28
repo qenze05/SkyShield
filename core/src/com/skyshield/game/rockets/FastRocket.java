@@ -18,7 +18,8 @@ public class FastRocket extends Rocket{
     private Rectangle hitbox;
     private int frame;
     private int angle;
-
+    private boolean targeted;
+    private boolean elimitaned;
 
     public FastRocket(float[] target, float[] spawnPoint) {
         super(target, spawnPoint);
@@ -33,12 +34,29 @@ public class FastRocket extends Rocket{
         frame = 0;
         if(target[0] < spawnPoint[0]) angle = MathUtils.random(160, 360);
         else angle = MathUtils.random(0, 200);
+        this.targeted = false;
+        this.elimitaned = false;
     }
 
     @Override
     public boolean canReach() {
         float distance = RocketMovement.getDistance(spawnPoint, target);
         return distance <= maxDistance;
+    }
+
+    @Override
+    public boolean isTargeted() {
+        return targeted;
+    }
+
+    @Override
+    public boolean isEliminated() {
+        return this.elimitaned;
+    }
+
+    @Override
+    public void setTargetedState(boolean state) {
+        targeted = state;
     }
 
     @Override
@@ -104,5 +122,10 @@ public class FastRocket extends Rocket{
     @Override
     public void setAngle(int newAngle) {
         this.angle = newAngle;
+    }
+
+    @Override
+    public void setEliminated(boolean state) {
+        this.elimitaned = state;
     }
 }

@@ -18,6 +18,8 @@ public class SimpleRocket extends Rocket{
     private Rectangle hitbox;
     private int frame;
     private int angle;
+    private boolean targeted;
+    private boolean elimitaned;
 
     public SimpleRocket(float[] target, float[] spawnPoint) {
         super(target, spawnPoint);
@@ -29,16 +31,32 @@ public class SimpleRocket extends Rocket{
         this.rocketSize = 5;
         this.texture = new Texture(Gdx.files.internal("rockets/simpleRocket.png"));
         this.hitbox = new Rectangle(spawnPoint[0], spawnPoint[1], texture.getWidth(), texture.getHeight());
-        frame = 0;
+        this.frame = 0;
         if(target[0] < spawnPoint[0]) angle = MathUtils.random(160, 360);
         else angle = MathUtils.random(0, 200);
-
+        this.targeted = false;
+        this.elimitaned = false;
     }
 
     @Override
     public boolean canReach() {
         float distance = RocketMovement.getDistance(spawnPoint, target);
         return distance <= maxDistance;
+    }
+
+    @Override
+    public boolean isTargeted() {
+        return targeted;
+    }
+
+    @Override
+    public boolean isEliminated() {
+        return this.elimitaned;
+    }
+
+    @Override
+    public void setTargetedState(boolean state) {
+        targeted = state;
     }
 
     @Override
@@ -104,5 +122,10 @@ public class SimpleRocket extends Rocket{
     @Override
     public void setAngle(int newAngle) {
         this.angle = newAngle;
+    }
+
+    @Override
+    public void setEliminated(boolean state) {
+        this.elimitaned = state;
     }
 }

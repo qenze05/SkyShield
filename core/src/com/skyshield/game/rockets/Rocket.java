@@ -7,6 +7,10 @@ public abstract class Rocket {
     public Rocket(float[] target, float[] spawnPoint) {
     }
 
+    public abstract boolean isTargeted();
+    public abstract boolean isEliminated();
+    public abstract void setTargetedState(boolean state);
+    public abstract void setEliminated(boolean state);
     public abstract boolean canReach();
 
     public abstract float getMaxDistance();

@@ -1,19 +1,22 @@
 package com.skyshield.game.airDefence;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Rectangle;
 
 public abstract class AirDef {
 
-    public AirDef() {
+    public AirDef(float[] pos) {
     }
 
-    abstract float[] getPos();
-    abstract int getLaunchesPerMin();
-    abstract float getOptimalSize();
-    abstract float getCentrality();
-    abstract int getRange();
-    abstract long getLastLaunchTime();
-    abstract Texture getTexture();
-    abstract Texture getRocketTexture();
-    abstract void setLastLaunchTime(long time);
+    public abstract float[] getPos();
+    public abstract int getLaunchesPerMin();
+    public abstract float getOptimalSize();
+    public abstract float getCentrality();
+    public abstract float getRadius();
+    public abstract long getLastLaunchTime();
+    public abstract Texture getTexture();
+    public abstract Texture getCircleTexture();
+    public abstract Rectangle getCircleHitbox();
+
+    public abstract void setLastLaunchTime(long time);
 }

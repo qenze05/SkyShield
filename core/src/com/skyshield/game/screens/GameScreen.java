@@ -9,6 +9,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
@@ -23,9 +24,13 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.skyshield.game.SkyShield;
+import com.skyshield.game.airDefence.AirDef;
+import com.skyshield.game.airDefence.AirDefRocket;
+import com.skyshield.game.airDefence.F500;
 import com.skyshield.game.rockets.FastRocket;
 import com.skyshield.game.rockets.Rocket;
 import com.skyshield.game.rockets.SimpleRocket;
+import com.skyshield.game.utils.AirDefLogic;
 import com.skyshield.game.utils.MapPolygon;
 import com.skyshield.game.utils.RocketMovement;
 
@@ -41,12 +46,18 @@ public class GameScreen implements Screen {
     private final Stage stage;
     private Polygon map;
     private Array<Rocket> rockets;
+    private Array<AirDef> airDef;
+    private Array<AirDefRocket> airDefRockets;
 
     private long attackStartTime = TimeUtils.nanoTime(), lastRocketSpawnTime;
 
     public GameScreen(final SkyShield game) throws IOException {
         this.game = game;
         mapImage = new Texture(Gdx.files.internal("bg-720.png"));
+        addAirDef(new float[]{660, 420}, "F-500");
+        addAirDef(new float[]{893, 486}, "F-500");
+        addAirDef(new float[]{1000, 300}, "F-500");
+        airDefRockets = new Array<>();
 
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
@@ -70,6 +81,14 @@ public class GameScreen implements Screen {
         // begin a new batch and draw items
         game.batch.begin();
         game.batch.draw(mapImage, 0, 0, mapImage.getWidth(), mapImage.getHeight());
+        for (AirDef airDefUnit : airDef) {
+            game.batch.draw(airDefUnit.getTexture(),
+                    airDefUnit.getPos()[0] - (float) airDefUnit.getTexture().getWidth() / 2,
+                    airDefUnit.getPos()[1] - (float) airDefUnit.getTexture().getHeight() / 2);
+            game.batch.draw(airDefUnit.getCircleTexture(),
+                    airDefUnit.getCircleHitbox().x, airDefUnit.getCircleHitbox().y,
+                    airDefUnit.getCircleHitbox().width, airDefUnit.getCircleHitbox().height);
+        }
         game.batch.end();
 
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
@@ -97,10 +116,13 @@ public class GameScreen implements Screen {
             singleAttack();
         } else {
             rockets = null;
+            airDefRockets = null;
             attackStartTime = TimeUtils.nanoTime();
             singleAttack();
         }
 
+        findRocketsInRange();
+        if(airDefRockets!=null) moveAirDefRockets();
 
     }
 
@@ -112,7 +134,6 @@ public class GameScreen implements Screen {
     public void show() {
         Table table = new Table();
         table.setBounds(1280 - (float) 1280 / 4, 0, (float) 1280 / 4, 100);
-        table.setDebug(true);
 
         stage.addActor(table);
 
@@ -205,17 +226,10 @@ public class GameScreen implements Screen {
         return camera.zoom * (camera.viewportHeight / 2);
     }
 
-    private Rocket spawnRocket(String type, float[] target, float[] spawnPoint) {
+    private void spawnRocket(String type, float[] target, float[] spawnPoint) {
         switch (type) {
-            case "simple" -> {
-                return new SimpleRocket(target, spawnPoint);
-            }
-            case "damnFast" -> {
-                return new FastRocket(target, spawnPoint);
-            }
-            default -> {
-                return null;
-            }
+            case "simple" -> rockets.add(new SimpleRocket(target, spawnPoint));
+            case "damnFast" -> rockets.add(new FastRocket(target, spawnPoint));
         }
     }
 
@@ -223,16 +237,16 @@ public class GameScreen implements Screen {
         if (rockets == null) {
             attackStartTime = TimeUtils.nanoTime();
             rockets = new Array<>();
-            rockets.add(spawnRocket("simple", new float[]{563, 538}, new float[]{1200, 117}));
+            spawnRocket("simple", new float[]{563, 538}, new float[]{1200, 117});
             lastRocketSpawnTime = TimeUtils.nanoTime();
         }
         if (TimeUtils.nanoTime() - lastRocketSpawnTime > 300000000f) {
-            rockets.add(spawnRocket("simple",
+            spawnRocket("simple",
                     new float[]{420, 420},
-                    new float[]{1200, 117}));
-            rockets.add(spawnRocket("damnFast",
+                    new float[]{1200, 117});
+            spawnRocket("damnFast",
                     new float[]{420, 420},
-                    new float[]{1121, 641}));
+                    new float[]{1121, 641});
             lastRocketSpawnTime = TimeUtils.nanoTime();
         }
         launchRockets();
@@ -254,11 +268,6 @@ public class GameScreen implements Screen {
                 hitbox.setPosition(hitbox.x + RocketMovement.getTakeoffShiftX(rocket.getFrame(), rocket.getAngle(), rocket.getSpeed()),
                         hitbox.y + RocketMovement.getTakeoffShiftY(rocket.getFrame(), rocket.getAngle(), rocket.getSpeed()));
 
-                if (rocket.getFrame() > 40) {
-                    rotateRocket(rocket, hitbox);
-                }
-
-
                 rocket.setFrame(rocket.getFrame() + 1);
 
             } else {
@@ -271,7 +280,10 @@ public class GameScreen implements Screen {
             rocketSprite.setPosition(rocket.getHitbox().x, rocket.getHitbox().y);
             rocketSprite.rotate(rocket.getAngle() * (-1));
 
-            if (RocketMovement.targetReached(hitbox, rocket.getTarget())) iter.remove();
+            if (RocketMovement.targetReached(hitbox, rocket.getTarget())) {
+                rocket.setEliminated(true);
+                iter.remove();
+            }
             game.batch.begin();
             rocketSprite.draw(game.batch);
             game.batch.end();
@@ -282,9 +294,94 @@ public class GameScreen implements Screen {
         rocket.setAngle(RocketMovement.rotateRocket(
                 new float[]{hitbox.x + hitbox.getWidth() / 2, hitbox.y + hitbox.getHeight() / 2},
                 rocket.getTarget(),
-                rocket.getAngle()));
+                rocket.getAngle(), 3));
         if (rocket.getAngle() < 0) rocket.setAngle(rocket.getAngle() + 360);
         else if (rocket.getAngle() > 360) rocket.setAngle(rocket.getAngle() - 360);
+    }
+
+    private void findRocketsInRange() {
+        Iterator<AirDef> airDefIter = airDef.iterator();
+        Iterator<Rocket> rocketsIter;
+        while (airDefIter.hasNext()) {
+            AirDef airDefUnit = airDefIter.next();
+            rocketsIter = rockets.iterator();
+            while (rocketsIter.hasNext()) {
+                Rocket rocket = rocketsIter.next();
+                if (airDefUnit.getCircleHitbox().contains(rocket.getHitbox())
+                        && !rocket.isTargeted()
+                        && (TimeUtils.nanoTime() - airDefUnit.getLastLaunchTime()) > 60000000000f / airDefUnit.getLaunchesPerMin()) {
+                    airDefUnit.setLastLaunchTime(TimeUtils.nanoTime());
+                    launchAirDef(rocket, airDefUnit);
+                    rocket.setTargetedState(true);
+                }else if ((TimeUtils.nanoTime() - airDefUnit.getLastLaunchTime()) > 60000000000f / airDefUnit.getLaunchesPerMin()
+                && airDefUnit.getCircleHitbox().contains(rocket.getHitbox())){
+                    airDefUnit.setLastLaunchTime(TimeUtils.nanoTime());
+                    launchAirDef(rocket, airDefUnit);
+                    rocket.setTargetedState(true);
+                }
+            }
+        }
+    }
+
+    private void launchAirDef(Rocket rocket, AirDef airDefUnit) {
+        if (airDefRockets == null) airDefRockets = new Array<>();
+        airDefRockets.add(new AirDefRocket(airDefUnit.getPos(), rocket, airDefUnit));
+    }
+
+    private void moveAirDefRockets() {
+        game.batch.begin();
+        Iterator<AirDefRocket> iter = airDefRockets.iterator();
+        AirDefRocket rocket;
+        while (iter.hasNext()) {
+            rocket = iter.next();
+            AirDefLogic.moveRocket(rocket);
+            if (rocket.getHitbox().overlaps(rocket.getTarget().getHitbox())) {
+                removeRocket(rocket.getTarget().getHitbox());
+                iter.remove();
+            } else if (!rocket.getOrigin().getCircleHitbox().contains(rocket.getHitbox())) {
+                iter.remove();
+            } else if(rocket.getTarget().isEliminated()
+                    || rocket.getTarget() == null
+                    || !rocket.getOrigin().getCircleHitbox().contains(rocket.getTarget().getHitbox())) {
+                findNewTarget(rocket);
+            }
+            if(TimeUtils.nanoTime() - rocket.timeCreated > 2000000000f) System.out.println(rocket.getTarget().getHitbox());
+            game.batch.draw(rocket.getTexture(), rocket.getHitbox().x, rocket.getHitbox().y);
+        }
+        game.batch.end();
+    }
+
+    private void findNewTarget(AirDefRocket airDefRocket) {
+        for(Rocket rocket : rockets) {
+            if(!rocket.isEliminated()
+                    && !rocket.isTargeted()
+                    && airDefRocket.getOrigin().getCircleHitbox().contains(rocket.getHitbox())) {
+                airDefRocket.setTarget(rocket);
+            }else if(!rocket.isEliminated()
+                    && airDefRocket.getOrigin().getCircleHitbox().contains(rocket.getHitbox())) {
+                airDefRocket.setTarget(rocket);
+            }
+        }
+    }
+    private void removeRocket(Rectangle hitbox) {
+        Iterator<Rocket> iter = rockets.iterator();
+        Rocket rocket;
+        while (iter.hasNext()) {
+            rocket = iter.next();
+            if (rocket.getHitbox().overlaps(hitbox)) {
+                rocket.setEliminated(true);
+                iter.remove();
+                break;
+            }
+        }
+    }
+
+    private void addAirDef(float[] pos, String type) {
+        if (airDef == null) airDef = new Array<>();
+        switch (type) {
+            case "F-500" -> airDef.add(new F500(pos));
+            case "SD-250-M" -> airDef.add(new F500(pos));
+        }
     }
 
 }

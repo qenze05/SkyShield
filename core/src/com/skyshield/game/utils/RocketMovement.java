@@ -12,10 +12,9 @@ public class RocketMovement {
         return (float) (Math.cos(Math.toRadians(angle))*(maxSpeed*frame/40)*GameScreen.globalScale/360);
     }
 
-    public static int rotateRocket(float[] current, float[] target, int angle) {
+    public static int rotateRocket(float[] current, float[] target, int angle, int shift) {
 
         int triangleDegree = getTriangleDegree(current, target);
-        int shift = 3;
 
         if (target[0] < current[0]) {
 
