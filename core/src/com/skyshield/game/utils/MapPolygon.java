@@ -5,8 +5,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 
 public class MapPolygon {
     public float[] vertices;
@@ -37,7 +35,6 @@ public class MapPolygon {
         for(int i = 0; i < 720; i++) {
             vertices[i] = list.get(i);
         }
-        System.out.println(image.getHeight());
         return vertices;
     }
 
@@ -48,7 +45,6 @@ public class MapPolygon {
             y = (int) (i*Math.cos(Math.toRadians(degree)))+image.getHeight()/2;
             try{
                 if(image.getRGB(x, y)==Color.BLACK.getRGB()) {
-                    System.out.println("degree: "+degree+"\nx: "+x+"\ny: "+y);
                     return new float[]{x, y};
                 }
             }catch (Exception ignored) {

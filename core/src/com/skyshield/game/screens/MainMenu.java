@@ -18,7 +18,7 @@ import java.io.IOException;
 public class MainMenu implements Screen {
 
     final SkyShield game;
-    private Stage stage;
+    private final Stage stage;
     OrthographicCamera camera;
 
     public MainMenu(final SkyShield game) {
