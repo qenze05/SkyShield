@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
-import com.skyshield.game.utils.RocketMovement;
+import com.skyshield.game.gameLogic.Rockets;
 
 public class SimpleRocket extends Rocket{
 
@@ -40,7 +40,7 @@ public class SimpleRocket extends Rocket{
 
     @Override
     public boolean canReach() {
-        float distance = RocketMovement.getDistance(spawnPoint, target);
+        float distance = Rockets.getDistance(spawnPoint, target);
         return distance <= maxDistance;
     }
 

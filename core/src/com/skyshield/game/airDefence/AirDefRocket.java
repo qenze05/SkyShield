@@ -6,7 +6,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.skyshield.game.rockets.Rocket;
-import com.skyshield.game.utils.AirDefLogic;
 
 public class AirDefRocket {
     private float[] pos;
@@ -16,7 +15,7 @@ public class AirDefRocket {
     private int frame;
     private int angle;
     private float speed;
-    private AirDef origin;
+    private final AirDef origin;
     public long timeCreated;
 
     public AirDefRocket(float[] pos, Rocket target, AirDef origin) {
