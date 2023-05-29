@@ -1,7 +1,7 @@
 package com.skyshield.game.screens;
 
 import java.io.IOException;
-import java.util.Iterator;
+import java.util.*;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -9,7 +9,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
@@ -122,7 +121,7 @@ public class GameScreen implements Screen {
         }
 
         findRocketsInRange();
-        if(airDefRockets!=null) moveAirDefRockets();
+        if (airDefRockets != null) moveAirDefRockets();
 
     }
 
@@ -240,7 +239,7 @@ public class GameScreen implements Screen {
             spawnRocket("simple", new float[]{563, 538}, new float[]{1200, 117});
             lastRocketSpawnTime = TimeUtils.nanoTime();
         }
-        if (TimeUtils.nanoTime() - lastRocketSpawnTime > 300000000f) {
+        if (TimeUtils.nanoTime() - lastRocketSpawnTime > 100000000f) {
             spawnRocket("simple",
                     new float[]{420, 420},
                     new float[]{1200, 117});
@@ -300,21 +299,22 @@ public class GameScreen implements Screen {
     }
 
     private void findRocketsInRange() {
+
         Iterator<AirDef> airDefIter = airDef.iterator();
         Iterator<Rocket> rocketsIter;
+
         while (airDefIter.hasNext()) {
+
             AirDef airDefUnit = airDefIter.next();
             rocketsIter = rockets.iterator();
+
             while (rocketsIter.hasNext()) {
+
                 Rocket rocket = rocketsIter.next();
+
                 if (airDefUnit.getCircleHitbox().contains(rocket.getHitbox())
-                        && !rocket.isTargeted()
+                        && !AirDefLogic.isTargetedByThisAirDef(airDefRockets, rocket, airDefUnit)
                         && (TimeUtils.nanoTime() - airDefUnit.getLastLaunchTime()) > 60000000000f / airDefUnit.getLaunchesPerMin()) {
-                    airDefUnit.setLastLaunchTime(TimeUtils.nanoTime());
-                    launchAirDef(rocket, airDefUnit);
-                    rocket.setTargetedState(true);
-                }else if ((TimeUtils.nanoTime() - airDefUnit.getLastLaunchTime()) > 60000000000f / airDefUnit.getLaunchesPerMin()
-                && airDefUnit.getCircleHitbox().contains(rocket.getHitbox())){
                     airDefUnit.setLastLaunchTime(TimeUtils.nanoTime());
                     launchAirDef(rocket, airDefUnit);
                     rocket.setTargetedState(true);
@@ -329,40 +329,62 @@ public class GameScreen implements Screen {
     }
 
     private void moveAirDefRockets() {
+
         game.batch.begin();
+
         Iterator<AirDefRocket> iter = airDefRockets.iterator();
         AirDefRocket rocket;
+
         while (iter.hasNext()) {
+
             rocket = iter.next();
             AirDefLogic.moveRocket(rocket);
-            if (rocket.getHitbox().overlaps(rocket.getTarget().getHitbox())) {
-                removeRocket(rocket.getTarget().getHitbox());
-                iter.remove();
-            } else if (!rocket.getOrigin().getCircleHitbox().contains(rocket.getHitbox())) {
-                iter.remove();
-            } else if(rocket.getTarget().isEliminated()
-                    || rocket.getTarget() == null
+            if(rocket.getTarget() == null
+                    || rocket.getTarget().isEliminated()
                     || !rocket.getOrigin().getCircleHitbox().contains(rocket.getTarget().getHitbox())) {
                 findNewTarget(rocket);
+
+            } else if (rocket.getHitbox().overlaps(rocket.getTarget().getHitbox())) {
+                removeRocket(rocket.getTarget().getHitbox());
+                iter.remove();
+
+            } else if (!rocket.getOrigin().getCircleHitbox().contains(rocket.getHitbox())) {
+                iter.remove();
             }
-            if(TimeUtils.nanoTime() - rocket.timeCreated > 2000000000f) System.out.println(rocket.getTarget().getHitbox());
+
             game.batch.draw(rocket.getTexture(), rocket.getHitbox().x, rocket.getHitbox().y);
         }
+
         game.batch.end();
     }
 
     private void findNewTarget(AirDefRocket airDefRocket) {
-        for(Rocket rocket : rockets) {
-            if(!rocket.isEliminated()
-                    && !rocket.isTargeted()
-                    && airDefRocket.getOrigin().getCircleHitbox().contains(rocket.getHitbox())) {
-                airDefRocket.setTarget(rocket);
-            }else if(!rocket.isEliminated()
-                    && airDefRocket.getOrigin().getCircleHitbox().contains(rocket.getHitbox())) {
-                airDefRocket.setTarget(rocket);
-            }
-        }
+        airDefRocket.setTarget(findClosestRocket(airDefRocket, true));
+//        airDefRocket.autoSetAngle();
     }
+
+    private Rocket findClosestRocket(AirDefRocket airDefRocket, boolean skipTargeted) {
+        TreeMap<Float, Rocket> rocketsMap = new TreeMap<>();
+
+        float[] airDefPos = new float[]{airDefRocket.getHitbox().x, airDefRocket.getHitbox().y};
+        float[] targetPos = new float[2];
+
+        for (Rocket rocket : rockets) {
+
+            if(rocket.isEliminated()
+                    || rocket.isTargeted() == skipTargeted
+                    || !airDefRocket.getOrigin().getCircleHitbox().contains(rocket.getHitbox())) continue;
+
+            targetPos[0] = rocket.getHitbox().x;
+            targetPos[1] = rocket.getHitbox().y;
+            rocketsMap.put((RocketMovement.getDistance(airDefPos, targetPos)), rocket);
+        }
+
+        if(rocketsMap.size()==0 && skipTargeted) return findClosestRocket(airDefRocket, false);
+        else if (rocketsMap.size()==0) return null;
+        else return rocketsMap.get(rocketsMap.firstKey());
+    }
+
     private void removeRocket(Rectangle hitbox) {
         Iterator<Rocket> iter = rockets.iterator();
         Rocket rocket;

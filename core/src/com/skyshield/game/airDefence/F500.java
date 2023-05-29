@@ -19,7 +19,7 @@ public class F500 extends AirDef{
     public F500(float[] pos) {
         super(pos);
         this.pos = pos;
-        this.launchesPerMin = 180;
+        this.launchesPerMin = 1000;
         this.optimalSize = 4.5f;
         this.centrality = 0.7f;
         this.radius = 150;
