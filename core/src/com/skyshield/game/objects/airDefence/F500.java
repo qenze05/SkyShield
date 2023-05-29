@@ -1,4 +1,4 @@
-package com.skyshield.game.airDefence;
+package com.skyshield.game.objects.airDefence;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -19,7 +19,7 @@ public class F500 extends AirDef{
     public F500(float[] pos) {
         super(pos);
         this.pos = pos;
-        this.launchesPerMin = 1000;
+        this.launchesPerMin = 30;
         this.optimalSize = 4.5f;
         this.centrality = 0.7f;
         this.radius = 150;

@@ -19,10 +19,12 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+
 import com.skyshield.game.SkyShield;
-import com.skyshield.game.airDefence.AirDef;
-import com.skyshield.game.gameLogic.AirDefence;
-import com.skyshield.game.gameLogic.Rockets;
+import com.skyshield.game.gameLogic.events.OneTargetAttack;
+import com.skyshield.game.objects.airDefence.AirDef;
+import com.skyshield.game.gameLogic.entities.AirDefence;
+import com.skyshield.game.gameLogic.entities.Rockets;
 import com.skyshield.game.utils.MapPolygon;
 
 public class GameScreen implements Screen {
@@ -30,23 +32,21 @@ public class GameScreen implements Screen {
     public static SkyShield game;
     public static final float globalScale = 700 / 693f;
     private final Texture mapImage;
-    private final OrthographicCamera camera;
-    private boolean moveCamera = false;
     private int lastClickX, lastClickY;
     private int inputX, inputY;
+    private final OrthographicCamera camera;
+    private boolean moveCamera = false;
     private final Vector3 cameraPos = new Vector3((float) 1280 / 2, (float) 693 / 2, 0);
     private final Stage stage;
     private Polygon map;
 
-
-    private long attackStartTime = TimeUtils.nanoTime(), lastRocketSpawnTime;
-
     public GameScreen(final SkyShield game) throws IOException {
         GameScreen.game = game;
         mapImage = new Texture(Gdx.files.internal("bg-720.png"));
-        AirDefence.addAirDef(new float[]{660, 420}, "F-500");
+        AirDefence.addAirDef(new float[]{660, 420}, "SD-250-M");
         AirDefence.addAirDef(new float[]{893, 486}, "F-500");
         AirDefence.addAirDef(new float[]{1000, 300}, "F-500");
+        AirDefence.addAirDef(new float[]{817, 320}, "SD-250-M");
         AirDefence.airDefRockets = new Array<>();
 
         stage = new Stage(new ScreenViewport());
@@ -102,13 +102,13 @@ public class GameScreen implements Screen {
             }
 
         } else if (moveCamera) moveCamera = false;
-        if (TimeUtils.nanoTime() - attackStartTime < 30000000000f) {
-            singleAttack();
+        if (TimeUtils.nanoTime() - OneTargetAttack.attackStartTime < 30000000000f) {
+            OneTargetAttack.attack();
         } else {
             Rockets.rockets = null;
             AirDefence.airDefRockets = null;
-            attackStartTime = TimeUtils.nanoTime();
-            singleAttack();
+            OneTargetAttack.attackStartTime = TimeUtils.nanoTime();
+            OneTargetAttack.attack();
         }
 
         AirDefence.findTargetsInRange();
@@ -220,24 +220,7 @@ public class GameScreen implements Screen {
 
 
 
-    private void singleAttack() {
-        if (Rockets.rockets == null) {
-            attackStartTime = TimeUtils.nanoTime();
-            Rockets.rockets = new Array<>();
-            Rockets.spawnRocket("simple", new float[]{563, 538}, new float[]{1200, 117});
-            lastRocketSpawnTime = TimeUtils.nanoTime();
-        }
-        if (TimeUtils.nanoTime() - lastRocketSpawnTime > 100000000f) {
-            Rockets.spawnRocket("simple",
-                    new float[]{420, 420},
-                    new float[]{1200, 117});
-            Rockets.spawnRocket("damnFast",
-                    new float[]{420, 420},
-                    new float[]{1121, 641});
-            lastRocketSpawnTime = TimeUtils.nanoTime();
-        }
-        Rockets.launchRockets();
-    }
+
 
 
 

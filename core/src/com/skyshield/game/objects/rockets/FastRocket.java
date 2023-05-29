@@ -1,12 +1,12 @@
-package com.skyshield.game.rockets;
+package com.skyshield.game.objects.rockets;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
-import com.skyshield.game.gameLogic.Rockets;
+import com.skyshield.game.gameLogic.entities.Rockets;
 
-public class SimpleRocket extends Rocket{
+public class FastRocket extends Rocket{
 
     private final float maxDistance;
     private final float speed;
@@ -21,17 +21,17 @@ public class SimpleRocket extends Rocket{
     private boolean targeted;
     private boolean elimitaned;
 
-    public SimpleRocket(float[] target, float[] spawnPoint) {
+    public FastRocket(float[] target, float[] spawnPoint) {
         super(target, spawnPoint);
         this.target = target;
         this.spawnPoint = spawnPoint;
         this.maxDistance = 2000;
-        this.speed = 1000;
-        this.power = 500;
+        this.speed = 2000;
+        this.power = 300;
         this.rocketSize = 5;
-        this.texture = new Texture(Gdx.files.internal("rockets/simpleRocket.png"));
+        this.texture = new Texture(Gdx.files.internal("rockets/fastRocket.png"));
         this.hitbox = new Rectangle(spawnPoint[0], spawnPoint[1], texture.getWidth(), texture.getHeight());
-        this.frame = 0;
+        frame = 0;
         if(target[0] < spawnPoint[0]) angle = MathUtils.random(160, 360);
         else angle = MathUtils.random(0, 200);
         this.targeted = false;

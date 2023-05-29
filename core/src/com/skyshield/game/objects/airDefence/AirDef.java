@@ -1,4 +1,4 @@
-package com.skyshield.game.airDefence;
+package com.skyshield.game.objects.airDefence;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;

@@ -1,11 +1,11 @@
-package com.skyshield.game.airDefence;
+package com.skyshield.game.objects.airDefence;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.skyshield.game.rockets.Rocket;
+import com.skyshield.game.objects.rockets.Rocket;
 
 public class AirDefRocket {
     private float[] pos;
@@ -17,16 +17,18 @@ public class AirDefRocket {
     private float speed;
     private final AirDef origin;
     public long timeCreated;
+    public boolean wasTargetChanged;
 
     public AirDefRocket(float[] pos, Rocket target, AirDef origin) {
         this.pos = pos;
         this.texture = new Texture(Gdx.files.internal("air-defence/rocket.png"));
         this.hitbox = new Rectangle(pos[0], pos[1], texture.getWidth(), texture.getHeight());
         this.target = target;
-        this.frame = 0;
+        this.frame = 38;
         this.speed = 2000;
         this.angle = MathUtils.random(target.getAngle() - 340, target.getAngle() + 340);
         this.origin = origin;
+        this.wasTargetChanged = false;
         if (angle > 360) angle -= 360;
         else if (angle < 0) angle += 360;
         timeCreated = TimeUtils.nanoTime();
@@ -75,6 +77,7 @@ public class AirDefRocket {
 
     public void setTarget(Rocket target) {
         this.target = target;
+        this.wasTargetChanged = true;
     }
 
     public void setFrame(int frame) {
@@ -92,8 +95,14 @@ public class AirDefRocket {
         }
 
     }
-
     public void setSpeed(float speed) {
         this.speed = speed;
+    }
+    public boolean getWasTargetChanged() {
+        return wasTargetChanged;
+    }
+
+    public void setWasTargetChanged(boolean value) {
+        wasTargetChanged = value;
     }
 }
