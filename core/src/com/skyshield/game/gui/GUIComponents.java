@@ -5,11 +5,9 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.skyshield.game.gameLogic.entities.AirDefence;
-import com.skyshield.game.gameObjects.airDefence.AirDef;
 import com.skyshield.game.gui.shop.ShopBackground;
 import com.skyshield.game.gui.shop.ShopScrollBar;
 import com.skyshield.game.screens.GameScreen;
-import com.skyshield.game.utils.ItemsList;
 
 public class GUIComponents {
 
