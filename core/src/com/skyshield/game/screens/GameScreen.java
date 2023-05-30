@@ -26,7 +26,6 @@ import com.skyshield.game.gameObjects.airDefence.AirDef;
 import com.skyshield.game.gameLogic.entities.AirDefence;
 import com.skyshield.game.gameLogic.entities.Rockets;
 import com.skyshield.game.gui.GUIComponents;
-import com.skyshield.game.gui.shop.ShopBackground;
 import com.skyshield.game.utils.MapPolygon;
 
 public class GameScreen implements Screen {
@@ -40,16 +39,10 @@ public class GameScreen implements Screen {
     private boolean moveCamera = false;
     private final Vector3 cameraPos = new Vector3((float) 1280 / 2, (float) 693 / 2, 0);
     public static Stage stage;
-    private Polygon map;
 
     public GameScreen(final SkyShield game) throws IOException {
         GameScreen.game = game;
         mapImage = new Texture(Gdx.files.internal("bg-720.png"));
-//        AirDefence.addAirDef(new float[]{660, 420}, "SD-250-M");
-//        AirDefence.addAirDef(new float[]{893, 486}, "F-500");
-//        AirDefence.addAirDef(new float[]{1000, 300}, "F-500");
-//        AirDefence.addAirDef(new float[]{817, 320}, "SD-250-M");
-        AirDefence.airDefRockets = new Array<>();
 
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
@@ -104,6 +97,7 @@ public class GameScreen implements Screen {
             }
 
         } else if (moveCamera) moveCamera = false;
+
         if (TimeUtils.nanoTime() - OneTargetAttack.attackStartTime < 30000000000f) {
             OneTargetAttack.attack();
         } else {
@@ -129,16 +123,12 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
+
         Table guiTable = new Table();
         guiTable.setBounds(0, camera.viewportHeight-camera.viewportHeight/8, camera.viewportWidth/2, camera.viewportHeight/8);
         guiTable.setDebug(true);
 
-        Table shopBg = new ShopBackground();
-
         stage.addActor(guiTable);
-
-        map = new Polygon();
-        map.setVertices(new MapPolygon("bg-normal-720-flipped.png").vertices);
 
         Skin skin = new Skin(Gdx.files.internal("freezing/skin/freezing-ui.json"));
         TextButton zoomInButton = new TextButton("+", skin);

@@ -87,14 +87,7 @@ public class AirDefRocket {
     public void setAngle(int angle) {
         this.angle = angle;
     }
-    public void autoSetAngle() {
-        if(target != null) {
-            this.angle = MathUtils.random(target.getAngle() - 340, target.getAngle() + 340);
-            if (angle > 360) angle -= 360;
-            else if (angle < 0) angle += 360;
-        }
 
-    }
     public void setSpeed(float speed) {
         this.speed = speed;
     }

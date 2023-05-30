@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.skyshield.game.gui.GUIComponents;
+import com.skyshield.game.screens.GameScreen;
 import com.skyshield.game.utils.ItemsList;
 
 public class ShopScrollBar extends Table {
@@ -15,6 +16,7 @@ public class ShopScrollBar extends Table {
     public ShopScrollBar() {
         setBounds(1280/3.2f, 1280/25.6f, 1280/1.55f, ItemsList.airDefs.get(0).getTexture().getHeight());
         add(addScrollPane());
+
     }
 
     private ScrollPane addScrollPane() {
@@ -22,7 +24,8 @@ public class ShopScrollBar extends Table {
         paneTable.setDebug(true);
         ScrollPane pane = new ScrollPane(paneTable);
         pane.setSmoothScrolling(true);
-        paneTable.left();
+        paneTable.left().top();
+        GameScreen.stage.setScrollFocus(pane);
         Texture airDefTexture;
         for (int i = 0; i < ItemsList.airDefs.size; i++) {
             airDefTexture = ItemsList.airDefs.get(i).getTexture();

@@ -1,6 +1,5 @@
 package com.skyshield.game.utils;
 
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.skyshield.game.gameObjects.airDefence.AirDef;
 import com.skyshield.game.gameObjects.airDefence.F500;
@@ -11,7 +10,7 @@ import com.skyshield.game.gameObjects.rockets.SimpleRocket;
 
 public class ItemsList {
 
-    private static float[] pos = new float[]{0, 0};
+    private static final float[] pos = new float[]{0, 0};
 
     public static Array<Rocket> rockets = getRockets();
     public static Array<AirDef> airDefs = getAirDef();
@@ -27,22 +26,27 @@ public class ItemsList {
         Array<AirDef> arr = new Array<>();
         arr.add(new F500(pos));
         arr.add(new SD250M(pos));
+        arr.add(new F500(pos));
+        arr.add(new SD250M(pos));
+        arr.add(new F500(pos));
+        arr.add(new F500(pos));
+        arr.add(new F500(pos));
+        arr.add(new SD250M(pos));
+        arr.add(new SD250M(pos));
+        arr.add(new F500(pos));
+        arr.add(new SD250M(pos));
+        arr.add(new F500(pos));
+        arr.add(new F500(pos));
+        arr.add(new SD250M(pos));
+        arr.add(new F500(pos));
+        arr.add(new F500(pos));
+        arr.add(new F500(pos));
         arr.add(new SD250M(pos));
         arr.add(new SD250M(pos));
         arr.add(new SD250M(pos));
+        arr.add(new F500(pos));
         arr.add(new SD250M(pos));
-        arr.add(new SD250M(pos));
-        arr.add(new SD250M(pos));
-        arr.add(new SD250M(pos));
-        arr.add(new SD250M(pos));
-        arr.add(new SD250M(pos));
-        arr.add(new SD250M(pos));
-        arr.add(new SD250M(pos));
-        arr.add(new SD250M(pos));
-        arr.add(new SD250M(pos));
-        arr.add(new SD250M(pos));
-        arr.add(new SD250M(pos));
-        arr.add(new SD250M(pos));
+        arr.add(new F500(pos));
         return arr;
     }
 }
