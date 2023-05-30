@@ -9,6 +9,7 @@ import com.skyshield.game.gui.shop.ShopBackground;
 import com.skyshield.game.gui.shop.ShopScrollBar;
 import com.skyshield.game.screens.GameScreen;
 
+
 public class GUIComponents {
 
     private static ShopBackground shopBackground = new ShopBackground();
