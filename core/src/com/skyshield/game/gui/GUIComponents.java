@@ -13,11 +13,13 @@ import com.skyshield.game.utils.ItemsList;
 
 public class GUIComponents {
 
-    private static final ShopBackground shopBackground = new ShopBackground();
-    private static final ShopScrollBar shopScrollBar = new ShopScrollBar();
+    private static ShopBackground shopBackground = new ShopBackground();
+    private static ShopScrollBar shopScrollBar = new ShopScrollBar();
     public static ImageButton movingButton;
 
     public static void addShop() {
+        shopBackground = new ShopBackground();
+        shopScrollBar = new ShopScrollBar();
         GameScreen.stage.addActor(shopBackground);
         GameScreen.stage.addActor(shopScrollBar);
     }
