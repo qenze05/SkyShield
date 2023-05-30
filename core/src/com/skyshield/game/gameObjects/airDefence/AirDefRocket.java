@@ -1,11 +1,11 @@
-package com.skyshield.game.objects.airDefence;
+package com.skyshield.game.gameObjects.airDefence;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.skyshield.game.objects.rockets.Rocket;
+import com.skyshield.game.gameObjects.rockets.Rocket;
 
 public class AirDefRocket {
     private float[] pos;

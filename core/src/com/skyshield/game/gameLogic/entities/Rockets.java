@@ -3,12 +3,11 @@ package com.skyshield.game.gameLogic.entities;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
-import com.skyshield.game.objects.rockets.FastRocket;
-import com.skyshield.game.objects.rockets.Rocket;
-import com.skyshield.game.objects.rockets.SimpleRocket;
+import com.skyshield.game.gameObjects.rockets.FastRocket;
+import com.skyshield.game.gameObjects.rockets.Rocket;
+import com.skyshield.game.gameObjects.rockets.SimpleRocket;
 import com.skyshield.game.screens.GameScreen;
 
-import java.util.Arrays;
 import java.util.Iterator;
 
 public class Rockets {
@@ -17,8 +16,8 @@ public class Rockets {
 
     public static void spawnRocket(String type, float[] target, float[] spawnPoint) {
         switch (type) {
-            case "simple" -> rockets.add(new SimpleRocket(target, spawnPoint));
-            case "damnFast" -> rockets.add(new FastRocket(target, spawnPoint));
+            case "SIMPLE" -> rockets.add(new SimpleRocket(target, spawnPoint));
+            case "FAST" -> rockets.add(new FastRocket(target, spawnPoint));
         }
     }
 

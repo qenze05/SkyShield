@@ -1,4 +1,4 @@
-package com.skyshield.game.objects.airDefence;
+package com.skyshield.game.gameObjects.airDefence;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
@@ -9,6 +9,7 @@ public abstract class AirDef {
     }
 
     public abstract float[] getPos();
+    public abstract String getName();
     public abstract int getLaunchesPerMin();
     public abstract float getOptimalSize();
     public abstract float getCentrality();

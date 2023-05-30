@@ -22,9 +22,11 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import com.skyshield.game.SkyShield;
 import com.skyshield.game.gameLogic.events.OneTargetAttack;
-import com.skyshield.game.objects.airDefence.AirDef;
+import com.skyshield.game.gameObjects.airDefence.AirDef;
 import com.skyshield.game.gameLogic.entities.AirDefence;
 import com.skyshield.game.gameLogic.entities.Rockets;
+import com.skyshield.game.gui.GUIComponents;
+import com.skyshield.game.gui.shop.ShopBackground;
 import com.skyshield.game.utils.MapPolygon;
 
 public class GameScreen implements Screen {
@@ -34,19 +36,19 @@ public class GameScreen implements Screen {
     private final Texture mapImage;
     private int lastClickX, lastClickY;
     private int inputX, inputY;
-    private final OrthographicCamera camera;
+    public static OrthographicCamera camera;
     private boolean moveCamera = false;
     private final Vector3 cameraPos = new Vector3((float) 1280 / 2, (float) 693 / 2, 0);
-    private final Stage stage;
+    public static Stage stage;
     private Polygon map;
 
     public GameScreen(final SkyShield game) throws IOException {
         GameScreen.game = game;
         mapImage = new Texture(Gdx.files.internal("bg-720.png"));
-        AirDefence.addAirDef(new float[]{660, 420}, "SD-250-M");
-        AirDefence.addAirDef(new float[]{893, 486}, "F-500");
-        AirDefence.addAirDef(new float[]{1000, 300}, "F-500");
-        AirDefence.addAirDef(new float[]{817, 320}, "SD-250-M");
+//        AirDefence.addAirDef(new float[]{660, 420}, "SD-250-M");
+//        AirDefence.addAirDef(new float[]{893, 486}, "F-500");
+//        AirDefence.addAirDef(new float[]{1000, 300}, "F-500");
+//        AirDefence.addAirDef(new float[]{817, 320}, "SD-250-M");
         AirDefence.airDefRockets = new Array<>();
 
         stage = new Stage(new ScreenViewport());
@@ -82,7 +84,7 @@ public class GameScreen implements Screen {
         game.batch.end();
 
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
-        stage.draw();
+//        stage.draw();
 
         if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
             moveCamera = true;
@@ -116,6 +118,9 @@ public class GameScreen implements Screen {
             AirDefence.moveRockets();
         }
 
+        if(GUIComponents.movingButton != null) GUIComponents.moveButton();
+        stage.draw();
+
     }
 
     @Override
@@ -124,10 +129,13 @@ public class GameScreen implements Screen {
 
     @Override
     public void show() {
-        Table table = new Table();
-        table.setBounds(1280 - (float) 1280 / 4, 0, (float) 1280 / 4, 100);
+        Table guiTable = new Table();
+        guiTable.setBounds(0, camera.viewportHeight-camera.viewportHeight/8, camera.viewportWidth/2, camera.viewportHeight/8);
+        guiTable.setDebug(true);
 
-        stage.addActor(table);
+        Table shopBg = new ShopBackground();
+
+        stage.addActor(guiTable);
 
         map = new Polygon();
         map.setVertices(new MapPolygon("bg-normal-720-flipped.png").vertices);
@@ -135,9 +143,11 @@ public class GameScreen implements Screen {
         Skin skin = new Skin(Gdx.files.internal("freezing/skin/freezing-ui.json"));
         TextButton zoomInButton = new TextButton("+", skin);
         TextButton zoomOutButton = new TextButton("-", skin);
+        TextButton shopButton = new TextButton("Shop", skin);
 
-        table.add(zoomInButton).right().expandX();
-        table.add(zoomOutButton).right().expandX();
+        guiTable.add(shopButton).left().top().expand();
+        guiTable.add(zoomInButton).left().top().expand();
+        guiTable.add(zoomOutButton).left().top().expand();
 
         zoomInButton.addListener(new ChangeListener() {
             @Override
@@ -157,6 +167,18 @@ public class GameScreen implements Screen {
                     if (cameraPos.y < getMinCameraY()) cameraPos.y = getMinCameraY();
                     camera.position.lerp(cameraPos, 1);
                 } else resetCameraPos();
+            }
+        });
+
+        shopButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
+                if(shopButton.isChecked()) {
+                    GUIComponents.addShop();
+                }
+                else {
+                    GUIComponents.removeShop();
+                }
             }
         });
 
@@ -187,16 +209,15 @@ public class GameScreen implements Screen {
 
     private void changeCameraPos() {
 
-        if (cameraPos.x + (lastClickX - inputX) > getMinCameraX()
-                && cameraPos.x + (lastClickX - inputX) < getMaxCameraX()
-                && cameraPos.y - (lastClickY - inputY) > getMinCameraY()
-                && cameraPos.y - (lastClickY - inputY) < getMaxCameraY()) {
-
+        if (cameraPos.x + (lastClickX - inputX) > getMinCameraX() && cameraPos.x + (lastClickX - inputX) < getMaxCameraX()) {
             cameraPos.x += lastClickX - inputX;
-            cameraPos.y -= lastClickY - inputY;
-
-            camera.position.lerp(cameraPos, 1);
         }
+
+        if (cameraPos.y - (lastClickY - inputY) > getMinCameraY() && cameraPos.y - (lastClickY - inputY) < getMaxCameraY()) {
+            cameraPos.y -= lastClickY - inputY;
+        }
+
+        camera.position.lerp(cameraPos, 1);
 
         lastClickX = inputX;
         lastClickY = inputY;
@@ -217,18 +238,6 @@ public class GameScreen implements Screen {
     private float getMinCameraY() {
         return camera.zoom * (camera.viewportHeight / 2);
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }

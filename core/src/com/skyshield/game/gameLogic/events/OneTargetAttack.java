@@ -24,10 +24,10 @@ public class OneTargetAttack {
             lastRocketSpawnTime = TimeUtils.nanoTime();
         }
         if (TimeUtils.nanoTime() - lastRocketSpawnTime > 1000000000f) {
-            Rockets.spawnRocket("simple",
+            Rockets.spawnRocket("SIMPLE",
                     new float[]{420, 420},
                     new float[]{1200, 117});
-            if(MathUtils.random(0, 100) > 90) Rockets.spawnRocket("damnFast",
+            if(MathUtils.random(0, 100) > 90) Rockets.spawnRocket("FAST",
                     new float[]{420, 420},
                     new float[]{1121, 641});
             lastRocketSpawnTime = TimeUtils.nanoTime();

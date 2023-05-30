@@ -3,11 +3,11 @@ package com.skyshield.game.gameLogic.entities;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.skyshield.game.objects.airDefence.AirDef;
-import com.skyshield.game.objects.airDefence.AirDefRocket;
-import com.skyshield.game.objects.airDefence.F500;
-import com.skyshield.game.objects.airDefence.SD250M;
-import com.skyshield.game.objects.rockets.Rocket;
+import com.skyshield.game.gameObjects.airDefence.AirDef;
+import com.skyshield.game.gameObjects.airDefence.AirDefRocket;
+import com.skyshield.game.gameObjects.airDefence.F500;
+import com.skyshield.game.gameObjects.airDefence.SD250M;
+import com.skyshield.game.gameObjects.rockets.Rocket;
 import com.skyshield.game.screens.GameScreen;
 
 import java.util.Iterator;
@@ -15,8 +15,8 @@ import java.util.TreeMap;
 
 public class AirDefence {
 
-    public static Array<AirDef> airDef;
-    public static Array<AirDefRocket> airDefRockets;
+    public static Array<AirDef> airDef = new Array<>();
+    public static Array<AirDefRocket> airDefRockets = new Array<>();
 
     public static void addAirDef(float[] pos, String type) {
         if (airDef == null) AirDefence.airDef = new Array<>();

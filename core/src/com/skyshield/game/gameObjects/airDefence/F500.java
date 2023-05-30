@@ -1,10 +1,10 @@
-package com.skyshield.game.objects.airDefence;
+package com.skyshield.game.gameObjects.airDefence;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 
-public class SD250M extends AirDef{
+public class F500 extends AirDef{
 
     private final float[] pos;
     private final int launchesPerMin;
@@ -15,16 +15,18 @@ public class SD250M extends AirDef{
     private final Texture texture;
     private final Texture circleTexture;
     private final Rectangle circleHitbox;
+    private final String name;
 
-    public SD250M(float[] pos) {
+    public F500(float[] pos) {
         super(pos);
         this.pos = pos;
-        this.launchesPerMin = 60;
+        this.name = "F-500";
+        this.launchesPerMin = 30;
         this.optimalSize = 4.5f;
         this.centrality = 0.7f;
-        this.radius = 100;
+        this.radius = 150;
         this.lastLaunchTime = 0;
-        this.texture = new Texture(Gdx.files.internal("air-defence/SD-250-M.png"));
+        this.texture = new Texture(Gdx.files.internal("air-defence/f-500.png"));
         this.circleTexture = new Texture(Gdx.files.internal("air-defence/range.png"));
         this.circleHitbox = new Rectangle(pos[0]- radius, pos[1]- radius,
                 radius*2, radius*2);
@@ -34,6 +36,11 @@ public class SD250M extends AirDef{
     @Override
     public float[] getPos() {
         return pos;
+    }
+
+    @Override
+    public String getName()  {
+        return name;
     }
 
     @Override
