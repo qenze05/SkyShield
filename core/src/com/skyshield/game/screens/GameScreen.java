@@ -7,7 +7,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -15,7 +14,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -26,7 +24,6 @@ import com.skyshield.game.gameObjects.airDefence.AirDef;
 import com.skyshield.game.gameLogic.entities.AirDefence;
 import com.skyshield.game.gameLogic.entities.Rockets;
 import com.skyshield.game.gui.GUIComponents;
-import com.skyshield.game.utils.MapPolygon;
 
 public class GameScreen implements Screen {
 
@@ -66,7 +63,7 @@ public class GameScreen implements Screen {
         // begin a new batch and draw items
         game.batch.begin();
         game.batch.draw(mapImage, 0, 0, mapImage.getWidth(), mapImage.getHeight());
-        for (AirDef airDefUnit : AirDefence.airDef) {
+        for (AirDef airDefUnit : AirDefence.airDefs) {
             game.batch.draw(airDefUnit.getTexture(),
                     airDefUnit.getPos()[0] - (float) airDefUnit.getTexture().getWidth() / 2,
                     airDefUnit.getPos()[1] - (float) airDefUnit.getTexture().getHeight() / 2);

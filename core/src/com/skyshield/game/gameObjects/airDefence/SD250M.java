@@ -9,6 +9,7 @@ public class SD250M extends AirDef{
     private final float[] pos;
     private final int launchesPerMin;
     private final float optimalSize;
+    private final float optimalSpeed;
     private final float centrality;
     private final float radius;
     private long lastLaunchTime;
@@ -23,6 +24,7 @@ public class SD250M extends AirDef{
         this.name = "SD-250-M";
         this.launchesPerMin = 60;
         this.optimalSize = 4.5f;
+        this.optimalSpeed = 2000;
         this.centrality = 0.7f;
         this.radius = 100;
         this.lastLaunchTime = 0;
@@ -51,6 +53,11 @@ public class SD250M extends AirDef{
     @Override
     public float getOptimalSize() {
         return optimalSize;
+    }
+
+    @Override
+    public float getOptimalSpeed() {
+        return optimalSpeed;
     }
 
     @Override

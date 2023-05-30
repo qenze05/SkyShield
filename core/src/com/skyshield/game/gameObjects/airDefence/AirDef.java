@@ -12,6 +12,7 @@ public abstract class AirDef {
     public abstract String getName();
     public abstract int getLaunchesPerMin();
     public abstract float getOptimalSize();
+    public abstract float getOptimalSpeed();
     public abstract float getCentrality();
     public abstract float getRadius();
     public abstract long getLastLaunchTime();

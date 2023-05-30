@@ -1,5 +1,6 @@
 package com.skyshield.game.gameLogic.entities;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -8,6 +9,7 @@ import com.skyshield.game.gameObjects.airDefence.AirDefRocket;
 import com.skyshield.game.gameObjects.airDefence.F500;
 import com.skyshield.game.gameObjects.airDefence.SD250M;
 import com.skyshield.game.gameObjects.rockets.Rocket;
+import com.skyshield.game.gameObjects.rockets.SimpleRocket;
 import com.skyshield.game.screens.GameScreen;
 
 import java.util.Iterator;
@@ -15,14 +17,15 @@ import java.util.TreeMap;
 
 public class AirDefence {
 
-    public static Array<AirDef> airDef = new Array<>();
+    public static Array<AirDef> airDefs = new Array<>();
     public static Array<AirDefRocket> airDefRockets = new Array<>();
+    private static final Array<Rocket> cornerTargets = new Array<>();
 
     public static void addAirDef(float[] pos, String type) {
-        if (airDef == null) AirDefence.airDef = new Array<>();
+        if (airDefs == null) AirDefence.airDefs = new Array<>();
         switch (type) {
-            case "F-500" -> airDef.add(new F500(pos));
-            case "SD-250-M" -> airDef.add(new SD250M(pos));
+            case "F-500" -> airDefs.add(new F500(pos));
+            case "SD-250-M" -> airDefs.add(new SD250M(pos));
         }
     }
 
@@ -43,15 +46,16 @@ public class AirDefence {
             rocket = iter.next();
             moveRocket(rocket);
 
-            if(rocket.getTarget() == null
-                    || rocket.getTarget().isEliminated()
-                    || !rocket.getOrigin().getCircleHitbox().contains(rocket.getTarget().getHitbox())) {
+            if(rocket.getTarget() == null || rocket.getTarget().isEliminated()) {
                 findNewTarget(rocket);
-
             } else if (rocket.getHitbox().overlaps(rocket.getTarget().getHitbox())) {
-                removeTarget(rocket.getTarget().getHitbox());
-                iter.remove();
-
+                if(miss(rocket)) {
+                    setCornerTarget(rocket);
+                }else{
+                    removeTarget(rocket.getTarget().getHitbox(), rocket);
+                    iter.remove();
+                    continue;
+                }
             }
 
             if (!rocket.getOrigin().getCircleHitbox().contains(rocket.getHitbox())) {
@@ -114,7 +118,7 @@ public class AirDefence {
 
     public static void findTargetsInRange() {
 
-        Iterator<AirDef> airDefIter = airDef.iterator();
+        Iterator<AirDef> airDefIter = airDefs.iterator();
         Iterator<Rocket> rocketsIter;
 
         while (airDefIter.hasNext()) {
@@ -178,7 +182,7 @@ public class AirDefence {
         else return rocketsMap.get(rocketsMap.firstKey());
     }
 
-    private static void removeTarget(Rectangle hitbox) {
+    private static void removeTarget(Rectangle hitbox, AirDefRocket airDefRocket) {
         Iterator<Rocket> iter = Rockets.rockets.iterator();
         Rocket rocket;
         while (iter.hasNext()) {
@@ -187,7 +191,48 @@ public class AirDefence {
                 rocket.setEliminated(true);
                 iter.remove();
                 break;
+
             }
         }
     }
+
+    private static boolean miss(AirDefRocket airDefRocket) {
+
+        AirDef airDef = airDefRocket.getOrigin();
+        Rocket rocket = airDefRocket.getTarget();
+        float[] rocketPos = new float[]{rocket.getHitbox().x, rocket.getHitbox().y};
+
+        float speedEff = (airDef.getOptimalSpeed() > rocket.getSpeed()) ? 1 : (airDef.getOptimalSpeed()/rocket.getSpeed());
+        float sizeEff = (airDef.getOptimalSize() < rocket.getRocketSize()) ? 1 : (airDef.getOptimalSize()/rocket.getRocketSize());
+        float centralEff = 1 - (1 - airDef.getCentrality())*(Rockets.getDistance(airDef.getPos(), rocketPos)/airDef.getRadius());
+        float distanceEff = 0.5f + 0.5f * (Rockets.getDistance(rocketPos, rocket.getTarget()) / Rockets.getDistance(rocket.getSpawnPoint(), rocket.getTarget()));
+
+        float totalEff = speedEff * sizeEff * centralEff * distanceEff;
+        System.out.println("Eff: "+totalEff);
+
+        return MathUtils.random(0, 100) > totalEff * 100;
+    }
+
+    private static void setCornerTarget(AirDefRocket airDefRocket) {
+        if(cornerTargets.size==0) fillCornerTargetsArray();
+
+        int angle = airDefRocket.getAngle();
+        if(angle < 90) airDefRocket.setTarget(cornerTargets.get(0));
+        else if(angle < 180) airDefRocket.setTarget(cornerTargets.get(1));
+        else if(angle < 270) airDefRocket.setTarget(cornerTargets.get(2));
+        else airDefRocket.setTarget(cornerTargets.get(3));
+    }
+
+    private static void fillCornerTargetsArray() {
+        float[] target = new float[]{0, 0};
+        cornerTargets.add(new SimpleRocket(target,
+                new float[]{GameScreen.camera.viewportWidth, GameScreen.camera.viewportHeight}));
+        cornerTargets.add(new SimpleRocket(target,
+                new float[]{GameScreen.camera.viewportWidth, 0}));
+        cornerTargets.add(new SimpleRocket(target,
+                new float[]{0, 0}));
+        cornerTargets.add(new SimpleRocket(target,
+                new float[]{0, GameScreen.camera.viewportHeight}));
+    }
+
 }

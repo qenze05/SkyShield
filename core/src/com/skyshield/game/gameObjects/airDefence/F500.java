@@ -9,6 +9,7 @@ public class F500 extends AirDef{
     private final float[] pos;
     private final int launchesPerMin;
     private final float optimalSize;
+    private final float optimalSpeed;
     private final float centrality;
     private final float radius;
     private long lastLaunchTime;
@@ -23,6 +24,7 @@ public class F500 extends AirDef{
         this.name = "F-500";
         this.launchesPerMin = 30;
         this.optimalSize = 4.5f;
+        this.optimalSpeed = 750;
         this.centrality = 0.7f;
         this.radius = 150;
         this.lastLaunchTime = 0;
@@ -51,6 +53,11 @@ public class F500 extends AirDef{
     @Override
     public float getOptimalSize() {
         return optimalSize;
+    }
+
+    @Override
+    public float getOptimalSpeed() {
+        return optimalSpeed;
     }
 
     @Override
