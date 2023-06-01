@@ -5,95 +5,59 @@ import java.io.IOException;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.skyshield.game.SkyShield;
 import com.skyshield.game.gameLogic.events.OneTargetAttack;
+import com.skyshield.game.gui.Camera;
 import com.skyshield.game.gameObjects.airDefence.AirDef;
 import com.skyshield.game.gameLogic.entities.AirDefence;
 import com.skyshield.game.gameLogic.entities.Rockets;
 import com.skyshield.game.gui.GUIComponents;
+import com.skyshield.game.utils.CountryTerritory;
 
 public class GameScreen implements Screen {
 
     public static SkyShield game;
-    public static final float globalScale = 700 / 693f;
+    public static int screenWidth = SkyShield.SCREEN_WIDTH;
+    public static int screenHeight = SkyShield.SCREEN_HEIGHT;
+    public static final float globalScale = (float) 700 / screenHeight;
+    public static float screenSizeScale = 1;
+    public static final float WIDTH_TO_HEIGHT_RATIO = (float) GameScreen.screenWidth / GameScreen.screenHeight;
     private final Texture mapImage;
-    private int lastClickX, lastClickY;
-    private int inputX, inputY;
-    public static OrthographicCamera camera;
-    private boolean moveCamera = false;
-    private final Vector3 cameraPos = new Vector3((float) 1280 / 2, (float) 693 / 2, 0);
+    public static int lastClickX, lastClickY;
+    public static int inputX, inputY;
     public static Stage stage;
+
 
     public GameScreen(final SkyShield game) throws IOException {
         GameScreen.game = game;
-        mapImage = new Texture(Gdx.files.internal("bg-720.png"));
 
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, 1280, 693);
-        camera.position.lerp(cameraPos, 1);
+        Camera.createCamera();
+
+        mapImage = new Texture(Gdx.files.internal("bg-720.png"));
+
     }
 
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0.2f, 1);
 
-        // tell the camera to update its matrices.
-        camera.update();
+        Camera.camera.update();
 
-        // tell the SpriteBatch to render in the
-        // coordinate system specified by the camera.
-        game.batch.setProjectionMatrix(camera.combined);
+        game.batch.setProjectionMatrix(Camera.camera.combined);
 
-        // begin a new batch and draw items
-        game.batch.begin();
-        game.batch.draw(mapImage, 0, 0, mapImage.getWidth(), mapImage.getHeight());
-        for (AirDef airDefUnit : AirDefence.airDefs) {
-            game.batch.draw(airDefUnit.getTexture(),
-                    airDefUnit.getPos()[0] - (float) airDefUnit.getTexture().getWidth() / 2,
-                    airDefUnit.getPos()[1] - (float) airDefUnit.getTexture().getHeight() / 2);
-            game.batch.draw(airDefUnit.getCircleTexture(),
-                    airDefUnit.getCircleHitbox().x, airDefUnit.getCircleHitbox().y,
-                    airDefUnit.getCircleHitbox().width, airDefUnit.getCircleHitbox().height);
-        }
-        game.batch.end();
+        drawMap();
 
-        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
-//        stage.draw();
+        drawAirDefence();
 
-        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
-            moveCamera = true;
-            lastClickX = Gdx.input.getX();
-            lastClickY = Gdx.input.getY();
-        }
-        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-
-            if (moveCamera) {
-
-                inputX = Gdx.input.getX();
-                inputY = Gdx.input.getY();
-
-                if (inputX != lastClickX || inputY != lastClickY) {
-                    changeCameraPos();
-                }
-            }
-
-        } else if (moveCamera) moveCamera = false;
 
         if (TimeUtils.nanoTime() - OneTargetAttack.attackStartTime < 30000000000f) {
             OneTargetAttack.attack();
@@ -105,69 +69,87 @@ public class GameScreen implements Screen {
         }
 
         AirDefence.findTargetsInRange();
-        if (AirDefence.airDefRockets != null) {
-            AirDefence.moveRockets();
+        if (AirDefence.airDefRockets != null) AirDefence.moveRockets();
+
+        if (GUIComponents.movingButton != null) {
+            GUIComponents.moveMovingButton();
+            GUIComponents.showAvailableArea();
         }
 
-        if(GUIComponents.movingButton != null) GUIComponents.moveButton();
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+            Camera.moveCamera = true;
+            lastClickX = Gdx.input.getX();
+            lastClickY = Gdx.input.getY();
+        }
+        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+
+            if (Camera.moveCamera) {
+
+                inputX = Gdx.input.getX();
+                inputY = Gdx.input.getY();
+
+                if (inputX != lastClickX || inputY != lastClickY) {
+                    Camera.changeCameraPos();
+                }
+            }
+
+        } else if (Camera.moveCamera) Camera.moveCamera = false;
+
+        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 60f));
         stage.draw();
 
     }
 
+    private void drawMap() {
+        game.batch.begin();
+        game.batch.draw(mapImage, 0, 0, GameScreen.screenWidth, GameScreen.screenHeight);
+        game.batch.end();
+    }
+
+    private void drawAirDefence() {
+        game.batch.begin();
+        for (AirDef airDefUnit : AirDefence.airDefs) {
+            game.batch.draw(airDefUnit.getTexture(),
+                    airDefUnit.getPos()[0] - (float) airDefUnit.getTexture().getWidth() / 2,
+                    airDefUnit.getPos()[1] - (float) airDefUnit.getTexture().getHeight() / 2);
+            game.batch.draw(airDefUnit.getCircleTexture(),
+                    airDefUnit.getCircleHitbox().x, airDefUnit.getCircleHitbox().y,
+                    airDefUnit.getCircleHitbox().width, airDefUnit.getCircleHitbox().height);
+        }
+        game.batch.end();
+    }
+
     @Override
     public void resize(int width, int height) {
+
+        height = (int) (width / WIDTH_TO_HEIGHT_RATIO);
+
+        Gdx.graphics.setWindowedMode(width, height);
+
+        GameScreen.screenWidth = width;
+        GameScreen.screenHeight = height;
+
+        Camera.createCamera();
+        Camera.resetCameraPos();
+
+        screenSizeScale = (float) width / SkyShield.SCREEN_WIDTH;
+
+        stage.clear();
+        show();
+        stage.getViewport().update(width, height, true);
+
     }
 
     @Override
     public void show() {
 
-        Table guiTable = new Table();
-        guiTable.setBounds(0, camera.viewportHeight-camera.viewportHeight/8, camera.viewportWidth/2, camera.viewportHeight/8);
-        guiTable.setDebug(true);
+        GUIComponents.setSkin("freezing/skin/freezing-ui.json");
+        GUIComponents.addButtonsTable();
+        GUIComponents.addStageInputListener();
 
-        stage.addActor(guiTable);
+        CountryTerritory.setTerritory(0);
+        CountryTerritory.setMapPolygon();
 
-        Skin skin = new Skin(Gdx.files.internal("freezing/skin/freezing-ui.json"));
-        TextButton zoomInButton = new TextButton("+", skin);
-        TextButton zoomOutButton = new TextButton("-", skin);
-        TextButton shopButton = new TextButton("Shop", skin);
-
-        guiTable.add(shopButton).left().top().expand();
-        guiTable.add(zoomInButton).left().top().expand();
-        guiTable.add(zoomOutButton).left().top().expand();
-
-        zoomInButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                camera.zoom /= 1.1f;
-            }
-        });
-
-        zoomOutButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                if (camera.zoom != 1) {
-                    camera.zoom *= 1.1f;
-                    if (cameraPos.x > getMaxCameraX()) cameraPos.x = getMaxCameraX();
-                    if (cameraPos.y > getMaxCameraY()) cameraPos.y = getMaxCameraY();
-                    if (cameraPos.x < getMinCameraX()) cameraPos.x = getMinCameraX();
-                    if (cameraPos.y < getMinCameraY()) cameraPos.y = getMinCameraY();
-                    camera.position.lerp(cameraPos, 1);
-                } else resetCameraPos();
-            }
-        });
-
-        shopButton.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeListener.ChangeEvent event, Actor actor) {
-                if(shopButton.isChecked()) {
-                    GUIComponents.addShop();
-                }
-                else {
-                    GUIComponents.removeShop();
-                }
-            }
-        });
 
     }
 
@@ -186,44 +168,6 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         mapImage.dispose();
-    }
-
-    private void resetCameraPos() {
-        cameraPos.x = (float) 1280 / 2;
-        cameraPos.y = (float) 693 / 2;
-        camera.position.lerp(cameraPos, 1);
-    }
-
-    private void changeCameraPos() {
-
-        if (cameraPos.x + (lastClickX - inputX) > getMinCameraX() && cameraPos.x + (lastClickX - inputX) < getMaxCameraX()) {
-            cameraPos.x += lastClickX - inputX;
-        }
-
-        if (cameraPos.y - (lastClickY - inputY) > getMinCameraY() && cameraPos.y - (lastClickY - inputY) < getMaxCameraY()) {
-            cameraPos.y -= lastClickY - inputY;
-        }
-
-        camera.position.lerp(cameraPos, 1);
-
-        lastClickX = inputX;
-        lastClickY = inputY;
-    }
-
-    private float getMaxCameraX() {
-        return camera.viewportWidth - camera.zoom * (camera.viewportWidth / 2);
-    }
-
-    private float getMinCameraX() {
-        return camera.zoom * (camera.viewportWidth / 2);
-    }
-
-    private float getMaxCameraY() {
-        return camera.viewportHeight - camera.zoom * (camera.viewportHeight / 2);
-    }
-
-    private float getMinCameraY() {
-        return camera.zoom * (camera.viewportHeight / 2);
     }
 
 

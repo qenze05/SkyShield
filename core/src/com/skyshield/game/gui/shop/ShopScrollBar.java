@@ -21,7 +21,6 @@ public class ShopScrollBar extends Table {
 
     private ScrollPane addScrollPane() {
         Table paneTable = new Table();
-        paneTable.setDebug(true);
         ScrollPane pane = new ScrollPane(paneTable);
         pane.setSmoothScrolling(true);
         paneTable.left().top();
@@ -34,7 +33,7 @@ public class ShopScrollBar extends Table {
             button.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                        if (GUIComponents.movingButton == null) GUIComponents.addButton(button);
+                        if (GUIComponents.movingButton == null) GUIComponents.addMovingButton(button);
                 }
             });
             paneTable.add(button);

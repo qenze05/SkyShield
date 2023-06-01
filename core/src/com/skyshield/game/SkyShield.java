@@ -9,6 +9,9 @@ public class SkyShield extends Game {
 	public SpriteBatch batch;
 	public BitmapFont font;
 
+	public static final int SCREEN_WIDTH = 1280;
+	public static final int SCREEN_HEIGHT = 693;
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
