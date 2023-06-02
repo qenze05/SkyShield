@@ -7,10 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.skyshield.game.gameLogic.entities.AirDefence;
 import com.skyshield.game.gui.shop.ShopBackground;
@@ -23,7 +20,6 @@ public class GUIComponents {
 
     private static ShopBackground shopBackground = new ShopBackground();
     private static ShopScrollBar shopScrollBar = new ShopScrollBar();
-    private static Table buttonsTable = new Table();
     private static Skin skin;
     public static ImageButton movingButton;
     public static TextButton zoomInButton, zoomOutButton, shopButton;
@@ -42,9 +38,22 @@ public class GUIComponents {
         });
     }
 
+    public static void addTimeTable() {
+
+        Texture timeBackground = new Texture(Gdx.files.internal("time.png"));
+        Table timeTable = new Table();
+        timeTable.setBounds(0, GameScreen.screenHeight - timeBackground.getHeight(),
+                timeBackground.getWidth(), timeBackground.getHeight());
+
+        timeTable.add(new Image(timeBackground));
+
+        GameScreen.stage.addActor(timeTable);
+
+    }
+
     public static void addButtonsTable() {
-        buttonsTable = new Table();
-        buttonsTable.setBounds(0, GameScreen.screenHeight - (float) GameScreen.screenHeight / 8,
+        Table buttonsTable = new Table();
+        buttonsTable.setBounds(300, GameScreen.screenHeight - (float) GameScreen.screenHeight / 8,
                 (float) GameScreen.screenWidth / 2, (float) GameScreen.screenHeight / 8);
 
         GameScreen.stage.addActor(buttonsTable);
@@ -115,7 +124,8 @@ public class GUIComponents {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 if (button == Input.Buttons.LEFT) {
-                    if(!CountryTerritory.isInsideTerritory(Gdx.input.getX(), Gdx.input.getY())) {
+                    float[] coords = Camera.getRelativeCoords(movingButton.getX(), movingButton.getY());
+                    if(!CountryTerritory.isInsideTerritory(coords[0]+16, coords[1]+8)) {
                         return false;
                     }
                     placeWeapon();
@@ -167,19 +177,9 @@ public class GUIComponents {
 
     private static void placeWeapon() {
 
-        float width = GameScreen.screenWidth;
-        float height = GameScreen.screenHeight;
-
-        float[] curr = new float[]{movingButton.getX(), movingButton.getY()};
-
-        float xShift = (Camera.cameraPos.x- (width / 2));
-        float yShift = (Camera.cameraPos.y- (height / 2));
-
-        System.out.println(Camera.cameraPos.x);
-        float xPos = 32 + xShift + (width / 2) + (width / 2) * (curr[0] - width / 2) * Camera.camera.zoom / (width / 2);
-        float yPos = 16 + yShift + (height / 2) + (height / 2) * (curr[1] - height / 2) * Camera.camera.zoom / (height / 2);
-
-        float[] pos = new float[]{xPos, yPos};
+        float[] pos = Camera.getRelativeCoords(movingButton.getX(), movingButton.getY());
+        pos[0] += 16;
+        pos[1] += 8;
         AirDefence.addAirDef(pos, movingButton.getName());
     }
 }

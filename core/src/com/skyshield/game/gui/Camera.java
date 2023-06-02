@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
 import com.skyshield.game.screens.GameScreen;
 
+import java.util.Arrays;
+
 public class Camera {
 
     public static OrthographicCamera camera;
@@ -52,6 +54,22 @@ public class Camera {
 
     public static float getMinCameraY() {
         return camera.zoom * (camera.viewportHeight / 2);
+    }
+
+    public static float[] getRelativeCoords(float x, float y) {
+        float width = GameScreen.screenWidth;
+        float height = GameScreen.screenHeight;
+
+        float xShift = (cameraPos.x- (width / 2));
+        float yShift = (cameraPos.y- (height / 2));
+
+
+        float xPos = xShift + (width / 2) + (width / 2) * (x - width / 2) * camera.zoom / (width / 2);
+        float yPos = yShift + (height / 2) + (height / 2) * (y - height / 2) * camera.zoom / (height / 2);
+
+        System.out.println(Arrays.toString(new float[]{xPos, yPos}));
+
+        return new float[]{xPos, yPos};
     }
 
 

@@ -18,6 +18,7 @@ import com.skyshield.game.gameObjects.airDefence.AirDef;
 import com.skyshield.game.gameLogic.entities.AirDefence;
 import com.skyshield.game.gameLogic.entities.Rockets;
 import com.skyshield.game.gui.GUIComponents;
+import com.skyshield.game.gui.clock.Clock;
 import com.skyshield.game.utils.CountryTerritory;
 
 public class GameScreen implements Screen {
@@ -27,6 +28,7 @@ public class GameScreen implements Screen {
     public static int screenHeight = SkyShield.SCREEN_HEIGHT;
     public static final float globalScale = (float) 700 / screenHeight;
     public static float screenSizeScale = 1;
+    public static int gameSpeed = 1;
     public static final float WIDTH_TO_HEIGHT_RATIO = (float) GameScreen.screenWidth / GameScreen.screenHeight;
     private final Texture mapImage;
     public static int lastClickX, lastClickY;
@@ -58,7 +60,10 @@ public class GameScreen implements Screen {
 
         drawAirDefence();
 
-
+        if(TimeUtils.millis() - Clock.timeMillis >= 1000) {
+            Clock.updateClock();
+            Clock.updateTime();
+        }
         if (TimeUtils.nanoTime() - OneTargetAttack.attackStartTime < 30000000000f) {
             OneTargetAttack.attack();
         } else {
@@ -95,9 +100,11 @@ public class GameScreen implements Screen {
 
         } else if (Camera.moveCamera) Camera.moveCamera = false;
 
+
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 60f));
         stage.draw();
 
+        Clock.drawClock();
     }
 
     private void drawMap() {
@@ -146,9 +153,12 @@ public class GameScreen implements Screen {
         GUIComponents.setSkin("freezing/skin/freezing-ui.json");
         GUIComponents.addButtonsTable();
         GUIComponents.addStageInputListener();
+        GUIComponents.addTimeTable();
 
         CountryTerritory.setTerritory(0);
         CountryTerritory.setMapPolygon();
+
+        Clock.setFontSize((int) (20*GameScreen.screenSizeScale));
 
 
     }

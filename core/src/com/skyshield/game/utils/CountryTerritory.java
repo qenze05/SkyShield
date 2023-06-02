@@ -9,7 +9,7 @@ public class CountryTerritory {
     private static final String NORMAL_SRC = "map/normal/normal-";
     private static final String NORMAL_NOBG_SRC = "map/normal/normal-nobg-";
 
-    private static final Polygon map = new Polygon();
+    public static final Polygon map = new Polygon();
     public static int territory = 0;
 
     // 0 - full territory, 7 - all territory is lost
@@ -18,7 +18,7 @@ public class CountryTerritory {
     }
 
     public static void setMapPolygon() {
-        map.setVertices(new MapPolygon(NORMAL_SRC+territory+".png").vertices);
+        map.setVertices(new MapPolygon(NORMAL_SRC+territory+"-flipped.png").vertices);
     }
 
     public static int getTerritory() {
