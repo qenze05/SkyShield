@@ -22,7 +22,7 @@ public class F500 extends AirDef{
         super(pos);
         this.pos = pos;
         this.name = "F-500";
-        this.launchesPerMin = 30;
+        this.launchesPerMin = 300;
         this.optimalSize = 4.5f;
         this.optimalSpeed = 750;
         this.centrality = 0.7f;

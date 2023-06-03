@@ -4,6 +4,7 @@ package com.skyshield.game.gui.clock;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.skyshield.game.screens.GameScreen;
 
@@ -26,10 +27,14 @@ public class Clock {
 
     public static void drawClock() {
         String timeString = time[0] + (time[1] < 10 ? ":0" + time[1] : ":" + time[1]);
-        GameScreen.game.batch.begin();
-        font.draw(GameScreen.game.batch, timeString, 15, 645);
-        font.draw(GameScreen.game.batch, "Day: " + day, 15, 678);
-        GameScreen.game.batch.end();
+//        GameScreen.game.batch.begin();
+//        font.draw(GameScreen.game.batch, timeString, 15, 645);
+//        font.draw(GameScreen.game.batch, "Day: " + day, 15, 678);
+//        GameScreen.game.batch.end();
+        GameScreen.stage.getBatch().begin();
+        font.draw(GameScreen.stage.getBatch(), timeString, 15, 645);
+        font.draw(GameScreen.stage.getBatch(), "Day: " + day, 15, 678);
+        GameScreen.stage.getBatch().end();
     }
 
     public static void updateTime() {

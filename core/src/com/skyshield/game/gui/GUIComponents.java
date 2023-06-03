@@ -4,12 +4,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.skyshield.game.gameLogic.entities.AirDefence;
+import com.skyshield.game.gui.camera.Camera;
 import com.skyshield.game.gui.shop.ShopBackground;
 import com.skyshield.game.gui.shop.ShopScrollBar;
 import com.skyshield.game.screens.GameScreen;
@@ -22,14 +26,18 @@ public class GUIComponents {
     private static ShopScrollBar shopScrollBar = new ShopScrollBar();
     private static Skin skin;
     public static ImageButton movingButton;
-    public static TextButton zoomInButton, zoomOutButton, shopButton;
+    public static Sprite movingButtonCircle;
+    public static TextButton zoomInButton, zoomOutButton, shopButton, gameSpeedButton;
     public static int animationFrame = 0;
+    private static long popUpTimer;
+    private static Texture popUpTexture;
+    public static Actor popUpImage;
 
     public static void addStageInputListener() {
         GameScreen.stage.addListener(new InputListener() {
             @Override
-            public boolean keyDown (InputEvent event, int keycode) {
-                if(keycode == Input.Keys.ESCAPE) {
+            public boolean keyDown(InputEvent event, int keycode) {
+                if (keycode == Input.Keys.ESCAPE) {
                     removeShop();
                     shopButton.setChecked(false);
                 }
@@ -61,10 +69,12 @@ public class GUIComponents {
         zoomInButton = new TextButton("+", skin);
         zoomOutButton = new TextButton("-", skin);
         shopButton = new TextButton("Shop", skin);
+        gameSpeedButton = new TextButton("Speed: 1x", skin);
 
         buttonsTable.add(shopButton).left().top().expand();
         buttonsTable.add(zoomInButton).left().top().expand();
         buttonsTable.add(zoomOutButton).left().top().expand();
+        buttonsTable.add(gameSpeedButton).left().top().expand();
 
         zoomInButton.addListener(new ChangeListener() {
             @Override
@@ -97,6 +107,15 @@ public class GUIComponents {
                 }
             }
         });
+
+        gameSpeedButton.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                GameScreen.changeGameSpeed();
+                gameSpeedButton.setText("Speed: " + GameScreen.gameSpeed + "x");
+                return true;
+            }
+        });
     }
 
     public static void setSkin(String path) {
@@ -115,17 +134,24 @@ public class GUIComponents {
         shopScrollBar.remove();
     }
 
-    public static void addMovingButton(ImageButton button) {
+    public static void addMovingButton(ImageButton button, Texture circleTexture, Rectangle circleSize) {
+
         movingButton = new ImageButton(button.getImage().getDrawable());
         movingButton.setName(button.getName());
+
+        movingButtonCircle = new Sprite(circleTexture);
+        movingButtonCircle.setColor(1f, 1f, 1f, 0.5f);
+        movingButtonCircle.setSize(circleSize.getWidth(), circleSize.getHeight());
+
         GameScreen.stage.addActor(movingButton);
 
         movingButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 if (button == Input.Buttons.LEFT) {
-                    float[] coords = Camera.getRelativeCoords(movingButton.getX(), movingButton.getY());
-                    if(!CountryTerritory.isInsideTerritory(coords[0]+16, coords[1]+8)) {
+                    float[] coords = Camera.getRelativeCoords(movingButton.getX() + movingButton.getWidth() / 2,
+                            movingButton.getY() + movingButton.getHeight() / 2);
+                    if (!CountryTerritory.isInsideTerritory(coords[0], coords[1])) {
                         return false;
                     }
                     placeWeapon();
@@ -139,32 +165,43 @@ public class GUIComponents {
     public static void showAvailableArea() {
 
         Texture territory = CountryTerritory.getTerritoryTexture();
+
         Sprite territorySprite = new Sprite(territory);
 
-        if(animationFrame<=30) {
-            territorySprite.setColor(1f, 0, 0, animationFrame/90f);
+        if (animationFrame <= 30) {
+            territorySprite.setColor(1f, 0, 0, animationFrame / 90f);
             animationFrame++;
-        }else if(animationFrame<60){
-            territorySprite.setColor(1f, 0, 0, (60-animationFrame)/90f);
+        } else if (animationFrame < 60) {
+            territorySprite.setColor(1f, 0, 0, (60 - animationFrame) / 90f);
             animationFrame++;
-        }else if(animationFrame==60) {
+        } else if (animationFrame == 60) {
             territorySprite.setColor(1f, 0, 0, 0f);
             animationFrame = 0;
         }
 
-
-
         GameScreen.game.batch.begin();
         territorySprite.draw(GameScreen.game.batch);
         GameScreen.game.batch.end();
-
     }
 
     public static void moveMovingButton() {
-        movingButton.setPosition(Gdx.input.getX() - 32,GameScreen.screenHeight - Gdx.input.getY() - 16);
+
+        movingButton.setPosition(Gdx.input.getX() - movingButton.getWidth() / 2,
+                GameScreen.screenHeight - Gdx.input.getY() - movingButton.getHeight() / 2);
+
+        float[] circlePos = Camera.getRelativeCoords(Gdx.input.getX(),
+                GameScreen.screenHeight - Gdx.input.getY());
+        movingButtonCircle.setPosition(circlePos[0] - movingButtonCircle.getWidth() / 2,
+                circlePos[1] - movingButtonCircle.getHeight() / 2);
+
         shopBackground.setVisible(false);
         shopScrollBar.setVisible(false);
+
         GameScreen.stage.draw();
+
+        GameScreen.game.batch.begin();
+        movingButtonCircle.draw(GameScreen.game.batch);
+        GameScreen.game.batch.end();
     }
 
     public static void removeMovingButton() {
@@ -178,8 +215,49 @@ public class GUIComponents {
     private static void placeWeapon() {
 
         float[] pos = Camera.getRelativeCoords(movingButton.getX(), movingButton.getY());
-        pos[0] += 16;
-        pos[1] += 8;
+        pos[0] += movingButton.getWidth() / 4;
+        pos[1] += movingButton.getHeight() / 4;
         AirDefence.addAirDef(pos, movingButton.getName());
+    }
+
+    public static void addPopUpMenu(int x, int y) {
+
+        if(popUpImage != null) {
+            popUpImage.remove();
+            popUpImage = null;
+        }
+        if(popUpTimer == 0) {
+
+            popUpTimer = TimeUtils.millis();
+
+            popUpTexture = new Texture(Gdx.files.internal("popup.png"));
+            popUpImage = new Image(popUpTexture);
+            popUpImage.setPosition(x, y);
+            popUpImage.setVisible(false);
+            popUpImage.addAction(new Action() {
+                @Override
+                public boolean act(float delta) {
+                    showPopUpMenu();
+                    return true;
+                }
+            });
+
+            GameScreen.stage.addActor(popUpImage);
+        }
+    }
+
+    public static void showPopUpMenu() {
+        if(TimeUtils.millis() - popUpTimer > 1000 && !popUpImage.isVisible()) {
+            popUpImage.setVisible(true);
+        }
+    }
+
+    public static void removePopUpMenu() {
+        if(popUpImage != null){
+            popUpTimer = 0;
+            popUpImage.remove();
+            popUpImage = null;
+        }
+
     }
 }

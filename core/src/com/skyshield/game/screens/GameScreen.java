@@ -13,7 +13,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.skyshield.game.SkyShield;
 import com.skyshield.game.gameLogic.events.OneTargetAttack;
-import com.skyshield.game.gui.Camera;
+import com.skyshield.game.gui.camera.Camera;
 import com.skyshield.game.gameObjects.airDefence.AirDef;
 import com.skyshield.game.gameLogic.entities.AirDefence;
 import com.skyshield.game.gameLogic.entities.Rockets;
@@ -60,7 +60,7 @@ public class GameScreen implements Screen {
 
         drawAirDefence();
 
-        if(TimeUtils.millis() - Clock.timeMillis >= 1000) {
+        if(TimeUtils.millis() - Clock.timeMillis >= 1000 / gameSpeed) {
             Clock.updateClock();
             Clock.updateTime();
         }
@@ -101,7 +101,8 @@ public class GameScreen implements Screen {
         } else if (Camera.moveCamera) Camera.moveCamera = false;
 
 
-        stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 60f));
+        stage.act();
+        if(GUIComponents.popUpImage != null) GUIComponents.showPopUpMenu();
         stage.draw();
 
         Clock.drawClock();
@@ -179,6 +180,15 @@ public class GameScreen implements Screen {
     public void dispose() {
         mapImage.dispose();
     }
+
+    public static void changeGameSpeed() {
+
+        if (gameSpeed == 3) {
+            gameSpeed = 1;
+        } else {
+            gameSpeed++;
+        }
+    };
 
 
 }

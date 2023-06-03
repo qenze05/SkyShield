@@ -22,7 +22,7 @@ public class SD250M extends AirDef{
         super(pos);
         this.pos = pos;
         this.name = "SD-250-M";
-        this.launchesPerMin = 60;
+        this.launchesPerMin = 600;
         this.optimalSize = 4.5f;
         this.optimalSpeed = 2000;
         this.centrality = 0.7f;

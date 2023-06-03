@@ -34,7 +34,7 @@ public class Rockets {
             rocket = iter.next();
             hitbox = rocket.getHitbox();
 
-            if (rocket.getFrame() <= 40) {
+            if (rocket.getFrame() <= 40 / GameScreen.gameSpeed) {
 
                 hitbox.setPosition(hitbox.x + getTakeoffShiftX(rocket.getFrame(), rocket.getAngle(), rocket.getSpeed()),
                         hitbox.y + getTakeoffShiftY(rocket.getFrame(), rocket.getAngle(), rocket.getSpeed()));
@@ -74,11 +74,19 @@ public class Rockets {
     }
 
     public static float getTakeoffShiftX(int frame, int angle, float maxSpeed) {
-        return (float) (Math.sin(Math.toRadians(angle))*(maxSpeed*frame/40)*GameScreen.globalScale/360);
+        return (float) (Math.sin(Math.toRadians(angle))
+                * (maxSpeed * frame / (40 / GameScreen.gameSpeed))
+                * GameScreen.globalScale
+                * GameScreen.gameSpeed
+                / 360);
     }
 
     public static float getTakeoffShiftY(int frame, int angle, float maxSpeed) {
-        return (float) (Math.cos(Math.toRadians(angle))*(maxSpeed*frame/40)*GameScreen.globalScale/360);
+        return (float) (Math.cos(Math.toRadians(angle))
+                * (maxSpeed * frame / (40 / GameScreen.gameSpeed))
+                * GameScreen.globalScale
+                * GameScreen.gameSpeed
+                / 360);
     }
 
     public static int getTriangleDegree(float[] current, float[] target) {
@@ -94,14 +102,23 @@ public class Rockets {
     }
 
     public static float getMaxSpeedShiftX(float maxSpeed, int angle) {
-        return (float) (Math.sin(Math.toRadians(angle))*maxSpeed*GameScreen.globalScale/360);
+        return (float) (Math.sin(Math.toRadians(angle))
+                * maxSpeed
+                * GameScreen.globalScale
+                * GameScreen.gameSpeed
+                / 360);
     }
 
     public static float getMaxSpeedShiftY(float maxSpeed, int angle) {
-        return (float) (Math.cos(Math.toRadians(angle))*maxSpeed*GameScreen.globalScale/360);
+        return (float) (Math.cos(Math.toRadians(angle))
+                * maxSpeed * GameScreen.globalScale
+                * GameScreen.gameSpeed
+                / 360);
     }
 
     public static int rotateRocket(float[] current, float[] target, int angle, int shift) {
+
+        shift *= GameScreen.gameSpeed;
 
         int triangleDegree = getTriangleDegree(current, target);
 
@@ -128,11 +145,11 @@ public class Rockets {
             }
         }
 
-        return angle-3;
+        return angle - 3;
     }
 
     public static boolean targetReached(Rectangle current, float[] target) {
-        return (Math.abs(current.x-target[0]) <= 20 && Math.abs(current.y-target[1]) <= 20);
+        return (Math.abs(current.x - target[0]) <= 20 && Math.abs(current.y - target[1]) <= 20);
     }
 
 }

@@ -1,6 +1,9 @@
 package com.skyshield.game.gui.shop;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
@@ -14,7 +17,7 @@ import com.skyshield.game.utils.ItemsList;
 public class ShopScrollBar extends Table {
 
     public ShopScrollBar() {
-        setBounds(1280/3.2f, 1280/25.6f, 1280/1.55f, ItemsList.airDefs.get(0).getTexture().getHeight());
+        setBounds(1280 / 3.2f, 1280 / 25.6f, 1280 / 1.55f, ItemsList.airDefs.get(0).getTexture().getHeight());
         add(addScrollPane());
 
     }
@@ -27,15 +30,35 @@ public class ShopScrollBar extends Table {
         GameScreen.stage.setScrollFocus(pane);
         Texture airDefTexture;
         for (int i = 0; i < ItemsList.airDefs.size; i++) {
+
             airDefTexture = ItemsList.airDefs.get(i).getTexture();
+
+            Texture circleTexture = ItemsList.airDefs.get(i).getCircleTexture();
+            Rectangle circleSize = ItemsList.airDefs.get(i).getCircleHitbox();
+
             ImageButton button = new ImageButton(new TextureRegionDrawable(airDefTexture));
             button.setName(ItemsList.airDefs.get(i).getName());
             button.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                        if (GUIComponents.movingButton == null) GUIComponents.addMovingButton(button);
+                    super.clicked(event, x, y);
+                    if (GUIComponents.movingButton == null)
+                        GUIComponents.addMovingButton(button, circleTexture, circleSize);
+                }
+
+                @Override
+                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                    super.enter(event, x, y, pointer, fromActor);
+                    GUIComponents.addPopUpMenu((int) (Gdx.input.getX()+button.getWidth()/4), (int) (GameScreen.screenHeight - Gdx.input.getY()+button.getHeight()));
+                }
+
+                @Override
+                public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                    super.exit(event, x, y, pointer, toActor);
+                    GUIComponents.removePopUpMenu();
                 }
             });
+
             paneTable.add(button);
         }
 

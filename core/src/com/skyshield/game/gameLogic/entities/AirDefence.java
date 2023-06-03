@@ -132,7 +132,7 @@ public class AirDefence {
 
                 if (airDefUnit.getCircleHitbox().contains(rocket.getHitbox())
                         && !isTargetedByThisAirDef(rocket, airDefUnit)
-                        && (TimeUtils.nanoTime() - airDefUnit.getLastLaunchTime())
+                        && (TimeUtils.nanoTime() - airDefUnit.getLastLaunchTime()) * GameScreen.gameSpeed
                         > 60000000000f / airDefUnit.getLaunchesPerMin()) {
 
                     airDefUnit.setLastLaunchTime(TimeUtils.nanoTime());
@@ -205,7 +205,7 @@ public class AirDefence {
         float speedEff = (airDef.getOptimalSpeed() > rocket.getSpeed()) ? 1 : (airDef.getOptimalSpeed()/rocket.getSpeed());
         float sizeEff = (airDef.getOptimalSize() < rocket.getRocketSize()) ? 1 : (airDef.getOptimalSize()/rocket.getRocketSize());
         float centralEff = 1 - (1 - airDef.getCentrality())*(Rockets.getDistance(airDef.getPos(), rocketPos)/airDef.getRadius());
-        float distanceEff = 0.5f + 0.5f * (Rockets.getDistance(rocketPos, rocket.getTarget()) / Rockets.getDistance(rocket.getSpawnPoint(), rocket.getTarget()));
+        float distanceEff = 0.5f + Math.abs(0.5f * (Rockets.getDistance(rocketPos, rocket.getTarget()) / Rockets.getDistance(rocket.getSpawnPoint(), rocket.getTarget())) - 0.5f);
 
         float totalEff = speedEff * sizeEff * centralEff * distanceEff;
 
