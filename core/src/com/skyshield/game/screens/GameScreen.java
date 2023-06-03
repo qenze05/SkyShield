@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.skyshield.game.SkyShield;
+import com.skyshield.game.gameLogic.entities.Buildings;
 import com.skyshield.game.gameLogic.events.OneTargetAttack;
 import com.skyshield.game.gui.camera.Camera;
 import com.skyshield.game.gameObjects.airDefence.AirDef;
@@ -58,6 +59,8 @@ public class GameScreen implements Screen {
         game.batch.setProjectionMatrix(Camera.camera.combined);
 
         drawMap();
+
+        Buildings.drawBuildings();
 
         drawAirDefence();
 
@@ -140,6 +143,8 @@ public class GameScreen implements Screen {
         CountryTerritory.setTerritory(0);
         CountryTerritory.setMapPolygon();
 
+        Buildings.addBuildings();
+
         Clock.setFontSize((int) (20 * GameScreen.screenSizeScale));
 
 
@@ -160,6 +165,7 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
         mapImage.dispose();
+        stage.dispose();
     }
 
     public static void changeGameSpeed() {
