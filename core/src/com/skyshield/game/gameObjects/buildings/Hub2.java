@@ -24,7 +24,7 @@ public class Hub2 {
         this.powerStation = powerStation;
         this.health = health;
         this.limit = limit;
-        this.texture = new Texture(Gdx.files.internal("buildings/kazarma.jpg"));
+        this.texture = new Texture(Gdx.files.internal("buildings/hab.jpg"));
         this.timeSinceLastProduction = 0;
         this.trainingDuration = 180*3;
         this.isTraining = false;

@@ -169,15 +169,15 @@ public class GameScreen implements Screen {
         fuck1 = new SuperFactory(new float[]{50,580});
         fuck2 = new SuperFactory(new float[]{60,370});
         fuck3 = new SuperFactory(new float[]{200,120});
-        level11 = new Hub1(new float[]{50,580},fuck1,powerStation2,150,10);
-        level12 = new Hub1(new float[]{150,480},fuck2,powerStation1,150,10);
-        level13 = new Hub1(new float[]{250,380},fuck3,powerStation5,150,10);
-        level21 = new Hub2(new float[]{350,280},level11,powerStation6,150,50);
-        level22 = new Hub2(new float[]{450,180},level12,powerStation3,150,50);
-        level23 = new Hub2(new float[]{550,80},level13,powerStation4,150,50);
-        level31 = new Hub3(new float[]{550,80},level21,powerStation9,150,150);
-        level32 = new Hub3(new float[]{550,80},level22,powerStation7,150,150);
-        level33 = new Hub3(new float[]{550,80},level23,powerStation8,150,150);
+        level11 = new Hub1(new float[]{220,540},fuck1,powerStation2,150,10);
+        level12 = new Hub1(new float[]{150,280},fuck2,powerStation1,150,10);
+        level13 = new Hub1(new float[]{380,160},fuck3,powerStation5,150,10);
+        level21 = new Hub2(new float[]{510,580},level11,powerStation6,150,50);
+        level22 = new Hub2(new float[]{350,380},level12,powerStation3,150,50);
+        level23 = new Hub2(new float[]{560,330},level13,powerStation4,150,50);
+        level31 = new Hub3(new float[]{700,580},level21,powerStation9,150,150);
+        level32 = new Hub3(new float[]{680,480},level22,powerStation7,150,150);
+        level33 = new Hub3(new float[]{750,350},level23,powerStation8,150,150);
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
