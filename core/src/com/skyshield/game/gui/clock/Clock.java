@@ -26,11 +26,8 @@ public class Clock {
 
 
     public static void drawClock() {
+        updateClock();
         String timeString = time[0] + (time[1] < 10 ? ":0" + time[1] : ":" + time[1]);
-//        GameScreen.game.batch.begin();
-//        font.draw(GameScreen.game.batch, timeString, 15, 645);
-//        font.draw(GameScreen.game.batch, "Day: " + day, 15, 678);
-//        GameScreen.game.batch.end();
         GameScreen.stage.getBatch().begin();
         font.draw(GameScreen.stage.getBatch(), timeString, 15, 645);
         font.draw(GameScreen.stage.getBatch(), "Day: " + day, 15, 678);
@@ -43,16 +40,20 @@ public class Clock {
 
     public static void updateClock() {
 
-        time[1]++;
+        if(TimeUtils.millis() - Clock.timeMillis >= 1000 / GameScreen.gameSpeed) {
+            time[1]++;
 
-        if (time[1] == 60) {
-            time[1] = 0;
-            time[0]++;
-        }
+            if (time[1] == 60) {
+                time[1] = 0;
+                time[0]++;
+            }
 
-        if (time[0] == 24) {
-            time[0] = 0;
-            day++;
+            if (time[0] == 24) {
+                time[0] = 0;
+                day++;
+            }
+
+            updateTime();
         }
     }
 }

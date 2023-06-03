@@ -3,6 +3,7 @@ package com.skyshield.game.gameObjects.airDefence;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
+import com.skyshield.game.screens.GameScreen;
 
 public class SD250M extends AirDef{
 
@@ -22,7 +23,7 @@ public class SD250M extends AirDef{
         super(pos);
         this.pos = pos;
         this.name = "SD-250-M";
-        this.launchesPerMin = 600;
+        this.launchesPerMin = 60;
         this.optimalSize = 4.5f;
         this.optimalSpeed = 2000;
         this.centrality = 0.7f;
@@ -87,7 +88,10 @@ public class SD250M extends AirDef{
 
     @Override
     public Rectangle getCircleHitbox() {
-        return circleHitbox;
+        return new Rectangle(circleHitbox.x+circleHitbox.width/2 - circleHitbox.width * GameScreen.globalScale/2,
+                circleHitbox.y+circleHitbox.height/2 - circleHitbox.height * GameScreen.globalScale/2,
+                circleHitbox.width * GameScreen.globalScale,
+                circleHitbox.height * GameScreen.globalScale);
     }
 
     @Override

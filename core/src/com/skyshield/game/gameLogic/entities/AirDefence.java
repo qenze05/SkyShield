@@ -196,6 +196,16 @@ public class AirDefence {
         }
     }
 
+    public static void removeAirDef(AirDef airDefToRemove) {
+        Iterator<AirDef> iter = airDefs.iterator();
+        while(iter.hasNext()) {
+            if(iter.next().equals(airDefToRemove)) {
+                iter.remove();
+                break;
+            }
+        }
+    }
+
     private static boolean miss(AirDefRocket airDefRocket) {
 
         AirDef airDef = airDefRocket.getOrigin();
@@ -204,7 +214,7 @@ public class AirDefence {
 
         float speedEff = (airDef.getOptimalSpeed() > rocket.getSpeed()) ? 1 : (airDef.getOptimalSpeed()/rocket.getSpeed());
         float sizeEff = (airDef.getOptimalSize() < rocket.getRocketSize()) ? 1 : (airDef.getOptimalSize()/rocket.getRocketSize());
-        float centralEff = 1 - (1 - airDef.getCentrality())*(Rockets.getDistance(airDef.getPos(), rocketPos)/airDef.getRadius());
+        float centralEff = 1 - (1 - airDef.getCentrality())*(Rockets.getDistance(airDef.getPos(), rocketPos)/(airDef.getRadius()*GameScreen.globalScale));
         float distanceEff = 0.5f + Math.abs(0.5f * (Rockets.getDistance(rocketPos, rocket.getTarget()) / Rockets.getDistance(rocket.getSpawnPoint(), rocket.getTarget())) - 0.5f);
 
         float totalEff = speedEff * sizeEff * centralEff * distanceEff;

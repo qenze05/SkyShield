@@ -25,7 +25,7 @@ public class OneTargetAttack {
             Rockets.spawnRocket("simple", new float[]{563, 538}, new float[]{1200, 117});
             lastRocketSpawnTime = TimeUtils.nanoTime();
         }
-        if (TimeUtils.nanoTime() - lastRocketSpawnTime > 100000000f / GameScreen.gameSpeed) {
+        if (TimeUtils.nanoTime() - lastRocketSpawnTime > 1000000000f / GameScreen.gameSpeed) {
             Rockets.spawnRocket("SIMPLE",
                     new float[]{420, 420},
                     new float[]{1200, 117});

@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -26,7 +27,7 @@ public class GameScreen implements Screen {
     public static SkyShield game;
     public static int screenWidth = SkyShield.SCREEN_WIDTH;
     public static int screenHeight = SkyShield.SCREEN_HEIGHT;
-    public static final float globalScale = (float) 700 / screenHeight;
+    public static final float globalScale = (float) 1280 / 2000;
     public static float screenSizeScale = 1;
     public static int gameSpeed = 1;
     public static final float WIDTH_TO_HEIGHT_RATIO = (float) GameScreen.screenWidth / GameScreen.screenHeight;
@@ -60,13 +61,10 @@ public class GameScreen implements Screen {
 
         drawAirDefence();
 
-        if(TimeUtils.millis() - Clock.timeMillis >= 1000 / gameSpeed) {
-            Clock.updateClock();
-            Clock.updateTime();
-        }
         if (TimeUtils.nanoTime() - OneTargetAttack.attackStartTime < 30000000000f) {
             OneTargetAttack.attack();
-        } else {
+        }
+        else {
             Rockets.rockets = null;
             AirDefence.airDefRockets = null;
             OneTargetAttack.attackStartTime = TimeUtils.nanoTime();
@@ -76,36 +74,19 @@ public class GameScreen implements Screen {
         AirDefence.findTargetsInRange();
         if (AirDefence.airDefRockets != null) AirDefence.moveRockets();
 
+        inputListener();
+
+        stage.act();
+        stage.draw();
+
+        if (GUIComponents.popUpImage != null) GUIComponents.showPopUpMenu();
         if (GUIComponents.movingButton != null) {
             GUIComponents.moveMovingButton();
             GUIComponents.showAvailableArea();
         }
 
-        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
-            Camera.moveCamera = true;
-            lastClickX = Gdx.input.getX();
-            lastClickY = Gdx.input.getY();
-        }
-        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-
-            if (Camera.moveCamera) {
-
-                inputX = Gdx.input.getX();
-                inputY = Gdx.input.getY();
-
-                if (inputX != lastClickX || inputY != lastClickY) {
-                    Camera.changeCameraPos();
-                }
-            }
-
-        } else if (Camera.moveCamera) Camera.moveCamera = false;
-
-
-        stage.act();
-        if(GUIComponents.popUpImage != null) GUIComponents.showPopUpMenu();
-        stage.draw();
-
         Clock.drawClock();
+
     }
 
     private void drawMap() {
@@ -159,7 +140,7 @@ public class GameScreen implements Screen {
         CountryTerritory.setTerritory(0);
         CountryTerritory.setMapPolygon();
 
-        Clock.setFontSize((int) (20*GameScreen.screenSizeScale));
+        Clock.setFontSize((int) (20 * GameScreen.screenSizeScale));
 
 
     }
@@ -188,7 +169,49 @@ public class GameScreen implements Screen {
         } else {
             gameSpeed++;
         }
-    };
+    }
+
+    private static void inputListener() {
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+            Rectangle airDefHitbox = new Rectangle();
+            for (AirDef airDef : AirDefence.airDefs) {
+
+                airDefHitbox.x = airDef.getPos()[0] - (float) airDef.getTexture().getWidth() / 2;
+                airDefHitbox.y = airDef.getPos()[1] - (float) airDef.getTexture().getHeight() / 2;
+                airDefHitbox.width = airDef.getTexture().getWidth();
+                airDefHitbox.height = airDef.getTexture().getHeight();
+
+                if (airDefHitbox.contains(Gdx.input.getX(), screenHeight - Gdx.input.getY())) {
+
+                    if(GUIComponents.buttonJustPressed || GUIComponents.sellTable != null) {
+                        GUIComponents.buttonJustPressed = false;
+                    } else {
+                        GUIComponents.addSellAirDefMenu(airDef);
+                    }
+                    System.out.println("test");
+                    break;
+                }
+            }
+
+            if(GUIComponents.buttonJustPressed) GUIComponents.buttonJustPressed = false;
+            Camera.moveCamera = true;
+            lastClickX = Gdx.input.getX();
+            lastClickY = Gdx.input.getY();
+        }
+        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+
+            if (Camera.moveCamera) {
+
+                inputX = Gdx.input.getX();
+                inputY = Gdx.input.getY();
+
+                if (inputX != lastClickX || inputY != lastClickY) {
+                    Camera.changeCameraPos();
+                }
+            }
+
+        } else if (Camera.moveCamera) Camera.moveCamera = false;
+    }
 
 
 }

@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.skyshield.game.gameLogic.entities.AirDefence;
+import com.skyshield.game.gameObjects.airDefence.AirDef;
 import com.skyshield.game.gui.camera.Camera;
 import com.skyshield.game.gui.shop.ShopBackground;
 import com.skyshield.game.gui.shop.ShopScrollBar;
@@ -32,6 +33,8 @@ public class GUIComponents {
     private static long popUpTimer;
     private static Texture popUpTexture;
     public static Actor popUpImage;
+    public static boolean buttonJustPressed = false;
+    public static Table sellTable;
 
     public static void addStageInputListener() {
         GameScreen.stage.addListener(new InputListener() {
@@ -213,11 +216,11 @@ public class GUIComponents {
     }
 
     private static void placeWeapon() {
-
         float[] pos = Camera.getRelativeCoords(movingButton.getX(), movingButton.getY());
-        pos[0] += movingButton.getWidth() / 4;
-        pos[1] += movingButton.getHeight() / 4;
+        pos[0] += movingButton.getWidth() * Camera.camera.zoom / 2;
+        pos[1] += movingButton.getHeight() * Camera.camera.zoom  / 2;
         AirDefence.addAirDef(pos, movingButton.getName());
+        buttonJustPressed = true;
     }
 
     public static void addPopUpMenu(int x, int y) {
@@ -258,6 +261,54 @@ public class GUIComponents {
             popUpImage.remove();
             popUpImage = null;
         }
+    }
 
+    public static void addSellAirDefMenu(AirDef airDef) {
+
+        if(buttonJustPressed) return;
+
+        Texture sellButtonTexture = new Texture(Gdx.files.internal("sellButton.png"));
+        Texture cancelButtonTexture = new Texture(Gdx.files.internal("cancelButton.png"));
+        Texture bgTexture = new Texture(Gdx.files.internal("sellAirDefBg.png"));
+
+        sellTable = new Table();
+        sellTable.setBounds((float) GameScreen.screenWidth /2 - (float) bgTexture.getWidth() /2,
+                (float) GameScreen.screenHeight /2 - (float) bgTexture.getHeight() /2,
+                bgTexture.getWidth(), bgTexture.getHeight());
+
+        GameScreen.stage.addActor(sellTable);
+
+        ImageButton sellButton = new ImageButton(new Image(sellButtonTexture).getDrawable());
+        ImageButton cancelButton = new ImageButton(new Image(cancelButtonTexture).getDrawable());
+
+        Table buttonsTable = new Table();
+        buttonsTable.setSize(sellButton.getWidth(), sellButton.getHeight()*2);
+        buttonsTable.add(sellButton);
+        buttonsTable.row();
+        buttonsTable.add(cancelButton);
+
+        sellTable.setBackground(new Image(bgTexture).getDrawable());
+        sellTable.add(buttonsTable).bottom().expand();
+
+        sellButton.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                AirDefence.removeAirDef(airDef);
+                sellTable.remove();
+                sellTable = null;
+                buttonJustPressed = true;
+                return true;
+            }
+        });
+
+        cancelButton.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                sellTable.remove();
+                sellTable = null;
+                buttonJustPressed = true;
+                return true;
+            }
+        });
     }
 }

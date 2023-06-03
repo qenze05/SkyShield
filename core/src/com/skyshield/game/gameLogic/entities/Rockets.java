@@ -111,7 +111,8 @@ public class Rockets {
 
     public static float getMaxSpeedShiftY(float maxSpeed, int angle) {
         return (float) (Math.cos(Math.toRadians(angle))
-                * maxSpeed * GameScreen.globalScale
+                * maxSpeed
+                * GameScreen.globalScale
                 * GameScreen.gameSpeed
                 / 360);
     }

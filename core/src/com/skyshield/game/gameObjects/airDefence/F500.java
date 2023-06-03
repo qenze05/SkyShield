@@ -3,6 +3,7 @@ package com.skyshield.game.gameObjects.airDefence;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
+import com.skyshield.game.screens.GameScreen;
 
 public class F500 extends AirDef{
 
@@ -22,11 +23,11 @@ public class F500 extends AirDef{
         super(pos);
         this.pos = pos;
         this.name = "F-500";
-        this.launchesPerMin = 300;
+        this.launchesPerMin = 60;
         this.optimalSize = 4.5f;
         this.optimalSpeed = 750;
         this.centrality = 0.7f;
-        this.radius = 150;
+        this.radius = 50;
         this.lastLaunchTime = 0;
         this.texture = new Texture(Gdx.files.internal("air-defence/f-500.png"));
         this.circleTexture = new Texture(Gdx.files.internal("air-defence/range.png"));
@@ -87,7 +88,10 @@ public class F500 extends AirDef{
 
     @Override
     public Rectangle getCircleHitbox() {
-        return circleHitbox;
+        return new Rectangle(circleHitbox.x+circleHitbox.width/2 - circleHitbox.width * GameScreen.globalScale/2,
+                circleHitbox.y+circleHitbox.height/2 - circleHitbox.height * GameScreen.globalScale/2,
+                circleHitbox.width * GameScreen.globalScale,
+                circleHitbox.height * GameScreen.globalScale);
     }
 
     @Override
