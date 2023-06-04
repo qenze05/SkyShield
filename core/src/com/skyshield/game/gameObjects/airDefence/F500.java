@@ -18,6 +18,7 @@ public class F500 extends AirDef{
     private final Texture circleTexture;
     private final Rectangle circleHitbox;
     private final String name;
+    private final int price;
 
     public F500(float[] pos) {
         super(pos);
@@ -33,6 +34,7 @@ public class F500 extends AirDef{
         this.circleTexture = new Texture(Gdx.files.internal("air-defence/range.png"));
         this.circleHitbox = new Rectangle(pos[0]- radius, pos[1]- radius,
                 radius*2, radius*2);
+        this.price = 100;
     }
 
 
@@ -97,5 +99,10 @@ public class F500 extends AirDef{
     @Override
     public void setLastLaunchTime(long time) {
         lastLaunchTime = time;
+    }
+
+    @Override
+    public int getPrice() {
+        return this.price;
     }
 }

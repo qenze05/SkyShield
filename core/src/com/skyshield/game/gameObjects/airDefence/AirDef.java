@@ -19,6 +19,7 @@ public abstract class AirDef {
     public abstract Texture getTexture();
     public abstract Texture getCircleTexture();
     public abstract Rectangle getCircleHitbox();
+    public abstract int getPrice();
 
     public abstract void setLastLaunchTime(long time);
 }
