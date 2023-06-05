@@ -3,6 +3,9 @@ package com.skyshield.game.gameObjects.buildings;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
+import com.skyshield.game.screens.GameScreen;
+
 import static com.badlogic.gdx.math.MathUtils.random;
 
 public class Factory {
@@ -17,10 +20,14 @@ public class Factory {
     private int health;
     int healthmax =200;
     private int number;
+    private Rectangle hitbox;
 
     public Factory(float[] pos, PowerStation powerStation, int health, int number) {
         this.pos = pos;
         this.texture = new Texture(Gdx.files.internal("buildings/Factory.jpg"));
+        this.hitbox = new Rectangle(pos[0], pos[1],
+                20 * GameScreen.textureScale,
+                20 * GameScreen.textureScale);
         this.powerStation = powerStation;
         this.timeSinceLastProduction = 0;
         this.productionInterval = 0.01f; // Виробляти ракету кожну 1 секунду
@@ -98,5 +105,9 @@ public class Factory {
     }
     public static void setRocketCount(int count) {
         rocketCount += count;
+    }
+
+    public Rectangle getHitbox() {
+        return hitbox;
     }
 }

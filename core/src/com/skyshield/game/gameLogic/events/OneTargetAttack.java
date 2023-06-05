@@ -22,15 +22,15 @@ public class OneTargetAttack {
         if (Rockets.rockets == null) {
             attackStartTime = TimeUtils.nanoTime();
             Rockets.rockets = new Array<>();
-            Rockets.spawnRocket("simple", new float[]{563, 538}, new float[]{1200, 117});
+            Rockets.spawnRocket("korshun", "City-"+MathUtils.random(0, 12), new float[]{1200, 117});
             lastRocketSpawnTime = TimeUtils.nanoTime();
         }
-        if (TimeUtils.nanoTime() - lastRocketSpawnTime > 1000000000f / GameScreen.gameSpeed) {
-            Rockets.spawnRocket("SIMPLE",
-                    new float[]{420, 420},
+        if (TimeUtils.nanoTime() - lastRocketSpawnTime > 3000000000f / GameScreen.gameSpeed) {
+            Rockets.spawnRocket("kobra",
+                    "City-"+MathUtils.random(0, 12),
                     new float[]{1200, 117});
-            if (MathUtils.random(0, 100) > 90) Rockets.spawnRocket("FAST",
-                    new float[]{420, 420},
+            if (MathUtils.random(0, 100) > 90) Rockets.spawnRocket("sapsan",
+                    "City-"+MathUtils.random(0, 12),
                     new float[]{1121, 641});
             lastRocketSpawnTime = TimeUtils.nanoTime();
         }

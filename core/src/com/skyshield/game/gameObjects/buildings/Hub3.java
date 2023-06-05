@@ -1,6 +1,8 @@
 package com.skyshield.game.gameObjects.buildings;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Rectangle;
+import com.skyshield.game.screens.GameScreen;
 
 public class Hub3 {
     private final Hub2 hub2;
@@ -18,6 +20,7 @@ public class Hub3 {
     private boolean isTraining;
     private int trainingSize;
     public int weapons = 0;
+    private Rectangle hitbox;
 
     public Hub3(float[] pos, Hub2 hub2, PowerStation powerStation, int health, int limit) {
         this.pos = pos;
@@ -26,6 +29,9 @@ public class Hub3 {
         this.health = health;
         this.limit = limit;
         this.texture = new Texture(Gdx.files.internal("buildings/hab.jpg"));
+        this.hitbox = new Rectangle(pos[0], pos[1],
+                20 * GameScreen.textureScale,
+                20 * GameScreen.textureScale);
         this.timeSinceLastProduction = 0;
         this.trainingDuration = 180*3;
         this.isTraining = false;
@@ -75,6 +81,10 @@ public class Hub3 {
             weapons -= quantity;
             hub2.takeWeaponsFromFactory(quantity);
         }
+    }
+
+    public Rectangle getHitbox() {
+        return hitbox;
     }
 }
 

@@ -3,7 +3,9 @@ package com.skyshield.game.gameObjects.buildings;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.skyshield.game.gameObjects.buildings.PowerStation;
+import com.skyshield.game.screens.GameScreen;
 
 public class City {
     int healthmax =1000;
@@ -20,10 +22,14 @@ public class City {
 
     public static int totalPopulation = 0;
     private static int totalMoney = 0;
+    private Rectangle hitbox;
 
     public City(float[] pos, PowerStation powerStation, float moneyProductionInterval, float populationProductionInterval, int health) {
         this.pos = pos;
         this.texture = new Texture(Gdx.files.internal("buildings/city.jpg"));
+        this.hitbox = new Rectangle(pos[0], pos[1],
+                40 * GameScreen.textureScale,
+                40 * GameScreen.textureScale);
         this.powerStation = powerStation;
         this.moneyProductionInterval = moneyProductionInterval;
         this.populationProductionInterval = populationProductionInterval;
@@ -111,5 +117,9 @@ public class City {
             population -= trainingSize;
             totalPopulation -= trainingSize;
         }
+    }
+
+    public Rectangle getHitbox() {
+        return hitbox;
     }
 }

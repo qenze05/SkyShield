@@ -17,7 +17,7 @@ import com.skyshield.game.utils.ItemsList;
 public class ShopScrollBar extends Table {
 
     public ShopScrollBar() {
-        setBounds(1280 / 3.2f, 1280 / 25.6f, 1280 / 1.55f, ItemsList.airDefs.get(0).getTexture().getHeight());
+        setBounds(1280 / 3.2f, 1280 / 25.6f, 1280 / 1.55f, ItemsList.uniqueAirDefs.get(0).getTexture().getHeight());
         add(addScrollPane());
 
     }
@@ -29,15 +29,15 @@ public class ShopScrollBar extends Table {
         paneTable.left().top();
         GameScreen.stage.setScrollFocus(pane);
         Texture airDefTexture;
-        for (int i = 0; i < ItemsList.airDefs.size; i++) {
+        for (int i = 0; i < ItemsList.uniqueAirDefs.size; i++) {
 
-            airDefTexture = ItemsList.airDefs.get(i).getTexture();
+            airDefTexture = ItemsList.uniqueAirDefs.get(i).getTexture();
 
-            Texture circleTexture = ItemsList.airDefs.get(i).getCircleTexture();
-            Rectangle circleSize = ItemsList.airDefs.get(i).getCircleHitbox();
+            Texture circleTexture = ItemsList.uniqueAirDefs.get(i).getCircleTexture();
+            Rectangle circleSize = ItemsList.uniqueAirDefs.get(i).getCircleHitbox();
 
             ImageButton button = new ImageButton(new TextureRegionDrawable(airDefTexture));
-            button.setName(ItemsList.airDefs.get(i).getName());
+            button.setName(ItemsList.uniqueAirDefs.get(i).getName());
             button.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {

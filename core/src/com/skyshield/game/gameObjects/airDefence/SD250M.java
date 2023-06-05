@@ -28,12 +28,14 @@ public class SD250M extends AirDef{
         this.optimalSize = 4.5f;
         this.optimalSpeed = 2000;
         this.centrality = 0.7f;
-        this.radius = 100;
+        this.radius = 300;
         this.lastLaunchTime = 0;
         this.texture = new Texture(Gdx.files.internal("air-defence/SD-250-M.png"));
         this.circleTexture = new Texture(Gdx.files.internal("air-defence/range.png"));
-        this.circleHitbox = new Rectangle(pos[0]- radius, pos[1]- radius,
-                radius*2, radius*2);
+        this.circleHitbox = new Rectangle(pos[0] - radius * GameScreen.globalScale,
+                pos[1] -  radius * GameScreen.globalScale,
+                radius * GameScreen.globalScale * 2,
+                radius * GameScreen.globalScale * 2);
         this.price = 200;
     }
 
@@ -90,10 +92,7 @@ public class SD250M extends AirDef{
 
     @Override
     public Rectangle getCircleHitbox() {
-        return new Rectangle(circleHitbox.x+circleHitbox.width/2 - circleHitbox.width * GameScreen.globalScale/2,
-                circleHitbox.y+circleHitbox.height/2 - circleHitbox.height * GameScreen.globalScale/2,
-                circleHitbox.width * GameScreen.globalScale,
-                circleHitbox.height * GameScreen.globalScale);
+        return this.circleHitbox;
     }
 
     @Override

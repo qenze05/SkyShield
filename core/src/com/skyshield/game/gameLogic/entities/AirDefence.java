@@ -62,7 +62,8 @@ public class AirDefence {
                 iter.remove();
             }
 
-            GameScreen.game.batch.draw(rocket.getTexture(), rocket.getHitbox().x, rocket.getHitbox().y);
+            GameScreen.game.batch.draw(rocket.getTexture(),
+                    rocket.getHitbox().x, rocket.getHitbox().y, rocket.getHitbox().width, rocket.getHitbox().height);
         }
 
         GameScreen.game.batch.end();
@@ -84,7 +85,7 @@ public class AirDefence {
                 hitbox.y + Rockets.getMaxSpeedShiftY(rocket.getSpeed(), rocket.getAngle()));
     }
 
-    private static int rotateRocket(AirDefRocket rocket, Rectangle hitbox) {
+    private static float rotateRocket(AirDefRocket rocket, Rectangle hitbox) {
 
         Rectangle targetHitbox = rocket.getTarget().getHitbox();
         float[] current = new float[]{hitbox.x + hitbox.width / 2, hitbox.y + hitbox.height / 2};
@@ -136,8 +137,10 @@ public class AirDefence {
                         > 60000000000f / airDefUnit.getLaunchesPerMin()) {
 
                     airDefUnit.setLastLaunchTime(TimeUtils.nanoTime());
-                    launchAirDef(rocket, airDefUnit);
-                    rocket.setTargetedState(true);
+                    if(Rockets.isVisible(rocket)) {
+                        launchAirDef(rocket, airDefUnit);
+                        rocket.setTargetedState(true);
+                    }
                 }
             }
         }
@@ -168,7 +171,8 @@ public class AirDefence {
 
         for (Rocket rocket : Rockets.rockets) {
 
-            if(rocket.isEliminated()
+            if(!Rockets.isVisible(rocket)
+                    || rocket.isEliminated()
                     || rocket.isTargeted() == skipTargeted
                     || !airDefRocket.getOrigin().getCircleHitbox().contains(rocket.getHitbox())) continue;
 
@@ -189,7 +193,7 @@ public class AirDefence {
             rocket = iter.next();
             if (rocket.getHitbox().overlaps(hitbox)) {
                 rocket.setEliminated(true);
-                iter.remove();
+                if(rocket.isEliminated()) iter.remove();
                 break;
 
             }
@@ -215,7 +219,7 @@ public class AirDefence {
         float speedEff = (airDef.getOptimalSpeed() > rocket.getSpeed()) ? 1 : (airDef.getOptimalSpeed()/rocket.getSpeed());
         float sizeEff = (airDef.getOptimalSize() < rocket.getRocketSize()) ? 1 : (airDef.getOptimalSize()/rocket.getRocketSize());
         float centralEff = 1 - (1 - airDef.getCentrality())*(Rockets.getDistance(airDef.getPos(), rocketPos)/(airDef.getRadius()*GameScreen.globalScale));
-        float distanceEff = 0.5f + Math.abs(0.5f * (Rockets.getDistance(rocketPos, rocket.getTarget()) / Rockets.getDistance(rocket.getSpawnPoint(), rocket.getTarget())) - 0.5f);
+        float distanceEff = 0.5f + Math.abs(0.5f * (Rockets.getDistance(rocketPos, rocket.getTargetPos()) / Rockets.getDistance(rocket.getSpawnPoint(), rocket.getTargetPos())) - 0.5f);
 
         float totalEff = speedEff * sizeEff * centralEff * distanceEff;
 
@@ -225,7 +229,7 @@ public class AirDefence {
     private static void setCornerTarget(AirDefRocket airDefRocket) {
         if(cornerTargets.size==0) fillCornerTargetsArray();
 
-        int angle = airDefRocket.getAngle();
+        float angle = airDefRocket.getAngle();
         if(angle < 90) airDefRocket.setTarget(cornerTargets.get(0));
         else if(angle < 180) airDefRocket.setTarget(cornerTargets.get(1));
         else if(angle < 270) airDefRocket.setTarget(cornerTargets.get(2));
@@ -233,14 +237,13 @@ public class AirDefence {
     }
 
     private static void fillCornerTargetsArray() {
-        float[] target = new float[]{0, 0};
-        cornerTargets.add(new SimpleRocket(target,
+        cornerTargets.add(new SimpleRocket("City-1",
                 new float[]{GameScreen.screenWidth, GameScreen.screenHeight}));
-        cornerTargets.add(new SimpleRocket(target,
+        cornerTargets.add(new SimpleRocket("City-1",
                 new float[]{GameScreen.screenWidth, 0}));
-        cornerTargets.add(new SimpleRocket(target,
+        cornerTargets.add(new SimpleRocket("City-1",
                 new float[]{0, 0}));
-        cornerTargets.add(new SimpleRocket(target,
+        cornerTargets.add(new SimpleRocket("City-1",
                 new float[]{0, GameScreen.screenHeight}));
     }
 

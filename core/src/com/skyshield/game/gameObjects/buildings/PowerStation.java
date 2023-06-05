@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.skyshield.game.screens.GameScreen;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +23,11 @@ public class PowerStation {
     public PowerStation(float[] pos, int health, int number) {
         this.pos = pos;
         this.texture = new Texture(Gdx.files.internal("buildings/powerStation.jpg"));
-        this.hitbox = new Rectangle(pos[0], pos[1], texture.getWidth(), texture.getHeight());this.health = health;
+        this.hitbox = new Rectangle(pos[0], pos[1],
+                30 * GameScreen.textureScale,
+                30 * GameScreen.textureScale);
+        this.health = health;
         this.number = number;
-        this.hitbox = hitbox;
         this.position = new Position((int)pos[0], (int)pos[1]);
     }
     public  void draw(SpriteBatch spriteBatch) {

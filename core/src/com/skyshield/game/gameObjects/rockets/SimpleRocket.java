@@ -4,44 +4,66 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
-import com.skyshield.game.gameLogic.entities.Rockets;
+import com.skyshield.game.screens.GameScreen;
+import com.skyshield.game.utils.ItemsList;
 
-public class SimpleRocket extends Rocket{
+public class SimpleRocket extends Rocket {
 
     private final float maxDistance;
     private final float speed;
     private final float power;
     private final float rocketSize;
-    private final float[] target;
     private final float[] spawnPoint;
     private final Texture texture;
     private Rectangle hitbox;
     private int frame;
-    private int angle;
+    private float angle;
     private boolean targeted;
     private boolean eliminated;
+    private String targetName;
+    private Rectangle targetHitbox;
+    private float[] targetPos;
 
-    public SimpleRocket(float[] target, float[] spawnPoint) {
+    public SimpleRocket(String target, float[] spawnPoint) {
         super(target, spawnPoint);
-        this.target = target;
+
+        this.targetName = target;
+        setTargetHitbox();
+        setTargetPos();
+
         this.spawnPoint = spawnPoint;
         this.maxDistance = 2000;
         this.speed = 1000;
-        this.power = 500;
+        this.power = 50;
         this.rocketSize = 5;
+
         this.texture = new Texture(Gdx.files.internal("rockets/simpleRocket.png"));
-        this.hitbox = new Rectangle(spawnPoint[0], spawnPoint[1], texture.getWidth(), texture.getHeight());
+        this.hitbox = new Rectangle(spawnPoint[0], spawnPoint[1],
+                texture.getWidth() * GameScreen.textureScale,
+                texture.getHeight() * GameScreen.textureScale);
+
         this.frame = 0;
-        if(target[0] < spawnPoint[0]) angle = MathUtils.random(160, 360);
+
+        if (targetHitbox.x < spawnPoint[0]) angle = MathUtils.random(160, 360);
         else angle = MathUtils.random(0, 200);
+
         this.targeted = false;
         this.eliminated = false;
     }
 
     @Override
-    public boolean canReach() {
-        float distance = Rockets.getDistance(spawnPoint, target);
-        return distance <= maxDistance;
+    public void specialAbility() {
+
+    }
+
+    @Override
+    public boolean isFound() {
+        return false;
+    }
+
+    @Override
+    public void setFound() {
+
     }
 
     @Override
@@ -85,8 +107,18 @@ public class SimpleRocket extends Rocket{
     }
 
     @Override
-    public float[] getTarget() {
-        return target;
+    public String getTargetName() {
+        return targetName;
+    }
+
+    @Override
+    public Rectangle getTargetHitbox() {
+        return targetHitbox;
+    }
+
+    @Override
+    public float[] getTargetPos() {
+        return targetPos;
     }
 
     @Override
@@ -105,8 +137,24 @@ public class SimpleRocket extends Rocket{
     }
 
     @Override
-    public int getAngle() {
+    public float getAngle() {
         return angle;
+    }
+
+    @Override
+    public void setTargetHitbox() {
+        this.targetHitbox = ItemsList.buildings.get(targetName);
+    }
+
+    @Override
+    public void setTargetPos() {
+        this.targetPos = new float[]{targetHitbox.x+targetHitbox.width/2,
+                targetHitbox.y+targetHitbox.height/2};
+    }
+
+    @Override
+    public void setTargetName(String name) {
+        this.targetName = name;
     }
 
     @Override
@@ -120,12 +168,19 @@ public class SimpleRocket extends Rocket{
     }
 
     @Override
-    public void setAngle(int newAngle) {
+    public void setAngle(float newAngle) {
         this.angle = newAngle;
     }
 
     @Override
     public void setEliminated(boolean state) {
         this.eliminated = state;
+    }
+
+    @Override
+    public boolean canReach() {
+//        float distance = Rockets.getDistance(spawnPoint, targetPos);
+//        return distance <= maxDistance;
+        return true;
     }
 }

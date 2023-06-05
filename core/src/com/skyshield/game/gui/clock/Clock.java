@@ -4,7 +4,6 @@ package com.skyshield.game.gui.clock;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.skyshield.game.screens.GameScreen;
 
@@ -27,9 +26,12 @@ public class Clock {
 
     public static void drawClock() {
         updateClock();
-        String timeString = time[0] + (time[1] < 10 ? ":0" + time[1] : ":" + time[1]);
+
+        String AMPM = (time[0] < 12) ? "AM" : "PM";
+        int hour = (time[0] == 0 || time[0] == 12) ? 12 : ((time[0] > 12) ? time[0]-12 : time[0]);
+
         GameScreen.stage.getBatch().begin();
-        font.draw(GameScreen.stage.getBatch(), timeString, 15, 645);
+        font.draw(GameScreen.stage.getBatch(), hour+AMPM, 15, 645);
         font.draw(GameScreen.stage.getBatch(), "Day: " + day, 15, 678);
         GameScreen.stage.getBatch().end();
     }
@@ -40,7 +42,7 @@ public class Clock {
 
     public static void updateClock() {
 
-        if(TimeUtils.millis() - Clock.timeMillis >= 1000 / GameScreen.gameSpeed) {
+        if(TimeUtils.millis() - Clock.timeMillis >= (1000/24) / GameScreen.gameSpeed) {
             time[1]++;
 
             if (time[1] == 60) {

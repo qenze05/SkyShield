@@ -28,7 +28,9 @@ public class GameScreen implements Screen {
     public static SkyShield game;
     public static int screenWidth = SkyShield.SCREEN_WIDTH;
     public static int screenHeight = SkyShield.SCREEN_HEIGHT;
-    public static final float globalScale = (float) 1280 / 2000;
+    public static final float globalScale = (float) screenWidth / 2000;
+    public static final float textureScale = (float) screenWidth / 1920;
+    public static final float positionScale = (float) screenWidth / 1280;
     public static float screenSizeScale = 1;
     public static int gameSpeed = 1;
     public static final float WIDTH_TO_HEIGHT_RATIO = (float) GameScreen.screenWidth / GameScreen.screenHeight;
@@ -47,6 +49,8 @@ public class GameScreen implements Screen {
         Camera.createCamera();
 
         mapImage = new Texture(Gdx.files.internal("bg-720.png"));
+
+        Buildings.addBuildings();
 
     }
 
@@ -102,8 +106,10 @@ public class GameScreen implements Screen {
         game.batch.begin();
         for (AirDef airDefUnit : AirDefence.airDefs) {
             game.batch.draw(airDefUnit.getTexture(),
-                    airDefUnit.getPos()[0] - (float) airDefUnit.getTexture().getWidth() / 2,
-                    airDefUnit.getPos()[1] - (float) airDefUnit.getTexture().getHeight() / 2);
+                    airDefUnit.getPos()[0] - (float) airDefUnit.getTexture().getWidth()*textureScale / 2,
+                    airDefUnit.getPos()[1] - (float) airDefUnit.getTexture().getHeight()*textureScale / 2,
+                    airDefUnit.getTexture().getWidth()*textureScale,
+                    airDefUnit.getTexture().getHeight()*textureScale);
             game.batch.draw(airDefUnit.getCircleTexture(),
                     airDefUnit.getCircleHitbox().x, airDefUnit.getCircleHitbox().y,
                     airDefUnit.getCircleHitbox().width, airDefUnit.getCircleHitbox().height);
@@ -135,6 +141,7 @@ public class GameScreen implements Screen {
     @Override
     public void show() {
 
+
         GUIComponents.setSkin("freezing/skin/freezing-ui.json");
         GUIComponents.addButtonsTable();
         GUIComponents.addStageInputListener();
@@ -142,8 +149,6 @@ public class GameScreen implements Screen {
 
         CountryTerritory.setTerritory(0);
         CountryTerritory.setMapPolygon();
-
-        Buildings.addBuildings();
 
         Clock.setFontSize((int) (20 * GameScreen.screenSizeScale));
 
