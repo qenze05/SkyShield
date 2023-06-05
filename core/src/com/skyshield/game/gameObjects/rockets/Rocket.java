@@ -43,7 +43,6 @@ public abstract class Rocket {
     public abstract void setFrame(int newFrame);
     public abstract void setAngle(float newAngle);
     public abstract void specialAbility();
-    public abstract boolean isFound();
-    public abstract void setFound();
+    public abstract void disableAbility(String ability);
 
 }

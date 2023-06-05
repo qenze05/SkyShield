@@ -60,14 +60,10 @@ public class Snovyda extends Rocket {
     }
 
     @Override
-    public boolean isFound() {
-        return found;
+    public void disableAbility(String ability) {
+
     }
 
-    @Override
-    public void setFound() {
-        found = true;
-    }
 
     @Override
     public boolean isTargeted() {

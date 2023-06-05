@@ -24,6 +24,7 @@ public class TroyanskyyKin extends Rocket {
     private String targetName;
     private Rectangle targetHitbox;
     private float[] targetPos;
+    private boolean abilityDisabled;
 
     public TroyanskyyKin(String target, float[] spawnPoint) {
         super(target, spawnPoint);
@@ -50,27 +51,28 @@ public class TroyanskyyKin extends Rocket {
 
         this.targeted = false;
         this.eliminated = false;
+        this.abilityDisabled = false;
     }
 
     @Override
     public void specialAbility() {
-        if(Rockets.targetReached(hitbox, targetHitbox)) return;
+        if(abilityDisabled || Rockets.targetReached(hitbox, targetHitbox)) return;
         int n = MathUtils.random(5, 7);
         String type = (MathUtils.random(1, 4) > 1) ? "Mukha" : "Elektra";
-        float[] pos = new float[]{hitbox.x, hitbox.y};
+        float x = hitbox.x+hitbox.width/2;
+        float y = hitbox.y+hitbox.height/2;
         for(int i = 0; i < n; i++) {
-            Rockets.spawnRocket(type, ItemsList.getRandomBuilding(), pos);
+            Rockets.spawnRocket(type, ItemsList.getRandomBuilding(),
+                    new float[]{MathUtils.random(x-hitbox.width/2, x+hitbox.width/2),
+                            MathUtils.random(y-hitbox.height/2, y+hitbox.height/2)});
         }
     }
 
     @Override
-    public boolean isFound() {
-        return false;
-    }
-
-    @Override
-    public void setFound() {
-
+    public void disableAbility(String ability) {
+        if(ability.equalsIgnoreCase("spawn")) {
+            this.abilityDisabled = true;
+        }
     }
 
     @Override

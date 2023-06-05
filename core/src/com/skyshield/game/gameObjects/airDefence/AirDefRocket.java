@@ -94,7 +94,7 @@ public class AirDefRocket {
 
     public void setSpeed() {
         if(target.getSpeed() < speed) return;
-        if(target.getSpeed() < 3000) speed = target.getSpeed()*1.25f;
+        if(target.getSpeed() < 3000) speed = target.getSpeed()*1.5f;
         else speed = 3000;
     }
     public boolean getWasTargetChanged() {

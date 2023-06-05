@@ -4,10 +4,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.skyshield.game.gameObjects.airDefence.AirDef;
-import com.skyshield.game.gameObjects.airDefence.AirDefRocket;
-import com.skyshield.game.gameObjects.airDefence.F500;
-import com.skyshield.game.gameObjects.airDefence.SD250M;
+import com.skyshield.game.gameObjects.airDefence.*;
 import com.skyshield.game.gameObjects.rockets.Rocket;
 import com.skyshield.game.gameObjects.rockets.SimpleRocket;
 import com.skyshield.game.screens.GameScreen;
@@ -23,9 +20,21 @@ public class AirDefence {
 
     public static void addAirDef(float[] pos, String type) {
         if (airDefs == null) AirDefence.airDefs = new Array<>();
-        switch (type) {
-            case "F-500" -> airDefs.add(new F500(pos));
-            case "SD-250-M" -> airDefs.add(new SD250M(pos));
+        switch (type.toLowerCase()) {
+            case "krona-mk1" -> airDefs.add(new KronaMK1(pos));
+            case "krona-mk2" -> airDefs.add(new KronaMK2(pos));
+            case "krona-mk3" -> airDefs.add(new KronaMK3(pos));
+            case "slon" -> airDefs.add(new Slon(pos));
+            case "skorpion" -> airDefs.add(new Skorpion(pos));
+            case "mukhobiyka" -> airDefs.add(new Mukhobiyka(pos));
+            case "pulsar" -> airDefs.add(new Pulsar(pos));
+            case "mushlya" -> airDefs.add(new Mushlya(pos));
+            case "krona-s" -> airDefs.add(new KronaS(pos));
+            case "lut" -> airDefs.add(new Lut(pos));
+            case "slon-s" -> airDefs.add(new SlonS(pos));
+            case "skorpion-s" -> airDefs.add(new SkorpionS(pos));
+            case "pulsar-s" -> airDefs.add(new PulsarS(pos));
+            case "armahedon" -> airDefs.add(new Armahedon(pos));
         }
     }
 
@@ -52,7 +61,7 @@ public class AirDefence {
                 if(miss(rocket)) {
                     setCornerTarget(rocket);
                 }else{
-                    removeTarget(rocket.getTarget().getHitbox());
+                    removeTarget(rocket.getTarget().getHitbox(), rocket.getOrigin());
                     iter.remove();
                     continue;
                 }
@@ -134,14 +143,37 @@ public class AirDefence {
                 if (airDefUnit.getCircleHitbox().contains(rocket.getHitbox())
                         && !isTargetedByThisAirDef(rocket, airDefUnit)
                         && (TimeUtils.nanoTime() - airDefUnit.getLastLaunchTime()) * GameScreen.gameSpeed
-                        > 60000000000f / airDefUnit.getLaunchesPerMin()) {
+                        > airDefUnit.getReload() * 1000000000f) {
 
-                    airDefUnit.setLastLaunchTime(TimeUtils.nanoTime());
-                    if(Rockets.isVisible(rocket)) {
+                    if(Rockets.isVisible(rocket)) { // snovyda ability
+
+                        if(!airDefUnit.getName().equalsIgnoreCase("pulsar")  // pulsar ability
+                                && !airDefUnit.getName().equalsIgnoreCase("pulsar-s")) {
+
+                            airDefUnit.setLastLaunchTime(TimeUtils.nanoTime());
+                        }
+
                         launchAirDef(rocket, airDefUnit);
                         rocket.setTargetedState(true);
                     }
                 }
+            }
+
+            if((TimeUtils.nanoTime() - airDefUnit.getLastLaunchTime()) * GameScreen.gameSpeed
+                    > airDefUnit.getReload() * 1000000000f
+                    && (airDefUnit.getName().equalsIgnoreCase("pulsar")  // pulsar ability
+                    || airDefUnit.getName().equalsIgnoreCase("pulsar-s"))) {
+
+                if(airDefRockets == null || airDefRockets.size==0) continue;
+                Rocket anotherTarget = findClosestTarget(airDefRockets.peek(), true);
+
+                while(anotherTarget != null && !isTargetedByThisAirDef(anotherTarget, airDefUnit)) {
+                    launchAirDef(anotherTarget, airDefUnit);
+                    anotherTarget.setTargetedState(true);
+                    anotherTarget = findClosestTarget(airDefRockets.peek(), true);
+                }
+
+                airDefUnit.setLastLaunchTime(TimeUtils.nanoTime());
             }
         }
     }
@@ -186,12 +218,13 @@ public class AirDefence {
         else return rocketsMap.get(rocketsMap.firstKey());
     }
 
-    private static void removeTarget(Rectangle hitbox) {
+    private static void removeTarget(Rectangle hitbox, AirDef airDef) {
         Iterator<Rocket> iter = Rockets.rockets.iterator();
         Rocket rocket;
         while (iter.hasNext()) {
             rocket = iter.next();
             if (rocket.getHitbox().overlaps(hitbox)) {
+                if(airDef.getName().equalsIgnoreCase("armahedon")) rocket.disableAbility("spawn");
                 rocket.setEliminated(true);
                 if(rocket.isEliminated()) iter.remove();
                 break;
@@ -222,6 +255,8 @@ public class AirDefence {
         float distanceEff = 0.5f + Math.abs(0.5f * (Rockets.getDistance(rocketPos, rocket.getTargetPos()) / Rockets.getDistance(rocket.getSpawnPoint(), rocket.getTargetPos())) - 0.5f);
 
         float totalEff = speedEff * sizeEff * centralEff * distanceEff;
+
+        System.out.println(totalEff);
 
         return MathUtils.random(0, 100) > totalEff * 100;
     }

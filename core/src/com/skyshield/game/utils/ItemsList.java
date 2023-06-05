@@ -4,9 +4,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.skyshield.game.gameLogic.entities.Buildings;
-import com.skyshield.game.gameObjects.airDefence.AirDef;
-import com.skyshield.game.gameObjects.airDefence.F500;
-import com.skyshield.game.gameObjects.airDefence.SD250M;
+import com.skyshield.game.gameObjects.airDefence.*;
 import com.skyshield.game.gameObjects.rockets.Rocket;
 import com.skyshield.game.gameObjects.rockets.SimpleRocket;
 
@@ -70,29 +68,20 @@ public class ItemsList {
 
     public static Array<AirDef> getAirDef() {
         Array<AirDef> arr = new Array<>();
-        arr.add(new F500(pos));
-        arr.add(new SD250M(pos));
-        arr.add(new F500(pos));
-        arr.add(new SD250M(pos));
-        arr.add(new F500(pos));
-        arr.add(new F500(pos));
-        arr.add(new F500(pos));
-        arr.add(new SD250M(pos));
-        arr.add(new SD250M(pos));
-        arr.add(new F500(pos));
-        arr.add(new SD250M(pos));
-        arr.add(new F500(pos));
-        arr.add(new F500(pos));
-        arr.add(new SD250M(pos));
-        arr.add(new F500(pos));
-        arr.add(new F500(pos));
-        arr.add(new F500(pos));
-        arr.add(new SD250M(pos));
-        arr.add(new SD250M(pos));
-        arr.add(new SD250M(pos));
-        arr.add(new F500(pos));
-        arr.add(new SD250M(pos));
-        arr.add(new F500(pos));
+        arr.add(new KronaMK1(pos));
+        arr.add(new KronaMK2(pos));
+        arr.add(new KronaMK3(pos));
+        arr.add(new Slon(pos));
+        arr.add(new Skorpion(pos));
+        arr.add(new Mukhobiyka(pos));
+        arr.add(new Pulsar(pos));
+        arr.add(new Mushlya(pos));
+        arr.add(new KronaS(pos));
+        arr.add(new Lut(pos));
+        arr.add(new SlonS(pos));
+        arr.add(new SkorpionS(pos));
+        arr.add(new PulsarS(pos));
+        arr.add(new Armahedon(pos));
         return arr;
     }
 }

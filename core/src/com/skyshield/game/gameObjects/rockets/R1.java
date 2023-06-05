@@ -57,12 +57,7 @@ public class R1 extends Rocket {
     }
 
     @Override
-    public boolean isFound() {
-        return false;
-    }
-
-    @Override
-    public void setFound() {
+    public void disableAbility(String ability) {
 
     }
 

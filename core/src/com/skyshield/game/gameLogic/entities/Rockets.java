@@ -14,8 +14,6 @@ public class Rockets {
 
     public static void spawnRocket(String type, String target, float[] spawnPoint) {
         switch (type.toLowerCase()) {
-            case "simple" -> rockets.add(new SimpleRocket(target, spawnPoint));
-            case "fast" -> rockets.add(new FastRocket(target, spawnPoint));
             case "elektra" -> rockets.add(new Elektra(target, spawnPoint));
             case "harpun" -> rockets.add(new Harpun(target, spawnPoint));
             case "korshun" -> rockets.add(new Korshun(target, spawnPoint));

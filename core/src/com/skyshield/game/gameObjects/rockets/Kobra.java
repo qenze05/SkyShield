@@ -24,6 +24,7 @@ public class Kobra extends Rocket {
     private Rectangle targetHitbox;
     private float[] targetPos;
     private boolean wasEliminatedOnce;
+    private boolean abilityDisabled;
 
     public Kobra(String target, float[] spawnPoint) {
         super(target, spawnPoint);
@@ -52,11 +53,12 @@ public class Kobra extends Rocket {
         this.eliminated = false;
 
         this.wasEliminatedOnce = false;
+        this.abilityDisabled = false;
     }
 
     @Override
     public void specialAbility() {
-        if(wasEliminatedOnce) return;
+        if(abilityDisabled || wasEliminatedOnce) return;
         eliminated = false;
         this.texture = new Texture(Gdx.files.internal("rockets/Kobra2.png"));
         this.speed = 2500;
@@ -66,13 +68,10 @@ public class Kobra extends Rocket {
     }
 
     @Override
-    public boolean isFound() {
-        return false;
-    }
-
-    @Override
-    public void setFound() {
-
+    public void disableAbility(String ability) {
+        if(ability.equalsIgnoreCase("spawn")) {
+            this.abilityDisabled = true;
+        }
     }
 
     @Override

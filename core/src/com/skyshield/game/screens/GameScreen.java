@@ -72,8 +72,8 @@ public class GameScreen implements Screen {
             OneTargetAttack.attack();
         }
         else {
-            Rockets.rockets = null;
-            AirDefence.airDefRockets = null;
+            Rockets.rockets.clear();
+            AirDefence.airDefRockets.clear();
             OneTargetAttack.attackStartTime = TimeUtils.nanoTime();
             OneTargetAttack.attack();
         }

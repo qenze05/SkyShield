@@ -32,10 +32,10 @@ public class SimpleRocket extends Rocket {
         setTargetPos();
 
         this.spawnPoint = spawnPoint;
-        this.maxDistance = 2000;
-        this.speed = 1000;
-        this.power = 50;
-        this.rocketSize = 5;
+        this.maxDistance = 0;
+        this.speed = 0;
+        this.power = 0;
+        this.rocketSize = 0;
 
         this.texture = new Texture(Gdx.files.internal("rockets/simpleRocket.png"));
         this.hitbox = new Rectangle(spawnPoint[0], spawnPoint[1],
@@ -57,12 +57,7 @@ public class SimpleRocket extends Rocket {
     }
 
     @Override
-    public boolean isFound() {
-        return false;
-    }
-
-    @Override
-    public void setFound() {
+    public void disableAbility(String ability) {
 
     }
 

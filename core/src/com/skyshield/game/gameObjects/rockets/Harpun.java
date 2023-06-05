@@ -57,12 +57,7 @@ public class Harpun extends Rocket {
     }
 
     @Override
-    public boolean isFound() {
-        return false;
-    }
-
-    @Override
-    public void setFound() {
+    public void disableAbility(String ability) {
 
     }
 

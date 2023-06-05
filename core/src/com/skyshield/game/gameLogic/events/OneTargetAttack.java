@@ -5,6 +5,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.skyshield.game.gameLogic.entities.Rockets;
 import com.skyshield.game.screens.GameScreen;
+import com.skyshield.game.utils.ItemsList;
 
 public class OneTargetAttack {
 
@@ -22,15 +23,15 @@ public class OneTargetAttack {
         if (Rockets.rockets == null) {
             attackStartTime = TimeUtils.nanoTime();
             Rockets.rockets = new Array<>();
-            Rockets.spawnRocket("korshun", "City-"+MathUtils.random(0, 12), new float[]{1200, 117});
+            Rockets.spawnRocket("r2", ItemsList.getRandomBuilding(), new float[]{1200, 117});
             lastRocketSpawnTime = TimeUtils.nanoTime();
         }
-        if (TimeUtils.nanoTime() - lastRocketSpawnTime > 3000000000f / GameScreen.gameSpeed) {
-            Rockets.spawnRocket("kobra",
-                    "City-"+MathUtils.random(0, 12),
+        if (TimeUtils.nanoTime() - lastRocketSpawnTime > 1000000000f / GameScreen.gameSpeed) {
+            Rockets.spawnRocket("korshun",
+                    ItemsList.getRandomBuilding(),
                     new float[]{1200, 117});
             if (MathUtils.random(0, 100) > 90) Rockets.spawnRocket("sapsan",
-                    "City-"+MathUtils.random(0, 12),
+                    ItemsList.getRandomBuilding(),
                     new float[]{1121, 641});
             lastRocketSpawnTime = TimeUtils.nanoTime();
         }

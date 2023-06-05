@@ -5,10 +5,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.skyshield.game.screens.GameScreen;
 
-public class F500 extends AirDef {
+public class Mushlya extends AirDef{
 
     private final float[] pos;
-    private final int launchesPerMin;
+    private final float reload;
     private final float optimalSize;
     private final float optimalSpeed;
     private final float centrality;
@@ -20,39 +20,42 @@ public class F500 extends AirDef {
     private final String name;
     private final int price;
 
-    public F500(float[] pos) {
+    public Mushlya(float[] pos) {
         super(pos);
         this.pos = pos;
-        this.name = "F-500";
-        this.launchesPerMin = 60;
-        this.optimalSize = 4.5f;
-        this.optimalSpeed = 750;
-        this.centrality = 0.7f;
-        this.radius = 300;
+        this.name = "Mushlya";
+        this.optimalSpeed = 2000;
+        this.optimalSize = 3;
+        this.reload = 0.5f;
+        this.radius = 100;
+        this.centrality = 1;
+        this.price = 15000;
         this.lastLaunchTime = 0;
-        this.texture = new Texture(Gdx.files.internal("air-defence/f-500.png"));
+        this.texture = new Texture(Gdx.files.internal("air-defence/Mushlya.png"));
         this.circleTexture = new Texture(Gdx.files.internal("air-defence/range.png"));
         this.circleHitbox = new Rectangle(pos[0] - radius * GameScreen.globalScale,
                 pos[1] -  radius * GameScreen.globalScale,
                 radius * GameScreen.globalScale * 2,
                 radius * GameScreen.globalScale * 2);
-        this.price = 100;
     }
 
+    @Override
+    public void specialAbility() {
 
+    }
     @Override
     public float[] getPos() {
         return pos;
     }
 
     @Override
-    public String getName() {
+    public String getName()  {
         return name;
     }
 
     @Override
-    public int getLaunchesPerMin() {
-        return launchesPerMin;
+    public float getReload() {
+        return reload;
     }
 
     @Override
@@ -93,10 +96,6 @@ public class F500 extends AirDef {
     @Override
     public Rectangle getCircleHitbox() {
         return this.circleHitbox;
-//        return new Rectangle(circleHitbox.x + circleHitbox.width / 2 - circleHitbox.width * GameScreen.globalScale / 2,
-//                circleHitbox.y + circleHitbox.height / 2 - circleHitbox.height * GameScreen.globalScale / 2,
-//                circleHitbox.width * GameScreen.globalScale,
-//                circleHitbox.height * GameScreen.globalScale);
     }
 
     @Override

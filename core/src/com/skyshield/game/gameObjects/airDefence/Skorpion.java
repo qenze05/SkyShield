@@ -5,10 +5,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.skyshield.game.screens.GameScreen;
 
-public class SD250M extends AirDef{
+public class Skorpion extends AirDef{
 
     private final float[] pos;
-    private final int launchesPerMin;
+    private final float reload;
     private final float optimalSize;
     private final float optimalSpeed;
     private final float centrality;
@@ -20,26 +20,29 @@ public class SD250M extends AirDef{
     private final String name;
     private final int price;
 
-    public SD250M(float[] pos) {
+    public Skorpion(float[] pos) {
         super(pos);
         this.pos = pos;
-        this.name = "SD-250-M";
-        this.launchesPerMin = 60;
-        this.optimalSize = 4.5f;
-        this.optimalSpeed = 2000;
-        this.centrality = 0.7f;
-        this.radius = 300;
+        this.name = "Skorpion";
+        this.optimalSpeed = 2500;
+        this.optimalSize = 3;
+        this.reload = 0.2f;
+        this.radius = 50;
+        this.centrality = 0.5f;
+        this.price = 7500;
         this.lastLaunchTime = 0;
-        this.texture = new Texture(Gdx.files.internal("air-defence/SD-250-M.png"));
+        this.texture = new Texture(Gdx.files.internal("air-defence/Skorpion.png"));
         this.circleTexture = new Texture(Gdx.files.internal("air-defence/range.png"));
         this.circleHitbox = new Rectangle(pos[0] - radius * GameScreen.globalScale,
                 pos[1] -  radius * GameScreen.globalScale,
                 radius * GameScreen.globalScale * 2,
                 radius * GameScreen.globalScale * 2);
-        this.price = 200;
     }
 
+    @Override
+    public void specialAbility() {
 
+    }
     @Override
     public float[] getPos() {
         return pos;
@@ -51,8 +54,8 @@ public class SD250M extends AirDef{
     }
 
     @Override
-    public int getLaunchesPerMin() {
-        return launchesPerMin;
+    public float getReload() {
+        return reload;
     }
 
     @Override
