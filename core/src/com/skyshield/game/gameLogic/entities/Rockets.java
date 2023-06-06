@@ -1,6 +1,7 @@
 package com.skyshield.game.gameLogic.entities;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.skyshield.game.gameObjects.rockets.*;
@@ -11,7 +12,15 @@ import java.util.Iterator;
 public class Rockets {
 
     public static Array<Rocket> rockets;
+    public static float[][] spawn = new float[][]{{1060, 95}, {1200, 120}, {1175, 460}, {1120, 640}, {780, 675}};
+    public static float[][] seaSpawn = new float[][]{{400, 25}, {650, 20}, {1000, 50}, {920, 185}};
 
+    public static float[] getRandomSpawn() {
+        return spawn[MathUtils.random(0, Rockets.spawn.length-1)];
+    }
+    public static float[] getRandomSeaSpawn() {
+        return seaSpawn[MathUtils.random(0, Rockets.seaSpawn.length-1)];
+    }
     public static void spawnRocket(String type, String target, float[] spawnPoint) {
         switch (type.toLowerCase()) {
             case "elektra" -> rockets.add(new Elektra(target, spawnPoint));

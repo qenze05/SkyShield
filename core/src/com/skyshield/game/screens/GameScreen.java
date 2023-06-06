@@ -70,7 +70,7 @@ public class GameScreen implements Screen {
 
         Attack.attack();
 
-        AirDefence.findTargetsInRange();
+        if (Rockets.rockets != null) AirDefence.findTargetsInRange();
         if (AirDefence.airDefRockets != null) AirDefence.moveRockets();
 
         inputListener();
@@ -98,10 +98,10 @@ public class GameScreen implements Screen {
         game.batch.begin();
         for (AirDef airDefUnit : AirDefence.airDefs) {
             game.batch.draw(airDefUnit.getTexture(),
-                    airDefUnit.getPos()[0] - (float) airDefUnit.getTexture().getWidth()*textureScale / 2,
-                    airDefUnit.getPos()[1] - (float) airDefUnit.getTexture().getHeight()*textureScale / 2,
-                    airDefUnit.getTexture().getWidth()*textureScale,
-                    airDefUnit.getTexture().getHeight()*textureScale);
+                    airDefUnit.getPos()[0] - (float) airDefUnit.getTexture().getWidth() * textureScale / 2,
+                    airDefUnit.getPos()[1] - (float) airDefUnit.getTexture().getHeight() * textureScale / 2,
+                    airDefUnit.getTexture().getWidth() * textureScale,
+                    airDefUnit.getTexture().getHeight() * textureScale);
             game.batch.draw(airDefUnit.getCircleTexture(),
                     airDefUnit.getCircleHitbox().x, airDefUnit.getCircleHitbox().y,
                     airDefUnit.getCircleHitbox().width, airDefUnit.getCircleHitbox().height);
@@ -143,6 +143,8 @@ public class GameScreen implements Screen {
         CountryTerritory.setMapPolygon();
 
         Clock.setFontSize((int) (20 * GameScreen.screenSizeScale));
+
+        Attack.setRandomRocketOrders();
 
 
     }
@@ -186,7 +188,7 @@ public class GameScreen implements Screen {
 
                 if (airDefHitbox.contains(Gdx.input.getX(), screenHeight - Gdx.input.getY())) {
 
-                    if(GUIComponents.buttonJustPressed || GUIComponents.sellTable != null) {
+                    if (GUIComponents.buttonJustPressed || GUIComponents.sellTable != null) {
                         GUIComponents.buttonJustPressed = false;
                     } else {
                         GUIComponents.addSellAirDefMenu(airDef);
@@ -196,7 +198,7 @@ public class GameScreen implements Screen {
                 }
             }
 
-            if(GUIComponents.buttonJustPressed) GUIComponents.buttonJustPressed = false;
+            if (GUIComponents.buttonJustPressed) GUIComponents.buttonJustPressed = false;
             Camera.moveCamera = true;
             lastClickX = Gdx.input.getX();
             lastClickY = Gdx.input.getY();
