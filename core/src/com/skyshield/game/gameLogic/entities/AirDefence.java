@@ -256,8 +256,6 @@ public class AirDefence {
 
         float totalEff = speedEff * sizeEff * centralEff * distanceEff;
 
-        System.out.println(totalEff);
-
         return MathUtils.random(0, 100) > totalEff * 100;
     }
 

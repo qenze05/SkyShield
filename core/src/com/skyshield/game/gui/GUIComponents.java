@@ -268,6 +268,8 @@ public class GUIComponents {
 
         if(buttonJustPressed) return;
 
+        TextElements.addSellValueText(airDef.getPrice()/2);
+
         Texture sellButtonTexture = new Texture(Gdx.files.internal("sellButton.png"));
         Texture cancelButtonTexture = new Texture(Gdx.files.internal("cancelButton.png"));
         Texture bgTexture = new Texture(Gdx.files.internal("sellAirDefBg.png"));
@@ -296,6 +298,7 @@ public class GUIComponents {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 AirDefence.removeAirDef(airDef);
                 City.sellItem((float) airDef.getPrice() /2);
+                TextElements.deleteSellValue();
                 sellTable.remove();
                 sellTable = null;
                 buttonJustPressed = true;
@@ -307,6 +310,7 @@ public class GUIComponents {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 sellTable.remove();
+                TextElements.deleteSellValue();
                 sellTable = null;
                 buttonJustPressed = true;
                 return true;

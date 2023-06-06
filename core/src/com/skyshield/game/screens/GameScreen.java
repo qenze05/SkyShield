@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.skyshield.game.SkyShield;
 import com.skyshield.game.gameLogic.entities.Buildings;
 import com.skyshield.game.gameLogic.events.Attack;
+import com.skyshield.game.gui.TextElements;
 import com.skyshield.game.gui.camera.Camera;
 import com.skyshield.game.gameObjects.airDefence.AirDef;
 import com.skyshield.game.gameLogic.entities.AirDefence;
@@ -70,8 +71,10 @@ public class GameScreen implements Screen {
 
         Attack.attack();
 
-        if (Rockets.rockets != null) AirDefence.findTargetsInRange();
-        if (AirDefence.airDefRockets != null) AirDefence.moveRockets();
+        if (Rockets.rockets != null) {
+            AirDefence.findTargetsInRange();
+            if (AirDefence.airDefRockets != null) AirDefence.moveRockets();
+        }
 
         inputListener();
 
@@ -85,6 +88,8 @@ public class GameScreen implements Screen {
         }
 
         Clock.drawClock();
+
+        TextElements.draw();
 
     }
 
@@ -193,7 +198,6 @@ public class GameScreen implements Screen {
                     } else {
                         GUIComponents.addSellAirDefMenu(airDef);
                     }
-                    System.out.println("test");
                     break;
                 }
             }
