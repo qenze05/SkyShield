@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.skyshield.game.gameLogic.entities.AirDefence;
 import com.skyshield.game.gameObjects.airDefence.AirDef;
+import com.skyshield.game.gameObjects.buildings.City;
 import com.skyshield.game.gui.camera.Camera;
 import com.skyshield.game.gui.shop.ShopBackground;
 import com.skyshield.game.gui.shop.ShopScrollBar;
@@ -294,6 +295,7 @@ public class GUIComponents {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 AirDefence.removeAirDef(airDef);
+                City.sellItem((float) airDef.getPrice() /2);
                 sellTable.remove();
                 sellTable = null;
                 buttonJustPressed = true;
