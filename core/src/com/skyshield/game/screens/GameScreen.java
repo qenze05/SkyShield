@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.skyshield.game.SkyShield;
 import com.skyshield.game.gameLogic.entities.Buildings;
-import com.skyshield.game.gameLogic.events.OneTargetAttack;
+import com.skyshield.game.gameLogic.events.Attack;
 import com.skyshield.game.gui.camera.Camera;
 import com.skyshield.game.gameObjects.airDefence.AirDef;
 import com.skyshield.game.gameLogic.entities.AirDefence;
@@ -68,15 +68,7 @@ public class GameScreen implements Screen {
 
         drawAirDefence();
 
-        if (TimeUtils.nanoTime() - OneTargetAttack.attackStartTime < 30000000000f) {
-            OneTargetAttack.attack();
-        }
-        else {
-            Rockets.rockets.clear();
-            AirDefence.airDefRockets.clear();
-            OneTargetAttack.attackStartTime = TimeUtils.nanoTime();
-            OneTargetAttack.attack();
-        }
+        Attack.attack();
 
         AirDefence.findTargetsInRange();
         if (AirDefence.airDefRockets != null) AirDefence.moveRockets();

@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.skyshield.game.screens.GameScreen;
 
+import java.util.Arrays;
+
 
 public class Clock {
 
@@ -14,6 +16,40 @@ public class Clock {
     public static int day = 0;
     private static BitmapFont font;
     public static long timeMillis = TimeUtils.millis();
+
+    public static int[] setTimer(float seconds, int[] from) {
+        int clockShift = (int) (seconds*24);
+        int[] timer = Arrays.copyOf(from, from.length);
+        for(int i = 0; i <= clockShift; i++) {
+            timer[2]++;
+
+            if (timer[2] == 60) {
+                timer[2] = 0;
+                timer[1]++;
+            }
+
+            if (timer[1] == 24) {
+                timer[1] = 0;
+                timer[0]++;
+            }
+        }
+        return timer;
+    }
+
+    /**
+     * @return true if greater, false if not;
+     */
+    public static boolean compareTimer(int[] timer, int[] start) {
+        if(timer[0]==start[0]){
+            if(timer[1] == start[1]) {
+                return timer[2] > start[2];
+            }else return timer[1] > start[1];
+        }else return timer[0] > start[0];
+    }
+
+    public static int[] getTime() {
+        return new int[]{day, time[0], time[1]};
+    }
 
     public static void setFontSize(int size) {
         FreeTypeFontGenerator fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("Ayuthaya.ttf"));

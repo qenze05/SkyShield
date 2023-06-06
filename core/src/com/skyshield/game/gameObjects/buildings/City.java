@@ -109,6 +109,18 @@ public class City {
     public static int getTotalMoney() {
         return totalMoney;
     }
+
+    public static boolean enoughMoney(float price) {
+        return totalMoney >= price;
+    }
+
+    public static void buyItem(float price) {
+        totalMoney -= price;
+    }
+
+    public static void sellItem(float price) {
+        totalMoney += price;
+    }
     public int calculateHealthPercentage() {
         return health/healthmax;
     }
