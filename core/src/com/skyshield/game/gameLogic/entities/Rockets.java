@@ -59,7 +59,7 @@ public class Rockets {
 
             if (rocket.getFrame() <= 40 / GameScreen.gameSpeed) {
 
-                hitbox.setPosition(hitbox.x + getTakeoffShiftX(rocket.getFrame(), rocket.getAngle(), rocket.getSpeed()),
+                rocket.getHitbox().setPosition(hitbox.x + getTakeoffShiftX(rocket.getFrame(), rocket.getAngle(), rocket.getSpeed()),
                         hitbox.y + getTakeoffShiftY(rocket.getFrame(), rocket.getAngle(), rocket.getSpeed()));
 
                 rocket.setFrame(rocket.getFrame() + 1);
@@ -67,15 +67,17 @@ public class Rockets {
             } else {
 
 
-                hitbox.setPosition(hitbox.x + getMaxSpeedShiftX(rocket.getSpeed(), rocket.getAngle()),
+                rocket.getHitbox().setPosition(hitbox.x + getMaxSpeedShiftX(rocket.getSpeed(), rocket.getAngle()),
                         hitbox.y + getMaxSpeedShiftY(rocket.getSpeed(), rocket.getAngle()));
             }
 
             rocketSprite = new Sprite(rocket.getTexture());
             rocketSprite.setBounds(rocket.getHitbox().x, rocket.getHitbox().y, rocket.getHitbox().width, rocket.getHitbox().height);
+            rocketSprite.setOrigin(rocket.getHitbox().width/2, rocket.getHitbox().height/2);
             rocketSprite.rotate(rocket.getAngle() * (-1));
 
             if (targetReached(hitbox, rocket.getTargetHitbox())) {
+
                 rocket.setEliminated(true);
                 iter.remove();
             }
@@ -179,6 +181,8 @@ public class Rockets {
     }
 
     public static boolean targetReached(Rectangle current, Rectangle target) {
+        if(target.contains(current.x+ current.width/2, current.y+ current.height/2)) {
+        }
         return target.contains(current.x+ current.width/2, current.y+ current.height/2);
     }
 

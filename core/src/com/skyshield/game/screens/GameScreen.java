@@ -23,6 +23,7 @@ import com.skyshield.game.gameLogic.entities.Rockets;
 import com.skyshield.game.gui.GUIComponents;
 import com.skyshield.game.gui.clock.Clock;
 import com.skyshield.game.utils.CountryTerritory;
+import com.skyshield.game.utils.ItemsList;
 
 public class GameScreen implements Screen {
 
@@ -52,6 +53,7 @@ public class GameScreen implements Screen {
         mapImage = new Texture(Gdx.files.internal("bg-720.png"));
 
         Buildings.addBuildings();
+        Buildings.cities.get(2).texture = new Texture(Gdx.files.internal("buildings/capital.png"));
 
     }
 
@@ -72,6 +74,7 @@ public class GameScreen implements Screen {
         Attack.attack();
 
         if (Rockets.rockets != null) {
+//            Rockets.spawnRocket(Rockets.getRandomRocket(), ItemsList.getRandomBuilding(), Rockets.getRandomSpawn());
             AirDefence.findTargetsInRange();
             if (AirDefence.airDefRockets != null) AirDefence.moveRockets();
         }
@@ -103,10 +106,10 @@ public class GameScreen implements Screen {
         game.batch.begin();
         for (AirDef airDefUnit : AirDefence.airDefs) {
             game.batch.draw(airDefUnit.getTexture(),
-                    airDefUnit.getPos()[0] - (float) airDefUnit.getTexture().getWidth() * textureScale / 2,
-                    airDefUnit.getPos()[1] - (float) airDefUnit.getTexture().getHeight() * textureScale / 2,
-                    airDefUnit.getTexture().getWidth() * textureScale,
-                    airDefUnit.getTexture().getHeight() * textureScale);
+                    airDefUnit.getPos()[0] - (float) airDefUnit.getTexture().getWidth() * textureScale / 5,
+                    airDefUnit.getPos()[1] - (float) airDefUnit.getTexture().getHeight() * textureScale / 5,
+                    airDefUnit.getTexture().getWidth() * textureScale / 2.5f,
+                    airDefUnit.getTexture().getHeight() * textureScale / 2.5f);
             game.batch.draw(airDefUnit.getCircleTexture(),
                     airDefUnit.getCircleHitbox().x, airDefUnit.getCircleHitbox().y,
                     airDefUnit.getCircleHitbox().width, airDefUnit.getCircleHitbox().height);
@@ -144,8 +147,9 @@ public class GameScreen implements Screen {
         GUIComponents.addStageInputListener();
         GUIComponents.addTimeTable();
 
-        CountryTerritory.setTerritory(0);
+        CountryTerritory.setTerritory(1);
         CountryTerritory.setMapPolygon();
+        Buildings.setDisabled();
 
         Clock.setFontSize((int) (20 * GameScreen.screenSizeScale));
 

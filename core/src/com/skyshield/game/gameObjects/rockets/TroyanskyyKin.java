@@ -40,9 +40,10 @@ public class TroyanskyyKin extends Rocket {
         this.rocketSize = 5;
 
         this.texture = new Texture(Gdx.files.internal("rockets/TroyanskyyKin.png"));
-        this.hitbox = new Rectangle(spawnPoint[0], spawnPoint[1],
-                texture.getWidth() * GameScreen.textureScale,
-                texture.getHeight() * GameScreen.textureScale);
+        this.hitbox = new Rectangle(spawnPoint[0] - 40 * GameScreen.textureScale,
+                spawnPoint[1] - 40 * GameScreen.textureScale,
+                80 * GameScreen.textureScale,
+                80 * GameScreen.textureScale);
 
         this.frame = 0;
 

@@ -21,6 +21,7 @@ public class Hub1 {
     private int trainingSize;
     public int weapons;
     private Rectangle hitbox;
+    private boolean disabled;
 
     public Hub1(float[] pos, SuperFactory factory, PowerStation powerStation, int health, int limit) {
         this.pos = pos;
@@ -28,16 +29,26 @@ public class Hub1 {
         this.powerStation = powerStation;
         this.health = health;
         this.limit = limit;
-        this.texture = new Texture(Gdx.files.internal("buildings/hab.jpg"));
+        this.texture = new Texture(Gdx.files.internal("buildings/armshub.png"));
         this.hitbox = new Rectangle(pos[0], pos[1],
-                20 * GameScreen.textureScale,
-                20 * GameScreen.textureScale);
+                30 * GameScreen.textureScale,
+                30 * GameScreen.textureScale);
         this.timeSinceLastProduction = 0;
         this.trainingDuration = 180*3;
         this.isTraining = false;
+        this.disabled = false;
+    }
+
+    public void setDisabled(boolean value) {
+        this.disabled = value;
+    }
+
+    public boolean isDisabled() {
+        return this.disabled;
     }
 
     public void update(float deltaTime) {
+        if(disabled) return;
         if (!isTraining) {
             produceSoldiers();
         }

@@ -38,9 +38,10 @@ public class Mukha extends Rocket {
         this.rocketSize = 1;
 
         this.texture = new Texture(Gdx.files.internal("rockets/Mukha.png"));
-        this.hitbox = new Rectangle(spawnPoint[0], spawnPoint[1],
-                texture.getWidth() * GameScreen.textureScale,
-                texture.getHeight() * GameScreen.textureScale);
+        this.hitbox = new Rectangle(spawnPoint[0] - 20 * GameScreen.textureScale,
+                spawnPoint[1] - 20 * GameScreen.textureScale,
+                40 * GameScreen.textureScale,
+                40 * GameScreen.textureScale);
 
         this.frame = 0;
 

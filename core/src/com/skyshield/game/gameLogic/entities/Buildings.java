@@ -1,8 +1,10 @@
 package com.skyshield.game.gameLogic.entities;
 
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.utils.Array;
 import com.skyshield.game.gameObjects.buildings.*;
 import com.skyshield.game.screens.GameScreen;
+import com.skyshield.game.utils.CountryTerritory;
 
 public class Buildings {
 
@@ -17,6 +19,63 @@ public class Buildings {
     public static Array<PowerStation> powerStations = new Array<>();
 
 
+    public static void setDisabled() {
+        Polygon territory = CountryTerritory.map;
+
+        for(Hub1 hub1 : hub1s) {
+            if(!territory.contains(hub1.getPos()[0], hub1.getPos()[1])) {
+                hub1.setDisabled(true);
+            }
+        }
+
+        for(Hub2 hub2 : hub2s) {
+            if(!territory.contains(hub2.getPos()[0], hub2.getPos()[1])) {
+                hub2.setDisabled(true);
+            }
+        }
+
+        for(Hub3 hub3 : hub3s) {
+            if(!territory.contains(hub3.getPos()[0], hub3.getPos()[1])) {
+                hub3.setDisabled(true);
+            }
+        }
+
+        for(PowerStation powerStation : powerStations) {
+            if(!territory.contains(powerStation.getPos()[0], powerStation.getPos()[1])) {
+                powerStation.setDisabled(true);
+            }
+        }
+
+        for(SuperFactory superFactory : superFactories) {
+            if(!territory.contains(superFactory.getPos()[0], superFactory.getPos()[1])) {
+                superFactory.setDisabled(true);
+            }
+        }
+
+        for(Dam dam : dams) {
+            if(!territory.contains(dam.getPos()[0], dam.getPos()[1])) {
+                dam.setDisabled(true);
+            }
+        }
+
+        for(City city : cities) {
+            if(!territory.contains(city.getPos()[0], city.getPos()[1])) {
+                city.setDisabled(true);
+            }
+        }
+
+        for(Factory factory : factories) {
+            if(!territory.contains(factory.getPos()[0], factory.getPos()[1])) {
+                factory.setDisabled(true);
+            }
+        }
+
+        for(Barracks barrack : barracks) {
+            if(!territory.contains(barrack.getPos()[0], barrack.getPos()[1])) {
+                barrack.setDisabled(true);
+            }
+        }
+    }
     public static void addBuildings() {
         addPowerStations();
         addFactories();
@@ -40,22 +99,22 @@ public class Buildings {
         drawHub1();
         drawHub2();
         drawHub3();
-        GameScreen.game.font.draw(GameScreen.game.batch, "Total money count: " + City.getTotalMoney(), 1000, 100);
-        GameScreen.game.font.draw(GameScreen.game.batch, "civil: " + City.totalPopulation, 1000, 50);
-        GameScreen.game.font.draw(GameScreen.game.batch, "Total people count: " + Barracks.getTotalTrainedSoldiers(), 1000, 200);
-        GameScreen.game.font.draw(GameScreen.game.batch, "Total tanks count: " + Factory.getRocketCount(), 1000, 150);
-        GameScreen.game.font.draw(GameScreen.game.batch, "factory1: " + superFactories.get(0).weaponsProduced, 100, 200);
-        GameScreen.game.font.draw(GameScreen.game.batch, "factory2: " + superFactories.get(1).weaponsProduced, 100, 150);
-        GameScreen.game.font.draw(GameScreen.game.batch, "factory3: " + superFactories.get(2).weaponsProduced, 100, 100);
-        GameScreen.game.font.draw(GameScreen.game.batch, "level11: " + hub1s.get(0).weapons, 300, 200);
-        GameScreen.game.font.draw(GameScreen.game.batch, "level12: " + hub1s.get(1).weapons, 300, 150);
-        GameScreen.game.font.draw(GameScreen.game.batch, "level13: " + hub1s.get(2).weapons, 300, 100);
-        GameScreen.game.font.draw(GameScreen.game.batch, "level21: " + hub2s.get(0).weapons, 500, 200);
-        GameScreen.game.font.draw(GameScreen.game.batch, "level22: " + hub2s.get(1).weapons, 500, 150);
-        GameScreen.game.font.draw(GameScreen.game.batch, "level23: " + hub2s.get(2).weapons, 500, 100);
-        GameScreen.game.font.draw(GameScreen.game.batch, "level31: " + hub3s.get(0).weapons, 700, 200);
-        GameScreen.game.font.draw(GameScreen.game.batch, "level32: " + hub3s.get(1).weapons, 700, 150);
-        GameScreen.game.font.draw(GameScreen.game.batch, "level33: " + hub3s.get(2).weapons, 700, 100);
+        GameScreen.game.font.draw(GameScreen.game.batch, "Money: " + City.getTotalMoney(), 1120, 200);
+//        GameScreen.game.font.draw(GameScreen.game.batch, "civil: " + City.totalPopulation, 1000, 50);
+        GameScreen.game.font.draw(GameScreen.game.batch, "Soldiers: " + Barracks.getTotalTrainedSoldiers(), 1120, 300);
+        GameScreen.game.font.draw(GameScreen.game.batch, "Weapons: " + Factory.getRocketCount(), 1120, 250);
+//        GameScreen.game.font.draw(GameScreen.game.batch, "factory1: " + superFactories.get(0).weaponsProduced, 100, 200);
+//        GameScreen.game.font.draw(GameScreen.game.batch, "factory2: " + superFactories.get(1).weaponsProduced, 100, 150);
+//        GameScreen.game.font.draw(GameScreen.game.batch, "factory3: " + superFactories.get(2).weaponsProduced, 100, 100);
+//        GameScreen.game.font.draw(GameScreen.game.batch, "level11: " + hub1s.get(0).weapons, 300, 200);
+//        GameScreen.game.font.draw(GameScreen.game.batch, "level12: " + hub1s.get(1).weapons, 300, 150);
+//        GameScreen.game.font.draw(GameScreen.game.batch, "level13: " + hub1s.get(2).weapons, 300, 100);
+//        GameScreen.game.font.draw(GameScreen.game.batch, "level21: " + hub2s.get(0).weapons, 500, 200);
+//        GameScreen.game.font.draw(GameScreen.game.batch, "level22: " + hub2s.get(1).weapons, 500, 150);
+//        GameScreen.game.font.draw(GameScreen.game.batch, "level23: " + hub2s.get(2).weapons, 500, 100);
+//        GameScreen.game.font.draw(GameScreen.game.batch, "level31: " + hub3s.get(0).weapons, 700, 200);
+//        GameScreen.game.font.draw(GameScreen.game.batch, "level32: " + hub3s.get(1).weapons, 700, 150);
+//        GameScreen.game.font.draw(GameScreen.game.batch, "level33: " + hub3s.get(2).weapons, 700, 100);
         GameScreen.game.batch.end();
     }
 

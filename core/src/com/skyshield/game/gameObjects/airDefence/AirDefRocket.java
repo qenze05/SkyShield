@@ -24,8 +24,8 @@ public class AirDefRocket {
         this.pos = pos;
         this.texture = new Texture(Gdx.files.internal("air-defence/rocket.png"));
         this.hitbox = new Rectangle(pos[0], pos[1],
-                texture.getWidth()* GameScreen.textureScale,
-                texture.getHeight()*GameScreen.textureScale);
+                texture.getWidth() * GameScreen.textureScale / 2,
+                texture.getHeight() *GameScreen.textureScale / 2);
         this.target = target;
         this.frame = 38;
         this.speed = 1500;

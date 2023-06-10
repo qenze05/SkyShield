@@ -21,25 +21,36 @@ public class SuperFactory {
     private Rectangle hitbox;
 
     public int weaponsProduced; // Лічильник виробленої зброї
+    private boolean disabled;
 
     public SuperFactory(float[] pos) {
         this.pos = pos;
-        this.texture = new Texture(Gdx.files.internal("buildings/Factory.jpg"));
+        this.texture = new Texture(Gdx.files.internal("buildings/factory.png"));
         this.hitbox = new Rectangle(pos[0], pos[1],
-                30 * GameScreen.textureScale,
-                30 * GameScreen.textureScale);
+                40 * GameScreen.textureScale,
+                40 * GameScreen.textureScale);
         this.timeSinceLastProduction = 0;
         this.productionInterval = 0.01f; // Виробляти ракету кожну 1 секунду
         this.weaponsProduced -= 0;
+        this.disabled = false;
     }
 
     public void update(float deltaTime) {
+        if(disabled) return;
         float randomCoefficient = 0.00001f + random.nextFloat() * (0.0001f - 0.000001f);
         timeSinceLastProduction += deltaTime * randomCoefficient;
         if (timeSinceLastProduction >= productionInterval) {
             produceRocket();
             timeSinceLastProduction = 0;
         }
+    }
+
+    public void setDisabled(boolean value) {
+        this.disabled = value;
+    }
+
+    public boolean isDisabled() {
+        return this.disabled;
     }
 
     public static int getRocketCount() {

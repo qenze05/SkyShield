@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.skyshield.game.gameLogic.entities.AirDefence;
 import com.skyshield.game.gameObjects.airDefence.AirDef;
@@ -65,8 +66,8 @@ public class GUIComponents {
 
     public static void addButtonsTable() {
         Table buttonsTable = new Table();
-        buttonsTable.setBounds(300, GameScreen.screenHeight - (float) GameScreen.screenHeight / 8,
-                (float) GameScreen.screenWidth / 2, (float) GameScreen.screenHeight / 8);
+        buttonsTable.setBounds(0, GameScreen.screenHeight - (float) GameScreen.screenHeight / 1.5f,
+                (float) GameScreen.screenWidth / 2, (float) GameScreen.screenHeight / 2);
 
         GameScreen.stage.addActor(buttonsTable);
 
@@ -75,10 +76,13 @@ public class GUIComponents {
         shopButton = new TextButton("Shop", skin);
         gameSpeedButton = new TextButton("Speed: 1x", skin);
 
-        buttonsTable.add(shopButton).left().top().expand();
-        buttonsTable.add(zoomInButton).left().top().expand();
-        buttonsTable.add(zoomOutButton).left().top().expand();
-        buttonsTable.add(gameSpeedButton).left().top().expand();
+        buttonsTable.add(shopButton).left().bottom().expandX().size(100, 50);
+        buttonsTable.row();
+        buttonsTable.add(zoomInButton).left().bottom().expandX().size(100, 50);
+        buttonsTable.row();
+        buttonsTable.add(zoomOutButton).left().bottom().expandX().size(100, 50);
+        buttonsTable.row();
+        buttonsTable.add(gameSpeedButton).left().bottom().expandX().size(150, 50);
 
         zoomInButton.addListener(new ChangeListener() {
             @Override
@@ -141,6 +145,8 @@ public class GUIComponents {
     public static void addMovingButton(ImageButton button, Texture circleTexture, Rectangle circleSize) {
 
         movingButton = new ImageButton(button.getImage().getDrawable());
+        movingButton.setSize(40, 40);
+//        movingButton.setScale(0.3f);
         movingButton.setName(button.getName());
 
         movingButtonCircle = new Sprite(circleTexture);

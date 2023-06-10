@@ -6,6 +6,7 @@ import com.skyshield.game.gameLogic.entities.Buildings;
 import com.skyshield.game.gameLogic.entities.Rockets;
 import com.skyshield.game.gui.clock.Clock;
 import com.skyshield.game.screens.GameScreen;
+import com.skyshield.game.utils.CountryTerritory;
 import com.skyshield.game.utils.ItemsList;
 
 import java.util.ArrayList;
@@ -13,8 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class Attack {
-    //TODO: move check from rockets.launch to rockets.spawn
-    public static int phase = 1;
+    public static int phase = 8;
 
     public static int[] attackStartTime;
     public static int[] lastRocketSpawnTime;
@@ -35,10 +35,13 @@ public class Attack {
         else cooldown = null;
 
         if (Rockets.rockets == null) {
-            System.out.println(phase);
+//            System.out.println(phase);
             attackStartTime = Clock.getTime();
             lastRocketSpawnTime = Clock.getTime();
             Rockets.rockets = new Array<>();
+            CountryTerritory.updateMap(phase);
+            Buildings.setDisabled();
+            ItemsList.buildings = ItemsList.getBuildings();
         }
 
         switch (phase) {
@@ -391,7 +394,7 @@ public class Attack {
                         float[] spawn = Rockets.getRandomSpawn();
                         String target = (MathUtils.randomBoolean())
                                 ? ItemsList.getRandomBuilding()
-                                : "Dam-"+ MathUtils.random(0, Buildings.dams.size-1);
+                                : ItemsList.getRandomBuilding("Dam");
 
                         if (type < 4) {
 
@@ -402,7 +405,7 @@ public class Attack {
                             for (int i = 0; i < amount; i++) {
                                 target = (MathUtils.randomBoolean())
                                         ? ItemsList.getRandomBuilding()
-                                        : "Dam-"+ MathUtils.random(0, Buildings.dams.size-1);
+                                        : ItemsList.getRandomBuilding("Dam");
                                 Rockets.spawnRocket(rocket, target, spawn);
                             }
 
@@ -512,7 +515,7 @@ public class Attack {
                         float[] spawn = Rockets.getRandomSpawn();
                         String target = (MathUtils.randomBoolean())
                                 ? ItemsList.getRandomBuilding()
-                                : "PowerStation-"+ MathUtils.random(0, Buildings.powerStations.size-1);
+                                : ItemsList.getRandomBuilding("PowerStation");
 
                         if (type < 3 || type == 6) {
 
@@ -523,7 +526,7 @@ public class Attack {
                             for (int i = 0; i < amount; i++) {
                                 target = (MathUtils.randomBoolean())
                                         ? ItemsList.getRandomBuilding()
-                                        : "PowerStation-"+ MathUtils.random(0, Buildings.powerStations.size-1);
+                                        : ItemsList.getRandomBuilding("PowerStation");
                                 Rockets.spawnRocket(rocket, target, spawn);
                             }
 
@@ -806,8 +809,8 @@ public class Attack {
 
                 int random = MathUtils.random(1, 3);
                 switch(random) {
-                    case 1 -> target = "PowerStation-"+MathUtils.random(0, Buildings.powerStations.size-1);
-                    case 2 -> target = "Dam-"+MathUtils.random(0, Buildings.dams.size-1);
+                    case 1 -> target = ItemsList.getRandomBuilding("PowerStation");
+                    case 2 -> target = ItemsList.getRandomBuilding("Dam");
                     case 3 -> target = "City-3";
                 }
 

@@ -39,9 +39,10 @@ public class Elektra extends Rocket {
         this.rocketSize = 1;
 
         this.texture = new Texture(Gdx.files.internal("rockets/Elektra.png"));
-        this.hitbox = new Rectangle(spawnPoint[0], spawnPoint[1],
-                texture.getWidth() * GameScreen.textureScale,
-                texture.getHeight() * GameScreen.textureScale);
+        this.hitbox = new Rectangle(spawnPoint[0] - 20 * GameScreen.textureScale,
+                spawnPoint[1] - 20 * GameScreen.textureScale,
+                40 * GameScreen.textureScale,
+                40 * GameScreen.textureScale);
 
         this.frame = 0;
 
@@ -57,8 +58,11 @@ public class Elektra extends Rocket {
     @Override
     public void specialAbility() {
         if(!this.targetName.split("-")[0].equalsIgnoreCase("PowerStation")) {
-            this.targetName = "PowerStation-"+ MathUtils.random(0, Buildings.powerStations.size-1);
-            setTargetHitbox();
+            do{
+                this.targetName = "PowerStation-"+ MathUtils.random(0, Buildings.powerStations.size-1);
+                setTargetHitbox();
+            }while(targetHitbox==null);
+
             setTargetPos();
         }
     }

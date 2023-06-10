@@ -19,17 +19,28 @@ public class PowerStation {
     private Position position;
     private Rectangle hitbox;
     int healthmax =100;
+    private boolean disabled;
 
     public PowerStation(float[] pos, int health, int number) {
         this.pos = pos;
-        this.texture = new Texture(Gdx.files.internal("buildings/powerStation.jpg"));
+        this.texture = new Texture(Gdx.files.internal("buildings/aetherstation.png"));
         this.hitbox = new Rectangle(pos[0], pos[1],
-                30 * GameScreen.textureScale,
-                30 * GameScreen.textureScale);
+                40 * GameScreen.textureScale,
+                40 * GameScreen.textureScale);
         this.health = health;
         this.number = number;
         this.position = new Position((int)pos[0], (int)pos[1]);
+        this.disabled = false;
     }
+
+    public void setDisabled(boolean value) {
+        this.disabled = value;
+    }
+
+    public boolean isDisabled() {
+        return this.disabled;
+    }
+
     public  void draw(SpriteBatch spriteBatch) {
         spriteBatch.draw(texture, pos[0], pos[1],getWidth(),getHeight());
     }

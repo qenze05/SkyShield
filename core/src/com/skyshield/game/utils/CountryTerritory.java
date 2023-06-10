@@ -7,7 +7,6 @@ import com.badlogic.gdx.math.Polygon;
 public class CountryTerritory {
 
     private static final String NORMAL_SRC = "map/normal/normal-";
-    private static final String NORMAL_NOBG_SRC = "map/normal/normal-nobg-";
 
     public static final Polygon map = new Polygon();
     public static int territory = 0;
@@ -30,10 +29,16 @@ public class CountryTerritory {
     }
 
     public static Texture getTerritoryTexture() {
-        return new Texture(Gdx.files.internal(NORMAL_NOBG_SRC+territory+".png"));
+        return new Texture(Gdx.files.internal(NORMAL_SRC+territory+".png"));
     }
 
     public static boolean isInsideTerritory(float x, float y) {
         return map.contains(x, y);
+    }
+
+    public static void updateMap(int stage) {
+        setTerritory(stage);
+        setMapPolygon();
+
     }
 }

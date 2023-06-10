@@ -9,7 +9,7 @@ import com.skyshield.game.screens.GameScreen;
 
 public class City {
     int healthmax =1000;
-    private Texture texture;
+    public Texture texture;
     private float[] pos;
     private PowerStation powerStation;
     private int population;
@@ -23,13 +23,14 @@ public class City {
     public static int totalPopulation = 0;
     private static int totalMoney = 0;
     private Rectangle hitbox;
+    private boolean disabled;
 
     public City(float[] pos, PowerStation powerStation, float moneyProductionInterval, float populationProductionInterval, int health) {
         this.pos = pos;
-        this.texture = new Texture(Gdx.files.internal("buildings/city.jpg"));
+        this.texture = new Texture(Gdx.files.internal("buildings/city.png"));
         this.hitbox = new Rectangle(pos[0], pos[1],
-                40 * GameScreen.textureScale,
-                40 * GameScreen.textureScale);
+                50 * GameScreen.textureScale,
+                50 * GameScreen.textureScale);
         this.powerStation = powerStation;
         this.moneyProductionInterval = moneyProductionInterval;
         this.populationProductionInterval = populationProductionInterval;
@@ -38,9 +39,19 @@ public class City {
         this.health = health;
         totalPopulation += 0;
         totalMoney += 0;
+        this.disabled = false;
+    }
+
+    public void setDisabled(boolean value) {
+        this.disabled = value;
+    }
+
+    public boolean isDisabled() {
+        return this.disabled;
     }
 
     public void update(float deltaTime) {
+        if(disabled) return;
         timeSinceLastProductionMoney += deltaTime;
         timeSinceLastProductionPeople += deltaTime;
 
@@ -56,14 +67,14 @@ public class City {
     }
 
     private void produceMoney() {
-        int moneyProduced =  (10 * powerStation.calculateHealthPercentage() * calculateHealthPercentage());
+        int moneyProduced =  (10 * powerStation.calculateHealthPercentage() * calculateHealthPercentage()) / 50;
         money += moneyProduced;
         totalMoney += moneyProduced;
 
     }
 
     private void producePopulation() {
-        int populationProduced =  (100 * powerStation.calculateHealthPercentage() * calculateHealthPercentage());
+        int populationProduced =  (100 * powerStation.calculateHealthPercentage() * calculateHealthPercentage()) / 5;
         population += populationProduced;
         totalPopulation += populationProduced;
 

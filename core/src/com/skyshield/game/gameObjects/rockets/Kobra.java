@@ -40,9 +40,10 @@ public class Kobra extends Rocket {
         this.rocketSize = 5;
 
         this.texture = new Texture(Gdx.files.internal("rockets/Kobra1.png"));
-        this.hitbox = new Rectangle(spawnPoint[0], spawnPoint[1],
-                texture.getWidth() * GameScreen.textureScale,
-                texture.getHeight() * GameScreen.textureScale);
+        this.hitbox = new Rectangle(spawnPoint[0] - 30 * GameScreen.textureScale,
+                spawnPoint[1] - 30 * GameScreen.textureScale,
+                60 * GameScreen.textureScale,
+                60 * GameScreen.textureScale);
 
         this.frame = 0;
 

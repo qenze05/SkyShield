@@ -21,20 +21,32 @@ public class Factory {
     int healthmax =200;
     private int number;
     private Rectangle hitbox;
+    private boolean disabled;
 
     public Factory(float[] pos, PowerStation powerStation, int health, int number) {
         this.pos = pos;
-        this.texture = new Texture(Gdx.files.internal("buildings/Factory.jpg"));
+        this.texture = new Texture(Gdx.files.internal("buildings/factory.png"));
         this.hitbox = new Rectangle(pos[0], pos[1],
-                20 * GameScreen.textureScale,
-                20 * GameScreen.textureScale);
+                30 * GameScreen.textureScale,
+                30 * GameScreen.textureScale);
         this.powerStation = powerStation;
         this.timeSinceLastProduction = 0;
         this.productionInterval = 0.01f; // Виробляти ракету кожну 1 секунду
         this.health = health;
         this.number = number;
+        this.disabled = false;
     }
+
+    public void setDisabled(boolean value) {
+        this.disabled = value;
+    }
+
+    public boolean isDisabled() {
+        return this.disabled;
+    }
+
     public void update(float deltaTime) {
+        if(disabled) return;
         float randomCoefficient = 0.00001f + random.nextFloat() * (0.0001f - 0.000001f);
         timeSinceLastProduction += deltaTime * randomCoefficient;
         if (timeSinceLastProduction >= productionInterval) {

@@ -19,44 +19,76 @@ public class ItemsList {
     public static Array<Rocket> uniqueRockets = getUniqueRockets();
     public static Array<AirDef> uniqueAirDefs = getAirDef();
 
-    public static String getRandomBuilding() {
-        int rand = MathUtils.random(0, buildings.size()-1);
-        int counter = 0;
+    public static String getRandomBuilding(String type) {
+        TreeMap<String, Rectangle> map = new TreeMap<>();
         for(Map.Entry<String, Rectangle> entry : buildings.entrySet()) {
+            if(entry.getKey().split("-")[0].equalsIgnoreCase(type)) {
+                map.put(entry.getKey(), entry.getValue());
+            }
+        }
+        return getBuilding(map);
+    }
+
+    private static String getBuilding(TreeMap<String, Rectangle> map) {
+        int rand = MathUtils.random(0, map.size()-1);
+        int counter = 0;
+        for(Map.Entry<String, Rectangle> entry : map.entrySet()) {
             if(counter == rand) return entry.getKey();
             counter++;
         }
         return "";
     }
 
+    public static String getRandomBuilding() {
+        return getBuilding(buildings);
+    }
+
     public static TreeMap<String, Rectangle> getBuildings() {
         TreeMap<String, Rectangle> map = new TreeMap<>();
         for(int i = 0; i < Buildings.hub1s.size; i++) {
-            map.put("Hub1-"+i, Buildings.hub1s.get(i).getHitbox());
+            if(!Buildings.hub1s.get(i).isDisabled()) {
+                map.put("Hub1-" + i, Buildings.hub1s.get(i).getHitbox());
+            }
         }
         for(int i = 0; i < Buildings.hub2s.size; i++) {
-            map.put("Hub2-"+i, Buildings.hub2s.get(i).getHitbox());
+            if(!Buildings.hub2s.get(i).isDisabled()) {
+                map.put("Hub2-" + i, Buildings.hub2s.get(i).getHitbox());
+            }
         }
         for(int i = 0; i < Buildings.hub3s.size; i++) {
-            map.put("Hub3-"+i, Buildings.hub3s.get(i).getHitbox());
+            if(!Buildings.hub3s.get(i).isDisabled()) {
+                map.put("Hub3-" + i, Buildings.hub3s.get(i).getHitbox());
+            }
         }
         for(int i = 0; i < Buildings.superFactories.size; i++) {
-            map.put("SuperFactory-"+i, Buildings.superFactories.get(i).getHitbox());
+            if(!Buildings.superFactories.get(i).isDisabled()) {
+                map.put("SuperFactory-" + i, Buildings.superFactories.get(i).getHitbox());
+            }
         }
         for(int i = 0; i < Buildings.cities.size; i++) {
-            map.put("City-"+i, Buildings.cities.get(i).getHitbox());
+            if(!Buildings.cities.get(i).isDisabled()) {
+                map.put("City-" + i, Buildings.cities.get(i).getHitbox());
+            }
         }
         for(int i = 0; i < Buildings.barracks.size; i++) {
-            map.put("Barrack-"+i, Buildings.barracks.get(i).getHitbox());
+            if(!Buildings.barracks.get(i).isDisabled()) {
+                map.put("Barrack-" + i, Buildings.barracks.get(i).getHitbox());
+            }
         }
         for(int i = 0; i < Buildings.powerStations.size; i++) {
-            map.put("PowerStation-"+i, Buildings.powerStations.get(i).getHitbox());
+            if(!Buildings.powerStations.get(i).isDisabled()) {
+                map.put("PowerStation-" + i, Buildings.powerStations.get(i).getHitbox());
+            }
         }
         for(int i = 0; i < Buildings.dams.size; i++) {
-            map.put("Dam-"+i, Buildings.dams.get(i).getHitbox());
+            if(!Buildings.dams.get(i).isDisabled()) {
+                map.put("Dam-" + i, Buildings.dams.get(i).getHitbox());
+            }
         }
         for(int i = 0; i < Buildings.factories.size; i++) {
-            map.put("Factory-"+i, Buildings.factories.get(i).getHitbox());
+            if(!Buildings.factories.get(i).isDisabled()) {
+                map.put("Factory-" + i, Buildings.factories.get(i).getHitbox());
+            }
         }
         return map;
     }
@@ -77,9 +109,9 @@ public class ItemsList {
         arr.add(new Skorpion(pos));
         arr.add(new Mukhobiyka(pos));
         arr.add(new Pulsar(pos));
-        arr.add(new Mushlya(pos));
+//        arr.add(new Mushlya(pos));
         arr.add(new KronaS(pos));
-        arr.add(new Lut(pos));
+//        arr.add(new Lut(pos));
         arr.add(new SlonS(pos));
         arr.add(new SkorpionS(pos));
         arr.add(new PulsarS(pos));

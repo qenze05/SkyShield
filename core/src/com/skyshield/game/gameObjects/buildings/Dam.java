@@ -11,13 +11,23 @@ public class Dam {
     private Texture texture;
     private float[] pos;
     private Rectangle hitbox;
+    private boolean disabled;
     public Dam(float[] pos, int health) {
-        this.texture = new Texture(Gdx.files.internal("buildings/damba.jpg"));
+        this.texture = new Texture(Gdx.files.internal("buildings/dam.png"));
         this.hitbox = new Rectangle(pos[0], pos[1],
-                40 * GameScreen.textureScale,
-                40 * GameScreen.textureScale);
+                50 * GameScreen.textureScale,
+                50 * GameScreen.textureScale);
         this.pos = pos;
         this.health = health;
+        this.disabled = false;
+    }
+
+    public void setDisabled(boolean value) {
+        this.disabled = value;
+    }
+
+    public boolean isDisabled() {
+        return this.disabled;
     }
 
     public int getHealth() {
