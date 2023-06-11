@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class Attack {
-    public static int phase = 8;
+    public static int phase = 1;
 
     public static int[] attackStartTime;
     public static int[] lastRocketSpawnTime;
@@ -31,15 +31,15 @@ public class Attack {
 
     public static void attack() {
 
-        if (cooldown != null && !Clock.compareTimer(Clock.getTime(), Clock.setTimer(15, cooldown))) return;
+        if (cooldown != null && !Clock.compareTimer(Clock.getTime(), Clock.setTimer(10, cooldown))) return;
         else cooldown = null;
 
         if (Rockets.rockets == null) {
-//            System.out.println(phase);
             attackStartTime = Clock.getTime();
             lastRocketSpawnTime = Clock.getTime();
             Rockets.rockets = new Array<>();
-            CountryTerritory.updateMap(phase);
+            if(phase==8) CountryTerritory.updateMap(7);
+            else CountryTerritory.updateMap(phase);
             Buildings.setDisabled();
             ItemsList.buildings = ItemsList.getBuildings();
         }
@@ -105,10 +105,6 @@ public class Attack {
             }
         }
 
-        if (Rockets.rockets != null) {
-            Rockets.launchRockets();
-        }
-
 
     }
 
@@ -162,10 +158,6 @@ public class Attack {
                     }
                 }
             }
-        }
-
-        if (Rockets.rockets != null) {
-            Rockets.launchRockets();
         }
     }
 
@@ -225,10 +217,6 @@ public class Attack {
                     }
                 }
             }
-        }
-
-        if (Rockets.rockets != null) {
-            Rockets.launchRockets();
         }
     }
 
@@ -318,10 +306,6 @@ public class Attack {
             }else {
                 phase4NormalAttack();
             }
-        }
-
-        if (Rockets.rockets != null) {
-            Rockets.launchRockets();
         }
     }
 
@@ -469,10 +453,6 @@ public class Attack {
                     Rockets.spawnRocket("harpun", ItemsList.getRandomBuilding(), Rockets.getRandomSeaSpawn());
                 }
             }
-        }
-
-        if (Rockets.rockets != null) {
-            Rockets.launchRockets();
         }
     }
 
@@ -697,10 +677,6 @@ public class Attack {
                 }
             }
         }
-
-        if (Rockets.rockets != null) {
-            Rockets.launchRockets();
-        }
     }
 
     public static void phase7() {
@@ -783,10 +759,6 @@ public class Attack {
                 }
             }
         }
-
-        if (Rockets.rockets != null) {
-            Rockets.launchRockets();
-        }
     }
 
     public static void phase8() {
@@ -827,8 +799,8 @@ public class Attack {
 
                         random = MathUtils.random(1, 3);
                         switch(random) {
-                            case 1 -> target = "PowerStation-"+MathUtils.random(0, Buildings.powerStations.size-1);
-                            case 2 -> target = "Dam-"+MathUtils.random(0, Buildings.dams.size-1);
+                            case 1 -> target = ItemsList.getRandomBuilding("PowerStation");
+                            case 2 -> target = ItemsList.getRandomBuilding("Dam");
                             case 3 -> target = "City-3";
                         }
                         Rockets.spawnRocket(rocket, target, spawn);
@@ -863,10 +835,6 @@ public class Attack {
                     Rockets.spawnRocket(type, ItemsList.getRandomBuilding(), spawn);
                 }
             }
-        }
-
-        if (Rockets.rockets != null) {
-            Rockets.launchRockets();
         }
     }
 

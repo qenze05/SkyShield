@@ -1,10 +1,14 @@
 package com.skyshield.game.gameLogic.entities;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.Array;
 import com.skyshield.game.gameObjects.rockets.*;
+import com.skyshield.game.particles.Particles;
+import com.skyshield.game.particles.SmokeParticle;
 import com.skyshield.game.screens.GameScreen;
 
 import java.util.Iterator;
@@ -33,11 +37,16 @@ public class Rockets {
             case "mukha" -> rockets.add(new Mukha(target, spawnPoint));
             case "r1" -> rockets.add(new R1(target, spawnPoint));
             case "r2" -> rockets.add(new R2(target, spawnPoint));
-            case "r3" -> rockets.add(new R3(target, spawnPoint));
+            case "r3" -> {
+                rockets.add(new R3(target, spawnPoint));
+//                Particles.pooled.add(new SmokeParticle(rockets.peek()).effect);
+            }
             case "sapsan" -> rockets.add(new Sapsan(target, spawnPoint));
             case "snovyda" -> rockets.add(new Snovyda(target, spawnPoint));
             case "troyanskyykin" -> rockets.add(new TroyanskyyKin(target, spawnPoint));
             case "kobra" -> rockets.add(new Kobra(target, spawnPoint));
+            case "simplerocket" -> rockets.add(new SimpleRocket(target, spawnPoint));
+            case "immortalrocket" -> rockets.add(new ImmortalRocket(target, spawnPoint));
 
         }
     }

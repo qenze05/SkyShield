@@ -58,12 +58,21 @@ public class AirDefence {
             if(rocket.getTarget() == null || rocket.getTarget().isEliminated()) {
                 findNewTarget(rocket);
             } else if (rocket.getHitbox().overlaps(rocket.getTarget().getHitbox())) {
-                if(miss(rocket)) {
-                    setCornerTarget(rocket);
-                }else{
+
+                if(rocket.getTarget().getPower() == 0) { //simple rocket ability
                     removeTarget(rocket.getTarget().getHitbox(), rocket.getOrigin());
                     iter.remove();
                     continue;
+                }else if(rocket.getTarget().getRocketSize() == 0){ //immortal rocket ability
+                    setCornerTarget(rocket);
+                }else{
+                    if(miss(rocket)) {
+                        setCornerTarget(rocket);
+                    }else{
+                        removeTarget(rocket.getTarget().getHitbox(), rocket.getOrigin());
+                        iter.remove();
+                        continue;
+                    }
                 }
             }
 
@@ -140,7 +149,7 @@ public class AirDefence {
 
                 Rocket rocket = rocketsIter.next();
 
-                if (airDefUnit.getCircleHitbox().contains(rocket.getHitbox())
+                if (airDefUnit.getCircleHitbox().overlaps(rocket.getHitbox())
                         && !isTargetedByThisAirDef(rocket, airDefUnit)
                         && (TimeUtils.nanoTime() - airDefUnit.getLastLaunchTime()) * GameScreen.gameSpeed
                         > airDefUnit.getReload() * 1000000000f) {

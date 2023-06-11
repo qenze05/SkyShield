@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.skyshield.game.screens.GameScreen;
 import com.skyshield.game.utils.ItemsList;
 
-public class SimpleRocket extends Rocket {
+public class ImmortalRocket extends Rocket {
 
     private final float maxDistance;
     private final float speed;
@@ -24,7 +24,7 @@ public class SimpleRocket extends Rocket {
     private Rectangle targetHitbox;
     private float[] targetPos;
 
-    public SimpleRocket(String target, float[] spawnPoint) {
+    public ImmortalRocket(String target, float[] spawnPoint) {
         super(target, spawnPoint);
 
         this.targetName = target;
@@ -34,8 +34,8 @@ public class SimpleRocket extends Rocket {
         this.spawnPoint = spawnPoint;
         this.maxDistance = 2000;
         this.speed = 1000;
-        this.power = 0;
-        this.rocketSize = 7;
+        this.power = 30;
+        this.rocketSize = 0;
 
         this.texture = new Texture(Gdx.files.internal("rockets/R1.png"));
         this.hitbox = new Rectangle(spawnPoint[0] - 30 * GameScreen.textureScale,

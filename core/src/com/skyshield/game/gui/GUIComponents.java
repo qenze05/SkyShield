@@ -4,19 +4,24 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.skyshield.game.gameLogic.entities.AirDefence;
 import com.skyshield.game.gameObjects.airDefence.AirDef;
 import com.skyshield.game.gameObjects.buildings.City;
 import com.skyshield.game.gui.camera.Camera;
+import com.skyshield.game.gui.dialog.DialogActions;
+import com.skyshield.game.gui.dialog.DialogText;
+import com.skyshield.game.gui.dialog.DialogTimer;
+import com.skyshield.game.gui.dialog.DialogWindow;
 import com.skyshield.game.gui.shop.ShopBackground;
 import com.skyshield.game.gui.shop.ShopScrollBar;
 import com.skyshield.game.screens.GameScreen;
@@ -28,7 +33,7 @@ public class GUIComponents {
     private static ShopBackground shopBackground = new ShopBackground();
     private static ShopScrollBar shopScrollBar = new ShopScrollBar();
     private static Skin skin;
-    public static ImageButton movingButton;
+    public static ImageButton movingButton, okButton, skipButton;
     public static Sprite movingButtonCircle;
     public static TextButton zoomInButton, zoomOutButton, shopButton, gameSpeedButton;
     public static int animationFrame = 0;
@@ -37,6 +42,9 @@ public class GUIComponents {
     public static Actor popUpImage;
     public static boolean buttonJustPressed = false;
     public static Table sellTable;
+    public static DialogWindow dialogWindow;
+    public static DialogText dialogText;
+    public static boolean dialogWindowIsClosing;
 
     public static void addStageInputListener() {
         GameScreen.stage.addListener(new InputListener() {
@@ -62,6 +70,66 @@ public class GUIComponents {
 
         GameScreen.stage.addActor(timeTable);
 
+    }
+
+    public static void addDialogTable() {
+        dialogWindowIsClosing = false;
+        dialogWindow = new DialogWindow();
+        GameScreen.stage.addActor(dialogWindow);
+    }
+
+    public static void addDialogText(String text) {
+        if (dialogText != null) dialogText = null;
+        dialogText = new DialogText(text);
+    }
+
+    public static void addSkipButton() {
+        if(dialogWindow != null) {
+            skipButton = new ImageButton(new Image(new Texture(Gdx.files.internal("dialog-skip.png"))).getDrawable());
+            dialogWindow.add(skipButton).right().bottom().expand();
+            skipButton.addListener(new InputListener() {
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    skipButton.remove();
+                    skipButton = null;
+                    dialogText.skip();
+                    addOkButton();
+                    return true;
+                }
+            });
+
+        }
+    }
+
+    public static void addOkButton() {
+        if(dialogWindow != null) {
+            okButton = new ImageButton(new Image(new Texture(Gdx.files.internal("dialog-ok.png"))).getDrawable());
+            dialogWindow.add(okButton).right().bottom().expand();
+            okButton.addListener(new InputListener() {
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    okButton.remove();
+                    dialogText.remove();
+                    DialogTimer.start = null;
+                    DialogTimer.textStart = null;
+                    dialogText = null;
+                    okButton = null;
+                    hideDialogTable();
+                    DialogActions.afterDialogActionActive = true;
+                    return true;
+                }
+            });
+
+        }
+    }
+    public static void updateDialogText() {
+        if(dialogText == null) return;
+        dialogText.update(1/60f);
+    }
+
+    public static void hideDialogTable() {
+        dialogWindowIsClosing = true;
+        dialogWindow.addAction(Actions.moveTo(140, GameScreen.screenHeight + dialogWindow.getHeight(), 1f, Interpolation.sineOut));
     }
 
     public static void addButtonsTable() {
@@ -146,7 +214,6 @@ public class GUIComponents {
 
         movingButton = new ImageButton(button.getImage().getDrawable());
         movingButton.setSize(40, 40);
-//        movingButton.setScale(0.3f);
         movingButton.setName(button.getName());
 
         movingButtonCircle = new Sprite(circleTexture);
@@ -225,18 +292,18 @@ public class GUIComponents {
     private static void placeWeapon() {
         float[] pos = Camera.getRelativeCoords(movingButton.getX(), movingButton.getY());
         pos[0] += movingButton.getWidth() * Camera.camera.zoom / 2;
-        pos[1] += movingButton.getHeight() * Camera.camera.zoom  / 2;
+        pos[1] += movingButton.getHeight() * Camera.camera.zoom / 2;
         AirDefence.addAirDef(pos, movingButton.getName());
         buttonJustPressed = true;
     }
 
     public static void addPopUpMenu(int x, int y) {
 
-        if(popUpImage != null) {
+        if (popUpImage != null) {
             popUpImage.remove();
             popUpImage = null;
         }
-        if(popUpTimer == 0) {
+        if (popUpTimer == 0) {
 
             popUpTimer = TimeUtils.millis();
 
@@ -257,13 +324,13 @@ public class GUIComponents {
     }
 
     public static void showPopUpMenu() {
-        if(TimeUtils.millis() - popUpTimer > 1000 && !popUpImage.isVisible()) {
+        if (TimeUtils.millis() - popUpTimer > 1000 && !popUpImage.isVisible()) {
             popUpImage.setVisible(true);
         }
     }
 
     public static void removePopUpMenu() {
-        if(popUpImage != null){
+        if (popUpImage != null) {
             popUpTimer = 0;
             popUpImage.remove();
             popUpImage = null;
@@ -272,17 +339,17 @@ public class GUIComponents {
 
     public static void addSellAirDefMenu(AirDef airDef) {
 
-        if(buttonJustPressed) return;
+        if (buttonJustPressed) return;
 
-        TextElements.addSellValueText(airDef.getPrice()/2);
+        TextElements.addSellValueText(airDef.getPrice() / 2);
 
         Texture sellButtonTexture = new Texture(Gdx.files.internal("sellButton.png"));
         Texture cancelButtonTexture = new Texture(Gdx.files.internal("cancelButton.png"));
         Texture bgTexture = new Texture(Gdx.files.internal("sellAirDefBg.png"));
 
         sellTable = new Table();
-        sellTable.setBounds((float) GameScreen.screenWidth /2 - (float) bgTexture.getWidth() /2,
-                (float) GameScreen.screenHeight /2 - (float) bgTexture.getHeight() /2,
+        sellTable.setBounds((float) GameScreen.screenWidth / 2 - (float) bgTexture.getWidth() / 2,
+                (float) GameScreen.screenHeight / 2 - (float) bgTexture.getHeight() / 2,
                 bgTexture.getWidth(), bgTexture.getHeight());
 
         GameScreen.stage.addActor(sellTable);
@@ -291,7 +358,7 @@ public class GUIComponents {
         ImageButton cancelButton = new ImageButton(new Image(cancelButtonTexture).getDrawable());
 
         Table buttonsTable = new Table();
-        buttonsTable.setSize(sellButton.getWidth(), sellButton.getHeight()*2);
+        buttonsTable.setSize(sellButton.getWidth(), sellButton.getHeight() * 2);
         buttonsTable.add(sellButton);
         buttonsTable.row();
         buttonsTable.add(cancelButton);
@@ -303,7 +370,7 @@ public class GUIComponents {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 AirDefence.removeAirDef(airDef);
-                City.sellItem((float) airDef.getPrice() /2);
+                City.sellItem((float) airDef.getPrice() / 2);
                 TextElements.deleteSellValue();
                 sellTable.remove();
                 sellTable = null;
