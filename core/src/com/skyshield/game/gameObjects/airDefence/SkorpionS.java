@@ -14,11 +14,12 @@ public class SkorpionS extends AirDef{
     private final float centrality;
     private final float radius;
     private long lastLaunchTime;
-    private final Texture texture;
+    private Texture texture;
     private final Texture circleTexture;
     private final Rectangle circleHitbox;
     private final String name;
     private final int price;
+    private boolean locked;
 
     public SkorpionS(float[] pos) {
         super(pos);
@@ -37,6 +38,24 @@ public class SkorpionS extends AirDef{
                 pos[1] -  radius * GameScreen.globalScale,
                 radius * GameScreen.globalScale * 2,
                 radius * GameScreen.globalScale * 2);
+        this.locked = false;
+    }
+
+    @Override
+    public boolean isLocked() {
+        return this.locked;
+    }
+
+    @Override
+    public void setLocked(boolean value) {
+        this.locked = value;
+    }
+
+    @Override
+    public void setTexture() {
+        this.texture = locked
+                ? new Texture(Gdx.files.internal("air-defence/Skorpion-S-locked.png"))
+                : new Texture(Gdx.files.internal("air-defence/Skorpion-S.png"));
     }
 
     @Override

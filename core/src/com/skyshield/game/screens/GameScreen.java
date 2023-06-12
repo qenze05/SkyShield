@@ -1,13 +1,12 @@
 package com.skyshield.game.screens;
 
 import java.io.IOException;
+import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
@@ -15,6 +14,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
 
+import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.skyshield.game.SkyShield;
 import com.skyshield.game.gameLogic.entities.Buildings;
@@ -29,9 +29,9 @@ import com.skyshield.game.gui.clock.Clock;
 import com.skyshield.game.gui.dialog.DialogActions;
 import com.skyshield.game.gui.dialog.DialogText;
 import com.skyshield.game.gui.dialog.DialogTimer;
-import com.skyshield.game.particles.LockedMapParticle;
-import com.skyshield.game.particles.Particles;
+import com.skyshield.game.gui.phase.Phase;
 import com.skyshield.game.utils.CountryTerritory;
+import com.skyshield.game.utils.ItemsList;
 
 public class GameScreen implements Screen {
 
@@ -49,6 +49,7 @@ public class GameScreen implements Screen {
     public static int inputX, inputY;
     public static Stage stage;
     public static Stage particleStage;
+    public static Sprite lockedMapSprite;
 
     public GameScreen(final SkyShield game) throws IOException {
         GameScreen.game = game;
@@ -56,7 +57,7 @@ public class GameScreen implements Screen {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
-        particleStage = new Stage(new ScreenViewport());
+//        particleStage = new Stage(new ScreenViewport());
 
         Camera.createCamera();
 
@@ -65,7 +66,7 @@ public class GameScreen implements Screen {
         Buildings.addBuildings();
         Buildings.cities.get(2).texture = new Texture(Gdx.files.internal("buildings/capital.png"));
 
-        Particles.initAtlas();
+//        Particles.initAtlas();
     }
 
     @Override
@@ -82,14 +83,19 @@ public class GameScreen implements Screen {
 
         drawAirDefence();
 
-        drawClosedMap();
+        drawLockedMap();
 
-        if(DialogActions.afterDialogActionActive) DialogActions.action();
+        if (DialogActions.afterDialogActionActive) DialogActions.action();
 
-        if(GUIComponents.dialogWindow == null && !DialogActions.afterDialogActionActive) Attack.attack();
+        if (GUIComponents.dialogWindow == null
+                && !DialogActions.afterDialogActionActive
+                && GUIComponents.goldTable == null
+                && !Phase.draw) {
+            Attack.attack();
+//            if(MathUtils.random(1, 1000) > 970) Rockets.spawnRocket("snovyda", "City-3", Rockets.spawn[2]);
+        }
 
         if (Rockets.rockets != null) {
-//            Rockets.spawnRocket("r3", ItemsList.getRandomBuilding(), Rockets.getRandomSpawn());
             AirDefence.findTargetsInRange();
             if (AirDefence.airDefRockets != null) AirDefence.moveRockets();
             Rockets.launchRockets();
@@ -104,7 +110,7 @@ public class GameScreen implements Screen {
         if (GUIComponents.popUpImage != null) GUIComponents.showPopUpMenu();
         if (GUIComponents.movingButton != null) {
             GUIComponents.moveMovingButton();
-            GUIComponents.showAvailableArea();
+            GUIComponents.showAvailableArea(GUIComponents.movingButton.getName().equalsIgnoreCase("mushlya"));
         }
 
         stage.act();
@@ -115,41 +121,43 @@ public class GameScreen implements Screen {
         TextElements.draw();
 
         drawDialog();
+
+        if(Phase.draw) Phase.drawPhase();
 //        drawSmoke();
 
     }
-    private void drawLockedMapParticles() {
-        if(CountryTerritory.territory>6) return;
-        particleStage.getBatch().begin();
-        for(LockedMapParticle particle : LockedMapParticle.particles) {
-            particle.act(1/60f);
-            particle.draw(particleStage.getBatch(), 0);
-        }
-        particleStage.getBatch().end();
-    }
+
+    //    private void drawLockedMapParticles() {
+//        if(CountryTerritory.territory>6) return;
+//        particleStage.getBatch().begin();
+//        for(LockedMapParticle particle : LockedMapParticle.particles) {
+//            particle.act(1/60f);
+//            particle.draw(particleStage.getBatch(), 0);
+//        }
+//        particleStage.getBatch().end();
+//    }
     private void drawDialog() {
-        if(GUIComponents.dialogWindow != null) {
+        if (GUIComponents.dialogWindow != null) {
 
-            GUIComponents.dialogWindow.act(1/60f);
+            GUIComponents.dialogWindow.act(1 / 60f);
 
-            if(DialogTimer.start == null && !GUIComponents.dialogWindowIsClosing) {
-                DialogTimer.start = Clock.getTime();
-                DialogTimer.textStart = Clock.setTimer(2f, DialogTimer.start);
+            if (DialogTimer.start == 0 && !GUIComponents.dialogWindowIsClosing) {
+                DialogTimer.start = TimeUtils.millis();
+                DialogTimer.textStart = TimeUtils.millis()+1000;
             }
 
-            if(GUIComponents.dialogText == null && !GUIComponents.dialogWindowIsClosing) {
+            if (GUIComponents.dialogText == null && !GUIComponents.dialogWindowIsClosing) {
                 DialogTimer.startText(DialogText.getText());
-            }
-            else if(!GUIComponents.dialogWindowIsClosing){
-                if(GUIComponents.dialogText.isWritten() && GUIComponents.skipButton != null) {
+            } else if (!GUIComponents.dialogWindowIsClosing) {
+                if (GUIComponents.dialogText.isWritten() && GUIComponents.skipButton != null) {
                     GUIComponents.skipButton.remove();
                     GUIComponents.skipButton = null;
                     GUIComponents.addOkButton();
                 }
 //                System.out.println(MathUtils.random());
                 GUIComponents.updateDialogText();
-            }else{
-                if(GUIComponents.dialogWindow.getY() >= screenHeight) {
+            } else {
+                if (GUIComponents.dialogWindow.getY() >= screenHeight) {
                     GUIComponents.dialogWindow.remove();
                     GUIComponents.dialogWindow = null;
                 }
@@ -157,6 +165,7 @@ public class GameScreen implements Screen {
 
         }
     }
+
     private void drawSmoke() {
 //        game.batch.begin();
 //        for(ParticleEffectPool.PooledEffect particle : Particles.pooled) {
@@ -175,11 +184,10 @@ public class GameScreen implements Screen {
         game.batch.end();
     }
 
-    private void drawClosedMap() {
-        Sprite map = new Sprite(CountryTerritory.getLockedTexture());
+    private void drawLockedMap() {
         float alpha = CountryTerritory.getLockedMapAlpha();
         game.batch.begin();
-        map.draw(game.batch, alpha);
+        lockedMapSprite.draw(game.batch, alpha);
         game.batch.end();
     }
 
@@ -187,10 +195,10 @@ public class GameScreen implements Screen {
         game.batch.begin();
         for (AirDef airDefUnit : AirDefence.airDefs) {
             game.batch.draw(airDefUnit.getTexture(),
-                    airDefUnit.getPos()[0] - (float) airDefUnit.getTexture().getWidth() * textureScale / 5,
-                    airDefUnit.getPos()[1] - (float) airDefUnit.getTexture().getHeight() * textureScale / 5,
-                    airDefUnit.getTexture().getWidth() * textureScale / 2.5f,
-                    airDefUnit.getTexture().getHeight() * textureScale / 2.5f);
+                    airDefUnit.getPos()[0] - (float) airDefUnit.getTexture().getWidth() * textureScale / 4,
+                    airDefUnit.getPos()[1] - (float) airDefUnit.getTexture().getHeight() * textureScale / 4,
+                    airDefUnit.getTexture().getWidth() * textureScale / 2f,
+                    airDefUnit.getTexture().getHeight() * textureScale / 2f);
             game.batch.draw(airDefUnit.getCircleTexture(),
                     airDefUnit.getCircleHitbox().x, airDefUnit.getCircleHitbox().y,
                     airDefUnit.getCircleHitbox().width, airDefUnit.getCircleHitbox().height);
@@ -231,27 +239,8 @@ public class GameScreen implements Screen {
 
         CountryTerritory.setTerritory(1);
         CountryTerritory.setMapPolygon();
+        lockedMapSprite = new Sprite(CountryTerritory.getLockedTexture());
         Buildings.setDisabled();
-
-//        LockedMapParticle.particles.add(new LockedMapParticle());
-//        LockedMapParticle.particles.add(new LockedMapParticle());
-//        LockedMapParticle.particles.add(new LockedMapParticle());
-//        LockedMapParticle.particles.add(new LockedMapParticle());
-//        LockedMapParticle.particles.add(new LockedMapParticle());
-//        LockedMapParticle.particles.add(new LockedMapParticle());
-//        LockedMapParticle.particles.add(new LockedMapParticle());
-//        LockedMapParticle.particles.add(new LockedMapParticle());
-//        LockedMapParticle.particles.add(new LockedMapParticle());
-//        LockedMapParticle.particles.add(new LockedMapParticle());
-//        LockedMapParticle.particles.add(new LockedMapParticle());
-//        LockedMapParticle.particles.add(new LockedMapParticle());
-//        LockedMapParticle.particles.add(new LockedMapParticle());
-//        LockedMapParticle.particles.add(new LockedMapParticle());
-//        LockedMapParticle.particles.add(new LockedMapParticle());
-//        LockedMapParticle.particles.add(new LockedMapParticle());
-//        LockedMapParticle.particles.add(new LockedMapParticle());
-//        LockedMapParticle.particles.add(new LockedMapParticle());
-//        LockedMapParticle.particles.add(new LockedMapParticle());
 
         Clock.setFontSize((int) (20 * GameScreen.screenSizeScale));
 
@@ -289,18 +278,28 @@ public class GameScreen implements Screen {
 
     private static void inputListener() {
         if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+
+            float[] inputCoords = Camera.getRelativeCoords(Gdx.input.getX(), screenHeight - Gdx.input.getY());
+            if(GUIComponents.shopButton.isChecked() && inputCoords[1] < 200) return;
+
             Rectangle airDefHitbox = new Rectangle();
+            Rectangle buildingHitbox;
+
             for (AirDef airDef : AirDefence.airDefs) {
 
-                airDefHitbox.x = airDef.getPos()[0] - (float) airDef.getTexture().getWidth() / 2;
-                airDefHitbox.y = airDef.getPos()[1] - (float) airDef.getTexture().getHeight() / 2;
-                airDefHitbox.width = airDef.getTexture().getWidth();
-                airDefHitbox.height = airDef.getTexture().getHeight();
+                airDefHitbox.x = airDef.getPos()[0] - (float) airDef.getTexture().getWidth() * textureScale / 5;
+                airDefHitbox.y = airDef.getPos()[1] - (float) airDef.getTexture().getHeight() * textureScale / 5;
+                airDefHitbox.width = airDef.getTexture().getWidth() * textureScale / 2.5f;
+                airDefHitbox.height = airDef.getTexture().getHeight() * textureScale / 2.5f;
 
-                if (airDefHitbox.contains(Gdx.input.getX(), screenHeight - Gdx.input.getY())) {
+                if (airDefHitbox.contains(inputCoords[0], inputCoords[1])) {
 
-                    if (GUIComponents.buttonJustPressed || GUIComponents.sellTable != null) {
-                        GUIComponents.buttonJustPressed = false;
+                    if (GUIComponents.airDefButtonJustPressed
+                            || GUIComponents.sellTable != null
+                            || GUIComponents.repairTable != null
+                            || GUIComponents.dialogWindow != null) {
+                        GUIComponents.airDefButtonJustPressed = false;
+                        GUIComponents.buildingButtonJustPressed = true;
                     } else {
                         GUIComponents.addSellAirDefMenu(airDef);
                     }
@@ -308,7 +307,28 @@ public class GameScreen implements Screen {
                 }
             }
 
-            if (GUIComponents.buttonJustPressed) GUIComponents.buttonJustPressed = false;
+            for (Map.Entry<String, Rectangle> building : ItemsList.buildings.entrySet()) {
+
+                buildingHitbox = building.getValue();
+
+                if (buildingHitbox.contains(inputCoords[0], inputCoords[1])) {
+
+                    if (GUIComponents.airDefButtonJustPressed
+                            || GUIComponents.sellTable != null
+                            || GUIComponents.repairTable != null
+                            || GUIComponents.dialogWindow != null
+                            || GUIComponents.buildingButtonJustPressed) {
+                        GUIComponents.airDefButtonJustPressed = false;
+                        GUIComponents.buildingButtonJustPressed = false;
+                    } else {
+                        GUIComponents.addRepairBuildingMenu(building.getKey(), "1000", 1000);
+                    }
+                    break;
+                }
+            }
+
+            if (GUIComponents.airDefButtonJustPressed) GUIComponents.airDefButtonJustPressed = false;
+            if (GUIComponents.buildingButtonJustPressed) GUIComponents.buildingButtonJustPressed = false;
             Camera.moveCamera = true;
             lastClickX = Gdx.input.getX();
             lastClickY = Gdx.input.getY();

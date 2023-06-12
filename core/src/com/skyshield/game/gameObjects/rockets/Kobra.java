@@ -25,6 +25,7 @@ public class Kobra extends Rocket {
     private float[] targetPos;
     private boolean wasEliminatedOnce;
     private boolean abilityDisabled;
+    private String name;
 
     public Kobra(String target, float[] spawnPoint) {
         super(target, spawnPoint);
@@ -55,6 +56,12 @@ public class Kobra extends Rocket {
 
         this.wasEliminatedOnce = false;
         this.abilityDisabled = false;
+        this.name = "Kobra";
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
     }
 
     @Override

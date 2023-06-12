@@ -23,6 +23,7 @@ public class ImmortalRocket extends Rocket {
     private String targetName;
     private Rectangle targetHitbox;
     private float[] targetPos;
+    private String name;
 
     public ImmortalRocket(String target, float[] spawnPoint) {
         super(target, spawnPoint);
@@ -50,6 +51,12 @@ public class ImmortalRocket extends Rocket {
 
         this.targeted = false;
         this.eliminated = false;
+        this.name = "ImmortalRocket";
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
     }
 
     @Override

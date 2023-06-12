@@ -9,6 +9,9 @@ public abstract class AirDef {
     }
 
     public abstract float[] getPos();
+    public abstract boolean isLocked();
+    public abstract void setLocked(boolean value);
+    public abstract void setTexture();
     public abstract String getName();
     public abstract float getReload();
     public abstract float getOptimalSize();

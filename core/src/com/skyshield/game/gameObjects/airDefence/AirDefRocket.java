@@ -22,19 +22,28 @@ public class AirDefRocket {
 
     public AirDefRocket(float[] pos, Rocket target, AirDef origin) {
         this.pos = pos;
-        this.texture = new Texture(Gdx.files.internal("air-defence/rocket.png"));
-        this.hitbox = new Rectangle(pos[0], pos[1],
-                texture.getWidth() * GameScreen.textureScale / 2,
-                texture.getHeight() *GameScreen.textureScale / 2);
+        this.texture = new Texture(Gdx.files.internal("defenceOrbs/"+origin.getName()+".png"));
+        this.hitbox = new Rectangle(pos[0]-17.5f, pos[1]-17.5f,
+                35 * GameScreen.textureScale,
+                35 * GameScreen.textureScale);
         this.target = target;
         this.frame = 38;
+
         this.speed = 1500;
         setSpeed();
+
         this.angle = MathUtils.random(target.getAngle() - 340, target.getAngle() + 340);
+
         this.origin = origin;
+        if(origin.getName().contains("OkoHora")) {
+            this.speed = 500;
+        }
+
         this.wasTargetChanged = false;
+
         if (angle > 360) angle -= 360;
         else if (angle < 0) angle += 360;
+
         timeCreated = TimeUtils.nanoTime();
     }
 
