@@ -85,7 +85,7 @@ public class Clock {
                 || Phase.draw) return;
 
         if (TimeUtils.millis() - Clock.timeMillis >= (1000 / 24) / GameScreen.gameSpeed) {
-            time[1]++;
+            time[1]+=20;
 
             if (time[1] >= 60) {
                 time[1] = 0;

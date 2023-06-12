@@ -15,8 +15,8 @@ public class Dam {
     public Dam(float[] pos, int maxhealth) {
         this.texture = new Texture(Gdx.files.internal("buildings/dam.png"));
         this.hitbox = new Rectangle(pos[0], pos[1],
-                50 * GameScreen.textureScale,
-                50 * GameScreen.textureScale);
+                50 * GameScreen.textureScale * 1.25f,
+                50 * GameScreen.textureScale * 1.25f);
         this.pos = pos;
         this.health = maxhealth;
         this.maxhealth = maxhealth;

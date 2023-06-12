@@ -16,68 +16,99 @@ public class PowerStation {
     private float[] pos;
     private int health;
     private int number;
+    private Position position;
     private Rectangle hitbox;
+    int healthmax =100;
     private boolean disabled;
-    private final int maxhealth;
-    public PowerStation(float[] pos, int maxhealth) {
+
+    public PowerStation(float[] pos, int health, int number) {
         this.pos = pos;
         this.texture = new Texture(Gdx.files.internal("buildings/aetherstation.png"));
         this.hitbox = new Rectangle(pos[0], pos[1],
                 40 * GameScreen.textureScale * 1.25f,
                 40 * GameScreen.textureScale * 1.25f);
-        this.health =maxhealth;
-        this.maxhealth = maxhealth;
+        this.health = health;
+        this.number = number;
+        this.position = new Position((int)pos[0], (int)pos[1]);
         this.disabled = false;
     }
+
     public void setDisabled(boolean value) {
         this.disabled = value;
     }
+
     public boolean isDisabled() {
         return this.disabled;
     }
+
     public  void draw(SpriteBatch spriteBatch) {
         spriteBatch.draw(texture, pos[0], pos[1],getWidth(),getHeight());
     }
+    // Геттери та сеттери для всіх полів
+
     public int getHealth() {
         return health;
     }
     public Texture getTexture() {
         return texture;
     }
+
     public float[] getPos() {
         return pos;
     }
+
+
     public void setHealth(int health) {
         this.health = health;
     }
+
     public int getNumber() {
         return number;
     }
+
     public void setNumber(int number) {
         this.number = number;
     }
+
+    public Position getPosition() {
+        return position;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
+    }
+
     public Rectangle getHitbox() {
         return hitbox;
     }
+
     public void setHitbox(Rectangle hitbox) {
         this.hitbox = hitbox;
     }
-    public double calculateHealthPercentage() {
-        return health/maxhealth;
+
+    public int calculateHealthPercentage() {
+        return health/healthmax;
     }
+
     public int calculateRepairCost() {
-        return (maxhealth-health) * 10;
+        return 100- calculateHealthPercentage() * 100;
     }
     public int getWidth() {
         return width/4;
     }
+
     public void setWidth(int width) {
         this.width = width;
     }
+
     public int getHeight() {
         return height/4;
     }
+
     public void setHeight(int height) {
         this.height = height;
     }
+
+
 }
+
