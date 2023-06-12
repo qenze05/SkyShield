@@ -3,11 +3,12 @@ package com.skyshield.game.gameObjects.buildings;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
+import com.skyshield.game.gameLogic.events.Attack;
 import com.skyshield.game.screens.GameScreen;
 
 public class Hub1 {
     private final SuperFactory factory;
-    int HealthMax = 150;
+    private final int maxhealth;
     public int checkDamageBefore;
     private final int limit;
     private final Texture texture;
@@ -23,12 +24,13 @@ public class Hub1 {
     private Rectangle hitbox;
     private boolean disabled;
 
-    public Hub1(float[] pos, SuperFactory factory, PowerStation powerStation, int health, int limit) {
+    public Hub1(float[] pos, SuperFactory factory, PowerStation powerStation, int maxhealth, int limit) {
         this.pos = pos;
         this.factory = factory;
         this.powerStation = powerStation;
-        this.health = health;
-        this.limit = limit;
+        this.health = maxhealth;
+        this.maxhealth = maxhealth;
+        this.limit = (int) (limit*Attack.coef);
         this.texture = new Texture(Gdx.files.internal("buildings/armshub.png"));
         this.hitbox = new Rectangle(pos[0], pos[1],
                 30 * GameScreen.textureScale,
@@ -52,18 +54,17 @@ public class Hub1 {
         if (!isTraining) {
             produceSoldiers();
         }
-        timeSinceLastProduction += deltaTime;
+        timeSinceLastProduction += deltaTime*GameScreen.gameSpeed;
         if (isTraining) {
             if (timeSinceLastProduction >= trainingDuration) {
                 finishTraining();
             }
         }
     }
-
     private void produceSoldiers() {
-        checkDamageBefore = health / HealthMax;
-        int healthPercentage = powerStation.calculateHealthPercentage() * checkDamageBefore;
-        int maxCapacity = (limit * healthPercentage);
+        checkDamageBefore = health / maxhealth;
+        int healthPercentage = (int) (powerStation.calculateHealthPercentage() * checkDamageBefore);
+        int maxCapacity = (int) (Attack.coef*limit * healthPercentage);
         trainingSize = Math.min(City.totalPopulation, maxCapacity);
         if (factory.getWeaponsProduced() >= maxCapacity) {
             isTraining = true;
@@ -71,9 +72,9 @@ public class Hub1 {
         }
     }
     private void finishTraining() {
-        weapons += trainingSize;
+        weapons += trainingSize*(calculateHealthPercentage()/checkDamageBefore);
         isTraining = false;
-        timeSinceLastProduction = 0;
+        timeSinceLastProduction -= trainingDuration ;
     }
     public Texture getTexture() {
         return texture;
@@ -98,5 +99,11 @@ public class Hub1 {
 
     public Rectangle getHitbox() {
         return hitbox;
+    }
+    public double calculateHealthPercentage() {
+        return health/maxhealth;
+    }
+    public int calculateRepairCost() {
+        return (maxhealth-health) * 10;
     }
 }

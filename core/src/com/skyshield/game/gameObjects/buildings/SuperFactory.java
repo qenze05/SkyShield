@@ -16,11 +16,10 @@ public class SuperFactory {
     private float timeSinceLastProduction;
     private final float productionInterval;
     private int health;
-    int healthmax = 200;
     private int number;
     private Rectangle hitbox;
 
-    public int weaponsProduced; // Лічильник виробленої зброї
+    public int weaponsProduced;
     private boolean disabled;
 
     public SuperFactory(float[] pos) {
@@ -37,8 +36,7 @@ public class SuperFactory {
 
     public void update(float deltaTime) {
         if(disabled) return;
-        float randomCoefficient = 0.00001f + random.nextFloat() * (0.0001f - 0.000001f);
-        timeSinceLastProduction += deltaTime * randomCoefficient;
+        timeSinceLastProduction += deltaTime*GameScreen.gameSpeed;
         if (timeSinceLastProduction >= productionInterval) {
             produceRocket();
             timeSinceLastProduction = 0;
@@ -64,7 +62,7 @@ public class SuperFactory {
     public void produceRocket() {
         int rocketsProduced = 5;
         rocketCount += rocketsProduced;
-        weaponsProduced += rocketsProduced; // Збільшити лічильник виробленої зброї
+        weaponsProduced += rocketsProduced;
     }
 
 

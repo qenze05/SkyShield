@@ -17,8 +17,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class Attack {
+    public static double coef =1;
     public static int phase = 1;
-
     public static int[] attackStartTime;
     public static int[] lastRocketSpawnTime;
     public static int[] cooldown;
@@ -78,7 +78,7 @@ public class Attack {
     }
 
     public static void phase1() {
-
+        coef=1;
         if (Clock.compareTimer(Clock.getTime(), Clock.setTimer(60 * 4, attackStartTime))
                 && Rockets.rockets.size == 0) {
 
@@ -128,6 +128,7 @@ public class Attack {
     }
 
     public static void phase2() {
+        coef=1.5;
         if (Clock.compareTimer(Clock.getTime(), Clock.setTimer(60 * 6, attackStartTime))
                 && Rockets.rockets.size == 0) {
 
@@ -188,6 +189,7 @@ public class Attack {
     }
 
     public static void phase3() {
+        coef=2;
         if (Clock.compareTimer(Clock.getTime(), Clock.setTimer(60 * 6, attackStartTime))
                 && Rockets.rockets.size == 0) {
 
@@ -254,6 +256,7 @@ public class Attack {
     }
 
     public static void phase4() {
+        coef=3;
         if (Clock.compareTimer(Clock.getTime(), Clock.setTimer(60 * 7, attackStartTime))
                 && Rockets.rockets.size == 0) {
 
@@ -380,6 +383,7 @@ public class Attack {
     }
 
     public static void phase5() {
+        coef=5;
         if (Clock.compareTimer(Clock.getTime(), Clock.setTimer(60 * 7, attackStartTime))
                 && Rockets.rockets.size == 0) {
 
@@ -504,6 +508,7 @@ public class Attack {
     }
 
     public static void phase6() {
+        coef=7;
         if (Clock.compareTimer(Clock.getTime(), Clock.setTimer(60 * 8, attackStartTime))
                 && Rockets.rockets.size == 0) {
 
@@ -625,7 +630,7 @@ public class Attack {
                     int amount = (MathUtils.randomBoolean()) ? MathUtils.random(4, 7) : MathUtils.random(8, 10);
                     float[] spawn = Rockets.getRandomSpawn();
 
-                    for (int i = 0; i < amount; i++) {
+                    for(int i = 0; i < amount; i++) {
                         Rockets.spawnRocket("elektra", ItemsList.getRandomBuilding(), spawn);
                     }
                 }
@@ -814,6 +819,7 @@ public class Attack {
     }
 
     public static void phase7() {
+        coef=10;
         if (Clock.compareTimer(Clock.getTime(), Clock.setTimer(60 * 7, attackStartTime))
                 && Rockets.rockets.size == 0) {
 

@@ -232,51 +232,50 @@ public class Buildings {
     }
 
     private static void addPowerStations() {
-        powerStations.add( new PowerStation(new float[]{200, 270}, 1000, 1));
-        powerStations.add( new PowerStation(new float[]{230, 470}, 1000, 2));
-        powerStations.add( new PowerStation(new float[]{400, 360}, 1000, 3));
-        powerStations.add( new PowerStation(new float[]{500, 270}, 1000, 4));
-        powerStations.add( new PowerStation(new float[]{460, 150}, 1000, 5));
-        powerStations.add( new PowerStation(new float[]{400, 490}, 1000, 6));
-        powerStations.add( new PowerStation(new float[]{630, 500}, 1000, 7));
-        powerStations.add( new PowerStation(new float[]{800, 330}, 1000, 8));
-        powerStations.add( new PowerStation(new float[]{650, 620}, 1000, 9));
-        powerStations.add( new PowerStation(new float[]{870, 530}, 1000, 10));
-        powerStations.add( new PowerStation(new float[]{930, 340}, 1000, 11));
-        powerStations.add( new PowerStation(new float[]{1050, 260}, 1000, 12));
-        powerStations.add( new PowerStation(new float[]{700, 160}, 1000, 13));
+        powerStations.add( new PowerStation(new float[]{200, 270}, 1000));
+        powerStations.add( new PowerStation(new float[]{230, 470}, 1000));
+        powerStations.add( new PowerStation(new float[]{400, 360}, 1000));
+        powerStations.add( new PowerStation(new float[]{500, 270}, 1000));
+        powerStations.add( new PowerStation(new float[]{460, 150}, 1000));
+        powerStations.add( new PowerStation(new float[]{400, 490}, 1000));
+        powerStations.add( new PowerStation(new float[]{630, 500}, 1000));
+        powerStations.add( new PowerStation(new float[]{800, 330}, 1000));
+        powerStations.add( new PowerStation(new float[]{650, 620}, 1000));
+        powerStations.add( new PowerStation(new float[]{870, 530}, 1000));
+        powerStations.add( new PowerStation(new float[]{930, 340}, 1000));
+        powerStations.add( new PowerStation(new float[]{1050, 260}, 1000));
+        powerStations.add( new PowerStation(new float[]{700, 160}, 1000));
     }
 
     private static void addFactories() {
-        factories.add( new Factory(new float[]{150,250}, powerStations.get(0),2000,1));
-        factories.add( new Factory(new float[]{260, 430}, powerStations.get(1),2000,2));
-        factories.add( new Factory(new float[]{410, 400}, powerStations.get(2),2000,3));
-        factories.add( new Factory(new float[]{400, 300}, powerStations.get(3),2000,4));
-        factories.add( new Factory(new float[]{510, 190}, powerStations.get(4),2000,5));
-        factories.add( new Factory(new float[]{450, 530}, powerStations.get(5),2000,6));
-        factories.add( new Factory(new float[]{480, 420}, powerStations.get(6),2000,7));
-        factories.add( new Factory(new float[]{855, 305}, powerStations.get(7),2000,8));
-        factories.add( new Factory(new float[]{610, 620}, powerStations.get(8),2000,9));
-        factories.add( new Factory(new float[]{860, 450}, powerStations.get(9),2000,10));
-        factories.add( new Factory(new float[]{1070, 360}, powerStations.get(10),2000,11));
-        factories.add( new Factory(new float[]{1080, 310}, powerStations.get(11),2000,12));
-        factories.add( new Factory(new float[]{660, 160}, powerStations.get(12),2000,13));
+        factories.add( new Factory(new float[]{150,250}, powerStations.get(0),2000));
+        factories.add( new Factory(new float[]{260, 430}, powerStations.get(1),2000));
+        factories.add( new Factory(new float[]{410, 400}, powerStations.get(2),2000));
+        factories.add( new Factory(new float[]{400, 300}, powerStations.get(3),2000));
+        factories.add( new Factory(new float[]{510, 190}, powerStations.get(4),2000));
+        factories.add( new Factory(new float[]{450, 530}, powerStations.get(5),2000));
+        factories.add( new Factory(new float[]{480, 420}, powerStations.get(6),2000));
+        factories.add( new Factory(new float[]{855, 305}, powerStations.get(7),2000));
+        factories.add( new Factory(new float[]{610, 620}, powerStations.get(8),2000));
+        factories.add( new Factory(new float[]{860, 450}, powerStations.get(9),2000));
+        factories.add( new Factory(new float[]{1070, 360}, powerStations.get(10),2000));
+        factories.add( new Factory(new float[]{1080, 310}, powerStations.get(11),2000));
+        factories.add( new Factory(new float[]{660, 160}, powerStations.get(12),2000));
     }
-
     private static void addCities() {
-        cities.add( new City(new float[]{240,290},powerStations.get(0),10,10,1000));
-        cities.add( new City(new float[]{280,550},powerStations.get(1),10,10,1000));
-        cities.add( new City(new float[]{350,350},powerStations.get(2),10,10,10000));
-        cities.add( new City(new float[]{450,250},powerStations.get(3),10,10,1000));
-        cities.add( new City(new float[]{420,120},powerStations.get(4),10,10,1000));
-        cities.add( new City(new float[]{510,540},powerStations.get(5),10,10,1000));
-        cities.add( new City(new float[]{570,450},powerStations.get(6),10,10,1000));
-        cities.add( new City(new float[]{740,300},powerStations.get(7),10,10,1000));
-        cities.add( new City(new float[]{720,620},powerStations.get(8),10,10,1000));
-        cities.add( new City(new float[]{830,500},powerStations.get(9),10,10,1000));
-        cities.add( new City(new float[]{1000,350},powerStations.get(10),10,10,1000));
-        cities.add( new City(new float[]{1010, 220},powerStations.get(11),10,10,1000));
-        cities.add( new City(new float[]{740,160},powerStations.get(12),10,10,1000));
+        cities.add( new City(new float[]{240,290},powerStations.get(0),1000));
+        cities.add( new City(new float[]{280,550},powerStations.get(1),1000));
+        cities.add( new City(new float[]{350,350},powerStations.get(2),1000));
+        cities.add( new City(new float[]{450,250},powerStations.get(3),1000));
+        cities.add( new City(new float[]{420,120},powerStations.get(4),1000));
+        cities.add( new City(new float[]{510,540},powerStations.get(5),1000));
+        cities.add( new City(new float[]{570,450},powerStations.get(6),1000));
+        cities.add( new City(new float[]{740,300},powerStations.get(7),1000));
+        cities.add( new City(new float[]{720,620},powerStations.get(8),1000));
+        cities.add( new City(new float[]{830,500},powerStations.get(9),1000));
+        cities.add( new City(new float[]{1000,350},powerStations.get(10),1000));
+        cities.add( new City(new float[]{1010, 220},powerStations.get(11),1000));
+        cities.add( new City(new float[]{740,160},powerStations.get(12),1000));
     }
 
     private static void addDams() {

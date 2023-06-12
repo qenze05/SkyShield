@@ -6,19 +6,20 @@ import com.badlogic.gdx.math.Rectangle;
 import com.skyshield.game.screens.GameScreen;
 
 public class Dam {
-    int HealthMax = 15000;
+    private final int maxhealth;
     private int health;
     private Texture texture;
     private float[] pos;
     private Rectangle hitbox;
     private boolean disabled;
-    public Dam(float[] pos, int health) {
+    public Dam(float[] pos, int maxhealth) {
         this.texture = new Texture(Gdx.files.internal("buildings/dam.png"));
         this.hitbox = new Rectangle(pos[0], pos[1],
                 50 * GameScreen.textureScale,
                 50 * GameScreen.textureScale);
         this.pos = pos;
-        this.health = health;
+        this.health = maxhealth;
+        this.maxhealth = maxhealth;
         this.disabled = false;
     }
 
@@ -53,5 +54,11 @@ public class Dam {
 
     public Rectangle getHitbox() {
         return hitbox;
+    }
+    public double calculateHealthPercentage() {
+        return health/maxhealth;
+    }
+    public int calculateRepairCost() {
+        return (maxhealth-health) * 10;
     }
 }

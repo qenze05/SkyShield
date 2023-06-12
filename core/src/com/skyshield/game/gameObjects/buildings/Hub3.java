@@ -3,10 +3,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.skyshield.game.screens.GameScreen;
-
+import com.skyshield.game.gameLogic.events.Attack;
 public class Hub3 {
     private final Hub2 hub2;
-    int HealthMax = 150;
+    private final int maxhealth;
     public int checkDamageBefore;
     private City city;
     private static int trainedSoldiers = 0;
@@ -23,12 +23,13 @@ public class Hub3 {
     private Rectangle hitbox;
     private boolean disabled;
 
-    public Hub3(float[] pos, Hub2 hub2, PowerStation powerStation, int health, int limit) {
+    public Hub3(float[] pos, Hub2 hub2, PowerStation powerStation, int maxhealth, int limit) {
         this.pos = pos;
         this.hub2 = hub2;
         this.powerStation = powerStation;
-        this.health = health;
-        this.limit = limit;
+        this.health = maxhealth;
+        this.maxhealth = maxhealth;
+        this.limit = (int) (limit*Attack.coef);
         this.texture = new Texture(Gdx.files.internal("buildings/armshub.png"));
         this.hitbox = new Rectangle(pos[0], pos[1],
                 30 * GameScreen.textureScale,
@@ -51,7 +52,7 @@ public class Hub3 {
         if (!isTraining) {
             produceSoldiers();
         }
-        timeSinceLastProduction += deltaTime;
+        timeSinceLastProduction += deltaTime*GameScreen.gameSpeed;
         if (isTraining) {
             if (timeSinceLastProduction >= trainingDuration) {
                 finishTraining();
@@ -59,9 +60,9 @@ public class Hub3 {
         }
     }
     private void produceSoldiers() {
-        checkDamageBefore = health / HealthMax;
-        int healthPercentage = powerStation.calculateHealthPercentage() * checkDamageBefore;
-        int maxCapacity = (limit * healthPercentage);
+        checkDamageBefore = health / maxhealth;
+        int healthPercentage = (int) (powerStation.calculateHealthPercentage() * checkDamageBefore);
+        int maxCapacity = (int) (Attack.coef*limit * healthPercentage);
         trainingSize = Math.min(City.totalPopulation, maxCapacity);
         if (hub2.getWeapons() >= maxCapacity) {
             isTraining = true;
@@ -70,7 +71,7 @@ public class Hub3 {
         }
     }
     private void finishTraining() {
-        trainedSoldiers += trainingSize * health / HealthMax / checkDamageBefore;
+        trainedSoldiers += trainingSize * (calculateHealthPercentage()/checkDamageBefore);
         isTraining = false;
         timeSinceLastProduction = 0;
     }
@@ -96,6 +97,12 @@ public class Hub3 {
 
     public Rectangle getHitbox() {
         return hitbox;
+    }
+    public double calculateHealthPercentage() {
+        return health/maxhealth;
+    }
+    public int calculateRepairCost() {
+        return (maxhealth-health) * 10;
     }
 }
 

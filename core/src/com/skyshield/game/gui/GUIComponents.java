@@ -47,6 +47,7 @@ public class GUIComponents {
     public static DialogWindow dialogWindow;
     public static DialogText dialogText;
     public static boolean dialogWindowIsClosing;
+
     public static Table goldTable;
 
     public static void addGoldTable(String amount) {

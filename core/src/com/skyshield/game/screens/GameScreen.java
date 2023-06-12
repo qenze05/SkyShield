@@ -265,6 +265,7 @@ public class GameScreen implements Screen {
     public void dispose() {
         mapImage.dispose();
         stage.dispose();
+        particleStage.dispose();
     }
 
     public static void changeGameSpeed() {

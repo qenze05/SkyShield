@@ -3,21 +3,23 @@ package com.skyshield.game.gameObjects.buildings;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
+import com.skyshield.game.gameLogic.events.Attack;
 import com.skyshield.game.gameObjects.buildings.City;
 import com.skyshield.game.screens.GameScreen;
 
 import static com.badlogic.gdx.math.MathUtils.random;
+import com.skyshield.game.gameLogic.events.Attack;
 
 public class Barracks {
-    int HealthMax = 150;
+
+    private final int maxhealth;
     private City city;
     private static int trainedSoldiers =0;
     private int limit;
     private Texture texture;
     private PowerStation powerStation;
     private int health;
-    public int checkDamageBefore;
-    public int checkDamageAfter;
+    public double checkDamageBefore;
     private float[] pos;
     private float timeSinceLastProduction;
     private float productionInterval;
@@ -27,22 +29,21 @@ public class Barracks {
     public int trainingSize;
     private Rectangle hitbox;
     private boolean disabled;
-
-
-    public Barracks(float[] pos, City city, PowerStation powerStation, int health, int limit) {
+    public Barracks(float[] pos, City city, PowerStation powerStation, int maxhealth, int limit) {
         this.pos = pos;
         this.city = city;
         this.powerStation = powerStation;
-        this.health = health;
-        this.limit = limit;
+        this.health = maxhealth;
+        this.maxhealth = maxhealth;
+        this.limit = (int) (limit*Attack.coef);
         this.texture = new Texture(Gdx.files.internal("buildings/military.png"));
         this.hitbox = new Rectangle(pos[0], pos[1],
                 30 * GameScreen.textureScale,
                 30 * GameScreen.textureScale);
         this.timeSinceLastProduction = 0;
-        this.productionInterval = 420;
+        this.productionInterval = 3600f/GameScreen.gameSpeed;;
         this.timeSinceLastTraining = 0;
-        this.trainingDuration = 180;
+        this.trainingDuration = 180/GameScreen.gameSpeed;
         this.isTraining = false;
         this.disabled = false;
     }
@@ -59,7 +60,7 @@ public class Barracks {
         if(!isTraining){
             produceSoldiers();
         }
-        timeSinceLastProduction += deltaTime;
+        timeSinceLastProduction += deltaTime*GameScreen.gameSpeed;
         if (isTraining) {
 
             if (timeSinceLastProduction >= trainingDuration) {
@@ -67,26 +68,21 @@ public class Barracks {
             }
         }
     }
-
     private void produceSoldiers() {
-        checkDamageBefore=health/HealthMax;
-        int healthPercentage = powerStation.calculateHealthPercentage() *checkDamageBefore;
-        int maxCapacity = (limit * healthPercentage);
-        trainingSize = Math.min(City.totalPopulation/3000, maxCapacity);
+        checkDamageBefore=health/maxhealth;
+        int healthPercentage = (int) (powerStation.calculateHealthPercentage() *checkDamageBefore*calculateHealthPercentage());
+        int maxCapacity = (int) (Attack.coef*(limit * healthPercentage));
+        trainingSize = Math.min(City.totalPopulation, maxCapacity);
         if (City.totalPopulation >= maxCapacity) {
             City.totalPopulation -= trainingSize;
             isTraining = true;
         }
     }
-
     private void finishTraining() {
-        trainedSoldiers += trainingSize*health/HealthMax/checkDamageBefore;
+        trainedSoldiers += trainingSize*(calculateHealthPercentage()/checkDamageBefore);
         isTraining = false;
-        timeSinceLastProduction = 0;
+        timeSinceLastProduction -= trainingDuration;
     }
-
-
-
     public static int getTotalTrainedSoldiers() {
         return trainedSoldiers;
     }
@@ -108,4 +104,11 @@ public class Barracks {
     public Rectangle getHitbox() {
         return hitbox;
     }
+    public double calculateHealthPercentage() {
+        return health/maxhealth;
+    }
+    public int calculateRepairCost() {
+        return (maxhealth-health) * 10;
+    }
+
 }
