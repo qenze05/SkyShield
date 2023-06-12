@@ -23,8 +23,8 @@ public class PowerStation {
         this.pos = pos;
         this.texture = new Texture(Gdx.files.internal("buildings/aetherstation.png"));
         this.hitbox = new Rectangle(pos[0], pos[1],
-                40 * GameScreen.textureScale,
-                40 * GameScreen.textureScale);
+                40 * GameScreen.textureScale * 1.25f,
+                40 * GameScreen.textureScale * 1.25f);
         this.health =maxhealth;
         this.maxhealth = maxhealth;
         this.disabled = false;

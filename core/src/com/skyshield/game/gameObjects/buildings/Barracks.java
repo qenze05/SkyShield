@@ -38,8 +38,8 @@ public class Barracks {
         this.limit = (int) (limit*Attack.coef);
         this.texture = new Texture(Gdx.files.internal("buildings/military.png"));
         this.hitbox = new Rectangle(pos[0], pos[1],
-                30 * GameScreen.textureScale,
-                30 * GameScreen.textureScale);
+                30 * GameScreen.textureScale * 1.25f,
+                30 * GameScreen.textureScale * 1.25f);
         this.timeSinceLastProduction = 0;
         this.productionInterval = 3600f/GameScreen.gameSpeed;;
         this.timeSinceLastTraining = 0;
@@ -68,6 +68,7 @@ public class Barracks {
             }
         }
     }
+
     private void produceSoldiers() {
         checkDamageBefore=health/maxhealth;
         int healthPercentage = (int) (powerStation.calculateHealthPercentage() *checkDamageBefore*calculateHealthPercentage());

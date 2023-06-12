@@ -33,8 +33,8 @@ public class Hub1 {
         this.limit = (int) (limit*Attack.coef);
         this.texture = new Texture(Gdx.files.internal("buildings/armshub.png"));
         this.hitbox = new Rectangle(pos[0], pos[1],
-                30 * GameScreen.textureScale,
-                30 * GameScreen.textureScale);
+                30 * GameScreen.textureScale * 1.25f,
+                30 * GameScreen.textureScale * 1.25f);
         this.timeSinceLastProduction = 0;
         this.trainingDuration = 180*3;
         this.isTraining = false;

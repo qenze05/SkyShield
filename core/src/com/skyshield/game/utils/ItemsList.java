@@ -174,10 +174,10 @@ public class ItemsList {
         arr.add(new OkoHora1(pos));
         arr.add(new OkoHora2(pos));
         arr.add(new OkoHora3(pos));
-//        for(AirDef airDef : arr) {
-//            airDef.setLocked(true);
-//            airDef.setTexture();
-//        }
+        for(AirDef airDef : arr) {
+            airDef.setLocked(true);
+            airDef.setTexture();
+        }
         return arr;
     }
 

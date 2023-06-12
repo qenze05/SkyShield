@@ -26,8 +26,8 @@ public class SuperFactory {
         this.pos = pos;
         this.texture = new Texture(Gdx.files.internal("buildings/factory.png"));
         this.hitbox = new Rectangle(pos[0], pos[1],
-                40 * GameScreen.textureScale,
-                40 * GameScreen.textureScale);
+                40 * GameScreen.textureScale * 1.25f,
+                40 * GameScreen.textureScale * 1.25f);
         this.timeSinceLastProduction = 0;
         this.productionInterval = 0.01f; // Виробляти ракету кожну 1 секунду
         this.weaponsProduced -= 0;

@@ -147,14 +147,14 @@ public class GameScreen implements Screen {
             }
 
             if (GUIComponents.dialogText == null && !GUIComponents.dialogWindowIsClosing) {
-                DialogTimer.startText(DialogText.getText());
+                DialogTimer.startText(DialogText.getFormattedText());
             } else if (!GUIComponents.dialogWindowIsClosing) {
                 if (GUIComponents.dialogText.isWritten() && GUIComponents.skipButton != null) {
                     GUIComponents.skipButton.remove();
                     GUIComponents.skipButton = null;
                     GUIComponents.addOkButton();
                 }
-//                System.out.println(MathUtils.random());
+
                 GUIComponents.updateDialogText();
             } else {
                 if (GUIComponents.dialogWindow.getY() >= screenHeight) {
