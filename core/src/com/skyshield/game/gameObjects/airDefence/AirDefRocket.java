@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.skyshield.game.gameObjects.rockets.Rocket;
+import com.skyshield.game.screens.GameScreen;
 
 public class AirDefRocket {
     private float[] pos;
@@ -13,7 +14,7 @@ public class AirDefRocket {
     private Rectangle hitbox;
     private Rocket target;
     private int frame;
-    private int angle;
+    private float angle;
     private float speed;
     private final AirDef origin;
     public long timeCreated;
@@ -22,10 +23,13 @@ public class AirDefRocket {
     public AirDefRocket(float[] pos, Rocket target, AirDef origin) {
         this.pos = pos;
         this.texture = new Texture(Gdx.files.internal("air-defence/rocket.png"));
-        this.hitbox = new Rectangle(pos[0], pos[1], texture.getWidth(), texture.getHeight());
+        this.hitbox = new Rectangle(pos[0], pos[1],
+                texture.getWidth() * GameScreen.textureScale / 2,
+                texture.getHeight() *GameScreen.textureScale / 2);
         this.target = target;
         this.frame = 38;
-        this.speed = 2000;
+        this.speed = 1500;
+        setSpeed();
         this.angle = MathUtils.random(target.getAngle() - 340, target.getAngle() + 340);
         this.origin = origin;
         this.wasTargetChanged = false;
@@ -59,7 +63,7 @@ public class AirDefRocket {
         return frame;
     }
 
-    public int getAngle() {
+    public float getAngle() {
         return angle;
     }
 
@@ -84,12 +88,14 @@ public class AirDefRocket {
         this.frame = frame;
     }
 
-    public void setAngle(int angle) {
+    public void setAngle(float angle) {
         this.angle = angle;
     }
 
-    public void setSpeed(float speed) {
-        this.speed = speed;
+    public void setSpeed() {
+        if(target.getSpeed() < speed) return;
+        if(target.getSpeed() < 3000) speed = target.getSpeed()*1.5f;
+        else speed = 3000;
     }
     public boolean getWasTargetChanged() {
         return wasTargetChanged;

@@ -3,8 +3,10 @@ package com.skyshield.game.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -32,27 +34,22 @@ public class MainMenu implements Screen {
 
     @Override
     public void show() {
-        Table table = new Table();
-//        table.setFillParent(true);
-        table.setDebug(true);
-        table.setBounds(200, 380, 600, 100);
         Table table2 = new Table();
 //        table2.setDebug(true);
         table2.setFillParent(true);
-        stage.addActor(table);
         stage.addActor(table2);
+
+        table2.setBackground(new Image(new Texture(Gdx.files.internal("main-menu-bg.png"))).getDrawable());
 
         Skin skin = new Skin(Gdx.files.internal("freezing/skin/freezing-ui.json"));
         TextButton newGameButton = new TextButton("New Game", skin);
         TextButton preferencesButton = new TextButton("Preferences", skin);
         TextButton exitButton = new TextButton("Exit", skin);
 
-        table.add(newGameButton).right().expandX();
         table2.add(newGameButton);
-//        table.row().pad(10, 0, 10, 0);
-        table.add(preferencesButton).right().expandX();
-//        table.row();
-        table.add(exitButton).right().expandX();
+        table2.row().pad(10, 0, 10, 0);
+//        table2.add(preferencesButton).right().expandX();
+        table2.add(exitButton);
         exitButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
@@ -86,11 +83,6 @@ public class MainMenu implements Screen {
 
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
-
-        game.batch.begin();
-        game.font.draw(game.batch, "Welcome to Drop!!! ", 100, 150);
-        game.font.draw(game.batch, "Tap anywhere to begin!", 100, 100);
-        game.batch.end();
 
         stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
         stage.draw();

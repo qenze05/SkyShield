@@ -1,4 +1,6 @@
 package com.skyshield.game.utils;
+import com.badlogic.gdx.Gdx;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -13,7 +15,7 @@ public class MapPolygon {
 
     public MapPolygon(String src) {
         try{
-            this.image = ImageIO.read(new File(src));
+            this.image = ImageIO.read(new File(String.valueOf(Gdx.files.internal(src))));
             this.radius = Math.max(image.getWidth(), image.getHeight());
             this.vertices = getVerticesCoords();
         }catch(IOException e) {
