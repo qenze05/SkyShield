@@ -23,6 +23,7 @@ public class OkoHora1 extends AirDef{
 
     public OkoHora1(float[] pos) {
         super(pos);
+
         this.pos = pos;
         this.name = "OkoHora1";
         this.optimalSpeed = 0;

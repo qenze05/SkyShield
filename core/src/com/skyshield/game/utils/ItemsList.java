@@ -7,6 +7,8 @@ import com.skyshield.game.gameLogic.entities.Buildings;
 import com.skyshield.game.gameObjects.airDefence.*;
 import com.skyshield.game.gameObjects.rockets.Rocket;
 import com.skyshield.game.gameObjects.rockets.SimpleRocket;
+import com.skyshield.game.gui.GUIComponents;
+import com.skyshield.game.screens.GameScreen;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -189,6 +191,10 @@ public class ItemsList {
            airDef = iter.next();
            airDef.setLocked(false);
            airDef.setTexture();
+        }
+        if(GameScreen.stage.getActors().contains(GUIComponents.shopScrollBar, false)) {
+            GUIComponents.removeShop();
+            GUIComponents.addShop();
         }
     }
 }

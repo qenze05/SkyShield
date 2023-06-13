@@ -8,7 +8,7 @@ import com.skyshield.game.screens.GameScreen;
 
 public class DialogText extends Table {
 
-    public static int textCounter = 1;
+    public static int textCounter = 4;
     final float letterSpawnTime = .02f;
     float timer = 0;
 
@@ -59,7 +59,7 @@ public class DialogText extends Table {
 
     public void skip() {
         text = (text.length() < 196) ? text : text.substring(text.length()-196);
-        if(text.charAt(0)!='\n') text = text.substring(text.split("\\n")[0].length()+1);
+//        if(text.charAt(0)!='\n') text = text.substring(text.split("\\n")[0].length()+1);
         drawText = text;
         stringIndex = drawText.length();
     };

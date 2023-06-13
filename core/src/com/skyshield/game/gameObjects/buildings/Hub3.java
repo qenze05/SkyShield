@@ -48,6 +48,22 @@ public class Hub3 {
         return this.disabled;
     }
 
+    public int getHealth() {
+        return health;
+    }
+    public void setHealth(int hp) {
+        this.health = Math.min ( Math.max(health+hp, 0), maxhealth );
+        if(health <= 0) setTexture (new Texture(Gdx.files.internal("buildings/armshub-destroyed.png")));
+        else setTexture (new Texture(Gdx.files.internal("buildings/armshub.png")));
+    }
+
+    public void setTexture(Texture texture) {
+        this.texture = texture;
+    }
+    public int getMaxhealth() {
+        return maxhealth;
+    }
+
     public void update(float deltaTime) {
         if (!isTraining) {
             produceSoldiers();

@@ -56,6 +56,10 @@ public class Factory {
         return rocketCount;
     }
 
+    public int getMaxhealth() {
+        return maxhealth;
+    }
+
     public void produceRocket() {
         double healthPercentage = powerStation.calculateHealthPercentage();
         double rocketsProduced =  rocketProduction*healthPercentage*calculateHealthPercentage();
@@ -81,8 +85,14 @@ public class Factory {
         return health;
     }
 
-    public void setHealth(int health) {
-        this.health = health;
+    public void setHealth(int hp) {
+        this.health = Math.min ( Math.max(health+hp, 0), maxhealth );
+        if(health <= 0) setTexture (new Texture(Gdx.files.internal("buildings/factory-destroyed.png")));
+        else setTexture (new Texture(Gdx.files.internal("buildings/factory.png")));
+    }
+
+    public void setTexture(Texture texture) {
+        this.texture = texture;
     }
 
     public int getNumber() {

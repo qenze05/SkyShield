@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PowerStation {
-    private final Texture texture;
+    private Texture texture;
     private int width;
     private int height;
     private float[] pos;
@@ -29,6 +29,11 @@ public class PowerStation {
         this.maxhealth = maxhealth;
         this.disabled = false;
     }
+
+    public int getMaxhealth() {
+        return maxhealth;
+    }
+
     public void setDisabled(boolean value) {
         this.disabled = value;
     }
@@ -47,8 +52,14 @@ public class PowerStation {
     public float[] getPos() {
         return pos;
     }
-    public void setHealth(int health) {
-        this.health = health;
+    public void setHealth(int hp) {
+        this.health = Math.min ( Math.max(health+hp, 0), maxhealth );
+        if(health <= 0) setTexture (new Texture(Gdx.files.internal("buildings/aetherstation-destroyed.png")));
+        else setTexture (new Texture(Gdx.files.internal("buildings/aetherstation.png")));
+    }
+
+    public void setTexture(Texture texture) {
+        this.texture = texture;
     }
     public int getNumber() {
         return number;
