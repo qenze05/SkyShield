@@ -1,5 +1,6 @@
 package com.skyshield.game.gameLogic.entities;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
@@ -18,6 +19,8 @@ public class AirDefence {
     public static Array<AirDef> airDefs = new Array<>();
     public static Array<AirDefRocket> airDefRockets = new Array<>();
     private static final Array<Rocket> cornerTargets = new Array<>();
+    private static boolean snovydaLost = false;
+    private static Sprite airDefRocketSprite;
 
     public static void addAirDef(float[] pos, String type) {
         if (airDefs == null) AirDefence.airDefs = new Array<>();
@@ -36,6 +39,9 @@ public class AirDefence {
             case "skorpion-s" -> airDefs.add(new SkorpionS(pos));
             case "pulsar-s" -> airDefs.add(new PulsarS(pos));
             case "armahedon" -> airDefs.add(new Armahedon(pos));
+            case "okohora1" -> airDefs.add(new OkoHora1(pos));
+            case "okohora2" -> airDefs.add(new OkoHora2(pos));
+            case "okohora3" -> airDefs.add(new OkoHora3(pos));
         }
         if (!airDefs.isEmpty()) {
             AirDef lastAddedAirDef = airDefs.get(airDefs.size-1);
@@ -56,8 +62,10 @@ public class AirDefence {
 
         GameScreen.game.batch.begin();
 
+        if(snovydaLost) hideSnovyda();
         Iterator<AirDefRocket> iter = airDefRockets.iterator();
         AirDefRocket rocket;
+
 
         while (iter.hasNext()) {
 
@@ -68,12 +76,14 @@ public class AirDefence {
                 findNewTarget(rocket);
             } else if (rocket.getHitbox().overlaps(rocket.getTarget().getHitbox())) {
 
-                if(rocket.getTarget().getPower() == 0) { //simple rocket ability
+                if(rocket.getTarget().getName().equalsIgnoreCase("SimpleRocket")) { //simple rocket ability
                     removeTarget(rocket.getTarget().getHitbox(), rocket.getOrigin());
                     iter.remove();
                     continue;
-                }else if(rocket.getTarget().getRocketSize() == 0){ //immortal rocket ability
+                }else if(rocket.getTarget().getName().equalsIgnoreCase("ImmortalRocket")){ //immortal rocket ability
                     setCornerTarget(rocket);
+                }else if (rocket.getOrigin().getName().contains("OkoHora")) {
+                    continue;
                 }else{
                     if(miss(rocket)) {
                         setCornerTarget(rocket);
@@ -83,19 +93,39 @@ public class AirDefence {
                         continue;
                     }
                 }
+            } else if (rocket.getOrigin().getName().contains("OkoHora")
+                    && !rocket.getOrigin().getCircleHitbox().overlaps(rocket.getTarget().getHitbox())) {
+                snovydaLost = true;
+                rocket.getTarget().setTargetedState(false);
+                iter.remove();
             }
 
             if (!rocket.getOrigin().getCircleHitbox().contains(rocket.getHitbox())) {
                 iter.remove();
             }
 
-            GameScreen.game.batch.draw(rocket.getTexture(),
-                    rocket.getHitbox().x, rocket.getHitbox().y, rocket.getHitbox().width, rocket.getHitbox().height);
+            airDefRocketSprite = new Sprite(rocket.getTexture());
+            airDefRocketSprite.setBounds(rocket.getHitbox().x, rocket.getHitbox().y, rocket.getHitbox().width, rocket.getHitbox().height);
+            airDefRocketSprite.setOrigin(rocket.getHitbox().width/2, rocket.getHitbox().height/2);
+            airDefRocketSprite.rotate(rocket.getAngle() * (-1)-180);
+            airDefRocketSprite.draw(GameScreen.game.batch);
         }
 
         GameScreen.game.batch.end();
     }
 
+    private static void hideSnovyda() {
+        Iterator<AirDefRocket> iter = airDefRockets.iterator();
+        AirDefRocket rocket;
+        while(iter.hasNext()) {
+            rocket = iter.next();
+            if(rocket.getTarget() == null) continue;
+            if(rocket.getTarget().getName().equalsIgnoreCase("Snovyda")) {
+                findNewTarget(rocket);
+            }
+        }
+        snovydaLost = false;
+    }
     private static void moveRocket(AirDefRocket rocket) {
 
         Rectangle hitbox = rocket.getHitbox();
@@ -113,6 +143,7 @@ public class AirDefence {
     }
 
     private static float rotateRocket(AirDefRocket rocket, Rectangle hitbox) {
+
         Rectangle targetHitbox = rocket.getTarget().getHitbox();
         float[] current = new float[]{hitbox.x + hitbox.width / 2, hitbox.y + hitbox.height / 2};
         float[] target = new float[]{targetHitbox.x+targetHitbox.width/2, targetHitbox.y+targetHitbox.height/2};
@@ -162,17 +193,24 @@ public class AirDefence {
                         && (TimeUtils.nanoTime() - airDefUnit.getLastLaunchTime()) * GameScreen.gameSpeed
                         > airDefUnit.getReload() * 1000000000f) {
 
-                    if(Rockets.isVisible(rocket)) { // snovyda ability
-
-                        if(!airDefUnit.getName().equalsIgnoreCase("pulsar")  // pulsar ability
-                                && !airDefUnit.getName().equalsIgnoreCase("pulsar-s")) {
-
-                            airDefUnit.setLastLaunchTime(TimeUtils.nanoTime());
-                        }
-
-                        launchAirDef(rocket, airDefUnit);
-                        rocket.setTargetedState(true);
+                    if(rocket.getName().equalsIgnoreCase("snovyda")) {
+                        if(airDefUnit.getName().contains("OkoHora")
+                                || rocket.isTargeted()) {
+                            launchAirDef(rocket, airDefUnit);
+                            rocket.setTargetedState(true);
+                        }else continue;
+                    }else if(airDefUnit.getName().contains("OkoHora")) {
+                        continue;
                     }
+
+                    if(!airDefUnit.getName().equalsIgnoreCase("pulsar")  // pulsar ability
+                            && !airDefUnit.getName().equalsIgnoreCase("pulsar-s")) {
+
+                        airDefUnit.setLastLaunchTime(TimeUtils.nanoTime());
+                    }
+
+                    launchAirDef(rocket, airDefUnit);
+                    rocket.setTargetedState(true);
                 }
             }
 
@@ -220,14 +258,20 @@ public class AirDefence {
 
         for (Rocket rocket : Rockets.rockets) {
 
-            if(!Rockets.isVisible(rocket)
-                    || rocket.isEliminated()
+            if(rocket.isEliminated()
                     || rocket.isTargeted() == skipTargeted
                     || !airDefRocket.getOrigin().getCircleHitbox().contains(rocket.getHitbox())) continue;
 
             targetPos[0] = rocket.getHitbox().x;
             targetPos[1] = rocket.getHitbox().y;
-            rocketsMap.put((Rockets.getDistance(airDefPos, targetPos)), rocket);
+            if(rocket.getName().equalsIgnoreCase("Snovyda")) {
+                if(airDefRocket.getOrigin().getName().contains("OkoHora")
+                        || rocket.isTargeted()) {
+                    rocketsMap.put((Rockets.getDistance(airDefPos, targetPos)), rocket);
+                }
+            }else {
+                rocketsMap.put((Rockets.getDistance(airDefPos, targetPos)), rocket);
+            }
         }
 
         if(rocketsMap.size()==0 && skipTargeted) return findClosestTarget(airDefRocket, false);
@@ -266,12 +310,17 @@ public class AirDefence {
         Rocket rocket = airDefRocket.getTarget();
         float[] rocketPos = new float[]{rocket.getHitbox().x, rocket.getHitbox().y};
 
-        float speedEff = (airDef.getOptimalSpeed() > rocket.getSpeed()) ? 1 : (airDef.getOptimalSpeed()/rocket.getSpeed());
-        float sizeEff = (airDef.getOptimalSize() < rocket.getRocketSize()) ? 1 : (airDef.getOptimalSize()/rocket.getRocketSize());
+        float speedEff = (airDef.getOptimalSpeed() >= rocket.getSpeed()) ? 1 : (airDef.getOptimalSpeed()/rocket.getSpeed());
+        float sizeEff = (airDef.getOptimalSize() <= rocket.getRocketSize()) ? 1 : (rocket.getRocketSize()/airDef.getOptimalSize());
         float centralEff = 1 - (1 - airDef.getCentrality())*(Rockets.getDistance(airDef.getPos(), rocketPos)/(airDef.getRadius()*GameScreen.globalScale));
         float distanceEff = 0.5f + Math.abs(0.5f * (Rockets.getDistance(rocketPos, rocket.getTargetPos()) / Rockets.getDistance(rocket.getSpawnPoint(), rocket.getTargetPos())) - 0.5f);
 
         float totalEff = speedEff * sizeEff * centralEff * distanceEff;
+//        System.out.println("speed: "+speedEff+"\n" +
+//                "size: "+sizeEff+"\n" +
+//                "cental: "+centralEff+"\n" +
+//                "dist: "+distanceEff+"\n"+
+//                "total: "+totalEff);
 
         return MathUtils.random(0, 100) > totalEff * 100;
     }
@@ -287,13 +336,13 @@ public class AirDefence {
     }
 
     private static void fillCornerTargetsArray() {
-        cornerTargets.add(new SimpleRocket("City-1",
+        cornerTargets.add(new SimpleRocket("City-3",
                 new float[]{GameScreen.screenWidth, GameScreen.screenHeight}));
-        cornerTargets.add(new SimpleRocket("City-1",
+        cornerTargets.add(new SimpleRocket("City-3",
                 new float[]{GameScreen.screenWidth, 0}));
-        cornerTargets.add(new SimpleRocket("City-1",
+        cornerTargets.add(new SimpleRocket("City-3",
                 new float[]{0, 0}));
-        cornerTargets.add(new SimpleRocket("City-1",
+        cornerTargets.add(new SimpleRocket("City-3",
                 new float[]{0, GameScreen.screenHeight}));
     }
 

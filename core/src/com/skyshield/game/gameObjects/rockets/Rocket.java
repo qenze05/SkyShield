@@ -6,11 +6,14 @@ import com.badlogic.gdx.math.Rectangle;
 public abstract class Rocket {
     public Rocket(String target, float[] spawnPoint) {
     }
+
+    public abstract String getName();
     public abstract boolean isTargeted();
     public abstract boolean isEliminated();
     public abstract void setTargetedState(boolean state);
     public abstract void setEliminated(boolean state);
     public abstract boolean canReach();
+
     public abstract float getMaxDistance();
 
     public abstract float getPower();

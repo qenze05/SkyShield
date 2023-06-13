@@ -34,18 +34,21 @@ public class ShopScrollBar extends Table {
         for (int i = 0; i < ItemsList.uniqueAirDefs.size; i++) {
 
             airDefTexture = ItemsList.uniqueAirDefs.get(i).getTexture();
+            boolean locked = ItemsList.uniqueAirDefs.get(i).isLocked();
 
             Texture circleTexture = ItemsList.uniqueAirDefs.get(i).getCircleTexture();
             Rectangle circleSize = ItemsList.uniqueAirDefs.get(i).getCircleHitbox();
 
             Image t = new Image(airDefTexture);
             ImageButton button = new ImageButton(t.getDrawable());
+
             button.setName(ItemsList.uniqueAirDefs.get(i).getName());
+
             button.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     super.clicked(event, x, y);
-                    if (GUIComponents.movingButton == null)
+                    if (GUIComponents.movingButton == null && !locked)
                         GUIComponents.addMovingButton(button, circleTexture, circleSize);
                 }
 
