@@ -23,7 +23,6 @@ public class Mukha extends Rocket {
     private String targetName;
     private Rectangle targetHitbox;
     private float[] targetPos;
-    private String name;
 
     public Mukha(String target, float[] spawnPoint) {
         super(target, spawnPoint);
@@ -51,12 +50,6 @@ public class Mukha extends Rocket {
 
         this.targeted = false;
         this.eliminated = false;
-        this.name = "Mukha";
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
     }
 
     @Override

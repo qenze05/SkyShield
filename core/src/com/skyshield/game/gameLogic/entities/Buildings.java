@@ -23,66 +23,56 @@ public class Buildings {
         Polygon territory = CountryTerritory.map;
 
         for(Hub1 hub1 : hub1s) {
-            if(!territory.contains(hub1.getPos()[0]+20, hub1.getPos()[1]+20)) {
+            if(!territory.contains(hub1.getPos()[0], hub1.getPos()[1])) {
                 hub1.setDisabled(true);
-            }else{
-                hub1.setDisabled(false);
             }
         }
 
         for(Hub2 hub2 : hub2s) {
-            if(!territory.contains(hub2.getPos()[0]+20, hub2.getPos()[1]+20)) {
+            if(!territory.contains(hub2.getPos()[0], hub2.getPos()[1])) {
                 hub2.setDisabled(true);
-            }else{
-                hub2.setDisabled(false);
             }
         }
 
         for(Hub3 hub3 : hub3s) {
-            if(!territory.contains(hub3.getPos()[0]+20, hub3.getPos()[1]+20)) {
+            if(!territory.contains(hub3.getPos()[0], hub3.getPos()[1])) {
                 hub3.setDisabled(true);
-            }else{
-                hub3.setDisabled(false);
             }
         }
 
         for(PowerStation powerStation : powerStations) {
-            if(!territory.contains(powerStation.getPos()[0]+20, powerStation.getPos()[1]+20)) {
+            if(!territory.contains(powerStation.getPos()[0], powerStation.getPos()[1])) {
                 powerStation.setDisabled(true);
-            }else{
-                powerStation.setDisabled(false);
+            }
+        }
+
+        for(SuperFactory superFactory : superFactories) {
+            if(!territory.contains(superFactory.getPos()[0], superFactory.getPos()[1])) {
+                superFactory.setDisabled(true);
             }
         }
 
         for(Dam dam : dams) {
-            if(!territory.contains(dam.getPos()[0]+20, dam.getPos()[1]+20)) {
+            if(!territory.contains(dam.getPos()[0], dam.getPos()[1])) {
                 dam.setDisabled(true);
-            }else{
-                dam.setDisabled(false);
             }
         }
 
         for(City city : cities) {
-            if(!territory.contains(city.getPos()[0]+20, city.getPos()[1]+20)) {
+            if(!territory.contains(city.getPos()[0], city.getPos()[1])) {
                 city.setDisabled(true);
-            }else{
-                city.setDisabled(false);
             }
         }
 
         for(Factory factory : factories) {
-            if(!territory.contains(factory.getPos()[0]+20, factory.getPos()[1]+20)) {
+            if(!territory.contains(factory.getPos()[0], factory.getPos()[1])) {
                 factory.setDisabled(true);
-            }else{
-                factory.setDisabled(false);
             }
         }
 
         for(Barracks barrack : barracks) {
-            if(!territory.contains(barrack.getPos()[0]+20, barrack.getPos()[1]+20)) {
+            if(!territory.contains(barrack.getPos()[0], barrack.getPos()[1])) {
                 barrack.setDisabled(true);
-            }else{
-                barrack.setDisabled(false);
             }
         }
     }

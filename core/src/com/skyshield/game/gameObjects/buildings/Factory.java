@@ -28,8 +28,8 @@ public class Factory {
         this.pos = pos;
         this.texture = new Texture(Gdx.files.internal("buildings/factory.png"));
         this.hitbox = new Rectangle(pos[0], pos[1],
-                30 * GameScreen.textureScale * 1.25f,
-                30 * GameScreen.textureScale * 1.25f);
+                30 * GameScreen.textureScale,
+                30 * GameScreen.textureScale);
         this.powerStation = powerStation;
         this.timeSinceLastProduction = 0;
         this.productionInterval = 3600f/GameScreen.gameSpeed;

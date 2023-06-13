@@ -18,10 +18,9 @@ public class Rockets {
     public static Array<Rocket> rockets;
     public static float[][] spawn = new float[][]{{1060, 95}, {1200, 120}, {1175, 460}, {1120, 640}, {780, 675}};
     public static float[][] seaSpawn = new float[][]{{400, 25}, {650, 20}, {1000, 50}, {920, 185}};
-    private static Sprite rocketSprite;
 
     public static String getRandomRocket() {
-        String[] arr = new String[]{"elektra", "harpun", "kobra", "korshun", "mukha", "r1", "r2", "r3", "sapsan", "troyanskyykin", "snovyda"};
+        String[] arr = new String[]{"elektra", "harpun", "kobra", "korshun", "mukha", "r1", "r2", "r3", "sapsan", "troyanskyykin"};
         return arr[MathUtils.random(0, arr.length-1)];
     }
     public static float[] getRandomSpawn() {
@@ -60,6 +59,7 @@ public class Rockets {
 
             Rocket rocket;
             Rectangle hitbox;
+            Sprite rocketSprite;
 
             rocket = iter.next();
             hitbox = rocket.getHitbox();
@@ -84,10 +84,6 @@ public class Rockets {
             rocketSprite.setBounds(rocket.getHitbox().x, rocket.getHitbox().y, rocket.getHitbox().width, rocket.getHitbox().height);
             rocketSprite.setOrigin(rocket.getHitbox().width/2, rocket.getHitbox().height/2);
             rocketSprite.rotate(rocket.getAngle() * (-1));
-
-            if(rocket.getName().equalsIgnoreCase("Snovyda") && !rocket.isTargeted()) {
-                rocketSprite.setAlpha(0.2f);
-            }
 
             if (targetReached(hitbox, rocket.getTargetHitbox())) {
 
@@ -197,6 +193,18 @@ public class Rockets {
         if(target.contains(current.x+ current.width/2, current.y+ current.height/2)) {
         }
         return target.contains(current.x+ current.width/2, current.y+ current.height/2);
+    }
+
+    public static boolean isVisible(Rocket rocket) {
+        if(rocket.isTargeted()) return true;
+
+        rocket.setTargetedState(true);
+        if(rocket.isTargeted()) {
+            rocket.setTargetedState(false);
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

@@ -24,7 +24,6 @@ public class Elektra extends Rocket {
     private String targetName;
     private Rectangle targetHitbox;
     private float[] targetPos;
-    private String name;
 
     public Elektra(String target, float[] spawnPoint) {
         super(target, spawnPoint);
@@ -54,12 +53,6 @@ public class Elektra extends Rocket {
         this.eliminated = false;
 
         specialAbility();
-        this.name = "Elektra";
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
     }
 
     @Override

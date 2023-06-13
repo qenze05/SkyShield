@@ -8,7 +8,6 @@ import com.skyshield.game.gameObjects.airDefence.*;
 import com.skyshield.game.gameObjects.rockets.Rocket;
 import com.skyshield.game.gameObjects.rockets.SimpleRocket;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -123,35 +122,23 @@ public class ItemsList {
             case "pulsar" -> {
                 return uniqueAirDefs.get(6);
             }
-            case "mushlya" -> {
+            case "kronas" -> {
                 return uniqueAirDefs.get(7);
             }
-            case "kronas" -> {
+            case "slons" -> {
                 return uniqueAirDefs.get(8);
             }
-            case "slons" -> {
+            case "skorpions" -> {
                 return uniqueAirDefs.get(9);
             }
-            case "skorpions" -> {
+            case "pulsars" -> {
                 return uniqueAirDefs.get(10);
             }
-            case "pulsars" -> {
+            case "armahedon" -> {
                 return uniqueAirDefs.get(11);
             }
-            case "armahedon" -> {
-                return uniqueAirDefs.get(12);
-            }
-            case "okohora1" -> {
-                return uniqueAirDefs.get(13);
-            }
-            case "okohora2" -> {
-                return uniqueAirDefs.get(14);
-            }
-            case "okohora3" -> {
-                return uniqueAirDefs.get(15);
-            }
             default -> {
-                return uniqueAirDefs.first();
+                return uniqueAirDefs.get(0);
             }
         }
 
@@ -165,30 +152,13 @@ public class ItemsList {
         arr.add(new Skorpion(pos));
         arr.add(new Mukhobiyka(pos));
         arr.add(new Pulsar(pos));
-        arr.add(new Mushlya(pos));
+//        arr.add(new Mushlya(pos));
         arr.add(new KronaS(pos));
+//        arr.add(new Lut(pos));
         arr.add(new SlonS(pos));
         arr.add(new SkorpionS(pos));
         arr.add(new PulsarS(pos));
         arr.add(new Armahedon(pos));
-        arr.add(new OkoHora1(pos));
-        arr.add(new OkoHora2(pos));
-        arr.add(new OkoHora3(pos));
-        for(AirDef airDef : arr) {
-            airDef.setLocked(true);
-            airDef.setTexture();
-        }
         return arr;
-    }
-
-    public static void unlockAirDefs(int count) {
-        Iterator<AirDef> iter = uniqueAirDefs.iterator();
-        AirDef airDef;
-        for(int i = 0; i < count; i++) {
-            if(!iter.hasNext()) break;
-           airDef = iter.next();
-           airDef.setLocked(false);
-           airDef.setTexture();
-        }
     }
 }

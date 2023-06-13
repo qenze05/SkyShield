@@ -23,7 +23,7 @@ public class Snovyda extends Rocket {
     private String targetName;
     private Rectangle targetHitbox;
     private float[] targetPos;
-    private String name;
+    public boolean found;
 
     public Snovyda(String target, float[] spawnPoint) {
         super(target, spawnPoint);
@@ -51,17 +51,13 @@ public class Snovyda extends Rocket {
 
         this.targeted = false;
         this.eliminated = false;
-        this.name = "Snovyda";
-    }
 
-    @Override
-    public String getName() {
-        return this.name;
+        this.found = false;
     }
 
     @Override
     public void specialAbility() {
-
+        if(!found) this.targeted = false;
     }
 
     @Override

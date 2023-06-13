@@ -25,7 +25,6 @@ public class TroyanskyyKin extends Rocket {
     private Rectangle targetHitbox;
     private float[] targetPos;
     private boolean abilityDisabled;
-    private String name;
 
     public TroyanskyyKin(String target, float[] spawnPoint) {
         super(target, spawnPoint);
@@ -54,12 +53,6 @@ public class TroyanskyyKin extends Rocket {
         this.targeted = false;
         this.eliminated = false;
         this.abilityDisabled = false;
-        this.name = "TroyanskyyKin";
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
     }
 
     @Override

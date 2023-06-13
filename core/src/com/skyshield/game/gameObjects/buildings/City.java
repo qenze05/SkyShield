@@ -1,10 +1,8 @@
 package com.skyshield.game.gameObjects.buildings;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
-import com.skyshield.game.gameObjects.buildings.PowerStation;
 import com.skyshield.game.screens.GameScreen;
 import com.skyshield.game.gameLogic.events.Attack;
 
@@ -22,7 +20,7 @@ public class City {
     private final float ProductionInterval;
     private int health;
     public static int totalPopulation = 0;
-    private static int totalMoney = 1300;
+    private static int totalMoney = 1000;
     private final Rectangle hitbox;
     private boolean disabled;
     private final int maxhealth;
@@ -31,8 +29,8 @@ public class City {
         this.pos = pos;
         this.texture = new Texture(Gdx.files.internal("buildings/city.png"));
         this.hitbox = new Rectangle(pos[0], pos[1],
-                50 * GameScreen.textureScale * 1.25f,
-                50 * GameScreen.textureScale * 1.25f);
+                50 * GameScreen.textureScale,
+                50 * GameScreen.textureScale);
         this.health = maxhealth;
         this.powerStation = powerStation;
         this.maxhealth = maxhealth;

@@ -30,8 +30,8 @@ import com.skyshield.game.utils.CountryTerritory;
 
 public class GUIComponents {
 
-    public static ShopBackground shopBackground = new ShopBackground();
-    public static ShopScrollBar shopScrollBar = new ShopScrollBar();
+    private static ShopBackground shopBackground = new ShopBackground();
+    private static ShopScrollBar shopScrollBar = new ShopScrollBar();
     private static Skin skin;
     public static ImageButton movingButton, okButton, skipButton;
     public static Sprite movingButtonCircle;
@@ -40,31 +40,11 @@ public class GUIComponents {
     private static long popUpTimer;
     private static Texture popUpTexture;
     public static Actor popUpImage;
-    public static boolean airDefButtonJustPressed = false;
-    public static boolean buildingButtonJustPressed = false;
+    public static boolean buttonJustPressed = false;
     public static Table sellTable;
-    public static Table repairTable;
     public static DialogWindow dialogWindow;
     public static DialogText dialogText;
     public static boolean dialogWindowIsClosing;
-
-    public static Table goldTable;
-
-    public static void addGoldTable(String amount) {
-        Texture bg = new Texture(Gdx.files.internal("gold++/"+amount+".png"));
-        goldTable = new Table();
-        goldTable.setBounds(535, GameScreen.screenHeight, bg.getWidth(), bg.getHeight());
-        goldTable.setBackground(new Image(bg).getDrawable());
-        goldTable.addAction(Actions.sequence(Actions.moveTo(535, GameScreen.screenHeight-goldTable.getHeight(), 1f, Interpolation.sine),
-                Actions.moveBy(0, 0, 1f),
-                Actions.moveTo(535, GameScreen.screenHeight, 1f, Interpolation.sine)));
-        GameScreen.stage.addActor(goldTable);
-    }
-
-    public static void removeGoldTable() {
-        goldTable.remove();
-        goldTable = null;
-    }
 
     public static void addStageInputListener() {
         GameScreen.stage.addListener(new InputListener() {
@@ -73,23 +53,6 @@ public class GUIComponents {
                 if (keycode == Input.Keys.ESCAPE) {
                     removeShop();
                     shopButton.setChecked(false);
-                }
-                if (keycode == Input.Keys.SPACE) {
-                    if(skipButton != null) {
-                        skipButton.remove();
-                        skipButton = null;
-                        dialogText.skip();
-                        addOkButton();
-                    }else if(okButton != null) {
-                        okButton.remove();
-                        dialogText.remove();
-                        DialogTimer.start = 0;
-                        DialogTimer.textStart = 0;
-                        dialogText = null;
-                        okButton = null;
-                        hideDialogTable();
-                        DialogActions.afterDialogActionActive = true;
-                    }
                 }
                 return true;
             }
@@ -147,8 +110,8 @@ public class GUIComponents {
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                     okButton.remove();
                     dialogText.remove();
-                    DialogTimer.start = 0;
-                    DialogTimer.textStart = 0;
+                    DialogTimer.start = null;
+                    DialogTimer.textStart = null;
                     dialogText = null;
                     okButton = null;
                     hideDialogTable();
@@ -265,7 +228,7 @@ public class GUIComponents {
                 if (button == Input.Buttons.LEFT) {
                     float[] coords = Camera.getRelativeCoords(movingButton.getX() + movingButton.getWidth() / 2,
                             movingButton.getY() + movingButton.getHeight() / 2);
-                    if (!CountryTerritory.isInsideTerritory(coords[0], coords[1], movingButton.getName())) {
+                    if (!CountryTerritory.isInsideTerritory(coords[0], coords[1])) {
                         return false;
                     }
                     placeWeapon();
@@ -276,9 +239,9 @@ public class GUIComponents {
         });
     }
 
-    public static void showAvailableArea(boolean sea) {
+    public static void showAvailableArea() {
 
-        Texture territory = CountryTerritory.getTerritoryTexture(sea);
+        Texture territory = CountryTerritory.getTerritoryTexture();
 
         Sprite territorySprite = new Sprite(territory);
 
@@ -331,7 +294,7 @@ public class GUIComponents {
         pos[0] += movingButton.getWidth() * Camera.camera.zoom / 2;
         pos[1] += movingButton.getHeight() * Camera.camera.zoom / 2;
         AirDefence.addAirDef(pos, movingButton.getName());
-        airDefButtonJustPressed = true;
+        buttonJustPressed = true;
     }
 
     public static void addPopUpMenu(int x, int y) {
@@ -376,7 +339,7 @@ public class GUIComponents {
 
     public static void addSellAirDefMenu(AirDef airDef) {
 
-        if (airDefButtonJustPressed) return;
+        if (buttonJustPressed) return;
 
         TextElements.addSellValueText(airDef.getPrice() / 2);
 
@@ -411,7 +374,7 @@ public class GUIComponents {
                 TextElements.deleteSellValue();
                 sellTable.remove();
                 sellTable = null;
-                airDefButtonJustPressed = true;
+                buttonJustPressed = true;
                 return true;
             }
         });
@@ -419,65 +382,10 @@ public class GUIComponents {
         cancelButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                TextElements.deleteSellValue();
                 sellTable.remove();
+                TextElements.deleteSellValue();
                 sellTable = null;
-                airDefButtonJustPressed = true;
-                return true;
-            }
-        });
-    }
-
-    public static void addRepairBuildingMenu(String name, String hp, int price) {
-
-        if (airDefButtonJustPressed) return;
-
-        TextElements.addRepairValueText(price);
-        TextElements.addHpValueText(hp);
-
-        Texture repairButtonTexture = new Texture(Gdx.files.internal("repairButton.png"));
-        Texture cancelButtonTexture = new Texture(Gdx.files.internal("cancelButton.png"));
-        Texture bgTexture = new Texture(Gdx.files.internal("repairBuildingBg.png"));
-
-        repairTable = new Table();
-        repairTable.setBounds((float) GameScreen.screenWidth / 2 - (float) bgTexture.getWidth() / 2,
-                (float) GameScreen.screenHeight / 2 - (float) bgTexture.getHeight() / 2,
-                bgTexture.getWidth(), bgTexture.getHeight());
-
-        GameScreen.stage.addActor(repairTable);
-
-        ImageButton repairButton = new ImageButton(new Image(repairButtonTexture).getDrawable());
-        ImageButton cancelButton = new ImageButton(new Image(cancelButtonTexture).getDrawable());
-
-        Table buttonsTable = new Table();
-        buttonsTable.setSize(repairButton.getWidth(), repairButton.getHeight() * 2);
-        buttonsTable.add(repairButton);
-        buttonsTable.row();
-        buttonsTable.add(cancelButton);
-
-        repairTable.setBackground(new Image(bgTexture).getDrawable());
-        repairTable.add(buttonsTable).bottom().expand();
-
-        repairButton.addListener(new InputListener() {
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                TextElements.deleteRepairValue();
-                TextElements.deleteHpValue();
-                repairTable.remove();
-                repairTable = null;
-                airDefButtonJustPressed = true;
-                return true;
-            }
-        });
-
-        cancelButton.addListener(new InputListener() {
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                TextElements.deleteRepairValue();
-                TextElements.deleteHpValue();
-                repairTable.remove();
-                repairTable = null;
-                airDefButtonJustPressed = true;
+                buttonJustPressed = true;
                 return true;
             }
         });
