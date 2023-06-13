@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.skyshield.game.gameLogic.entities.AirDefence;
+import com.skyshield.game.gameLogic.entities.Buildings;
 import com.skyshield.game.gameObjects.airDefence.AirDef;
 import com.skyshield.game.gameObjects.buildings.City;
 import com.skyshield.game.gui.camera.Camera;
@@ -26,6 +27,7 @@ import com.skyshield.game.gui.shop.ShopBackground;
 import com.skyshield.game.gui.shop.ShopScrollBar;
 import com.skyshield.game.screens.GameScreen;
 import com.skyshield.game.utils.CountryTerritory;
+import com.skyshield.game.utils.ItemsList;
 
 
 public class GUIComponents {
@@ -59,6 +61,8 @@ public class GUIComponents {
                 Actions.moveBy(0, 0, 1f),
                 Actions.moveTo(535, GameScreen.screenHeight, 1f, Interpolation.sine)));
         GameScreen.stage.addActor(goldTable);
+
+        City.sellItem(Integer.parseInt(amount.substring(0, amount.length()-1)) * 1000);
     }
 
     public static void removeGoldTable() {
@@ -428,7 +432,63 @@ public class GUIComponents {
         });
     }
 
-    public static void addRepairBuildingMenu(String name, String hp, int price) {
+    public static String getRepairCost(String name, int number) {
+
+        String hp = "";
+        int price = 0;
+
+        switch (name) {
+            case "barrack" -> {
+                hp = Buildings.barracks.get(number).getHealth()+"/"+Buildings.barracks.get(number).getMaxhealth();
+                price = Buildings.barracks.get(number).calculateRepairCost();
+            }
+            case "city" -> {
+                hp = Buildings.cities.get(number).getHealth()+"/"+Buildings.cities.get(number).getMaxhealth();
+                price = Buildings.cities.get(number).calculateRepairCost();
+            }
+            case "dam" -> {
+                hp = Buildings.dams.get(number).getHealth()+"/"+Buildings.dams.get(number).getMaxhealth();
+                price = Buildings.dams.get(number).calculateRepairCost();
+            }
+            case "factory" -> {
+                hp = Buildings.factories.get(number).getHealth()+"/"+Buildings.factories.get(number).getMaxhealth();
+                price = Buildings.factories.get(number).calculateRepairCost();
+            }
+            case "hub1" -> {
+                hp = Buildings.hub1s.get(number).getHealth()+"/"+Buildings.hub1s.get(number).getMaxhealth();
+                price = Buildings.hub1s.get(number).calculateRepairCost();
+            }
+            case "hub2" -> {
+                hp = Buildings.hub2s.get(number).getHealth()+"/"+Buildings.hub2s.get(number).getMaxhealth();
+                price = Buildings.hub2s.get(number).calculateRepairCost();
+            }
+            case "hub3" -> {
+                hp = Buildings.hub3s.get(number).getHealth()+"/"+Buildings.hub3s.get(number).getMaxhealth();
+                price = Buildings.hub3s.get(number).calculateRepairCost();
+            }
+            case "powerstation" -> {
+                hp = Buildings.powerStations.get(number).getHealth()+"/"+Buildings.powerStations.get(number).getMaxhealth();
+                price = Buildings.powerStations.get(number).calculateRepairCost();
+            }
+        }
+        return hp+"-"+price;
+    }
+    public static void updateRepairBuildingMenu(String build) {
+        if(repairTable.getName().equals(ItemsList.buildings.get(build).toString())) {
+
+            TextElements.deleteRepairValue();
+            TextElements.deleteHpValue();
+            repairTable.remove();
+            repairTable = null;
+
+            String name = build.toLowerCase().split("-")[0];
+            int number = Integer.parseInt(build.toLowerCase().split("-")[1]);
+
+            String[] values = GUIComponents.getRepairCost(name, number).split("-");
+            if(!values[1].equals("0")) GUIComponents.addRepairBuildingMenu(ItemsList.buildings.get(build), values[0], Integer.parseInt(values[1]));
+        }
+    }
+    public static void addRepairBuildingMenu(Rectangle hitbox, String hp, int price) {
 
         if (airDefButtonJustPressed) return;
 
@@ -440,6 +500,7 @@ public class GUIComponents {
         Texture bgTexture = new Texture(Gdx.files.internal("repairBuildingBg.png"));
 
         repairTable = new Table();
+        repairTable.setName(hitbox.toString());
         repairTable.setBounds((float) GameScreen.screenWidth / 2 - (float) bgTexture.getWidth() / 2,
                 (float) GameScreen.screenHeight / 2 - (float) bgTexture.getHeight() / 2,
                 bgTexture.getWidth(), bgTexture.getHeight());
@@ -461,11 +522,18 @@ public class GUIComponents {
         repairButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                TextElements.deleteRepairValue();
-                TextElements.deleteHpValue();
-                repairTable.remove();
-                repairTable = null;
-                airDefButtonJustPressed = true;
+                if(City.getTotalMoney()>=price){
+                    City.buyItem(price);
+                    TextElements.deleteRepairValue();
+                    TextElements.deleteHpValue();
+                    Buildings.changeHp(hitbox, 100000);
+                    Buildings.removeHpBar(hitbox);
+                    repairTable.remove();
+                    repairTable = null;
+                    airDefButtonJustPressed = true;
+                }else{
+                    // show error
+                }
                 return true;
             }
         });

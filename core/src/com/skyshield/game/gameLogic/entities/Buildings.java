@@ -1,10 +1,24 @@
 package com.skyshield.game.gameLogic.entities;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.skyshield.game.gameObjects.buildings.*;
+import com.skyshield.game.gui.camera.Camera;
 import com.skyshield.game.screens.GameScreen;
 import com.skyshield.game.utils.CountryTerritory;
+import com.skyshield.game.utils.ItemsList;
+import org.w3c.dom.css.Rect;
+
+import java.util.Map;
 
 public class Buildings {
 
@@ -17,8 +31,135 @@ public class Buildings {
     public static Array<Hub3> hub3s = new Array<>();
     public static Array<SuperFactory> superFactories = new Array<>();
     public static Array<PowerStation> powerStations = new Array<>();
+    public static Array<Table> hpBars = new Array<>();
+    public static final Texture hpBarTexture = new Texture(Gdx.files.internal("hp-bar/bg.png"));
 
+    public static void addHpBar(Rectangle hitbox) {
 
+        String name = "";
+        int number = 0;
+        for (Map.Entry<String, Rectangle> entry : ItemsList.buildings.entrySet()) {
+            if(entry.getValue().equals(hitbox)) {
+                name = entry.getKey().toLowerCase().split("-")[0];
+                number = Integer.parseInt(entry.getKey().toLowerCase().split("-")[1]);
+                break;
+            }
+        }
+
+        float percentage = 0;
+
+        switch (name) {
+            case "barrack" -> {
+                percentage = (float) Buildings.barracks.get(number).getHealth() / Buildings.barracks.get(number).getMaxhealth();
+            }
+            case "city" -> {
+                percentage = (float) Buildings.cities.get(number).getHealth() / Buildings.cities.get(number).getMaxhealth();
+            }
+            case "dam" -> {
+                percentage = (float) Buildings.dams.get(number).getHealth() / Buildings.dams.get(number).getMaxhealth();
+            }
+            case "factory" -> {
+                percentage = (float) Buildings.factories.get(number).getHealth() / Buildings.factories.get(number).getMaxhealth();
+            }
+            case "hub1" -> {
+                percentage = (float) Buildings.hub1s.get(number).getHealth() / Buildings.hub1s.get(number).getMaxhealth();
+            }
+            case "hub2" -> {
+                percentage = (float) Buildings.hub2s.get(number).getHealth() / Buildings.hub2s.get(number).getMaxhealth();
+            }
+            case "hub3" -> {
+                percentage = (float) Buildings.hub3s.get(number).getHealth() / Buildings.hub3s.get(number).getMaxhealth();
+            }
+            case "powerstation" -> {
+                percentage = (float) Buildings.powerStations.get(number).getHealth() / Buildings.powerStations.get(number).getMaxhealth();
+            }
+        }
+
+        addHpBarTable(hitbox, percentage);
+    }
+
+    public static void addHpBarTable(Rectangle hitbox, float percentage) {
+
+        Table table = new Table();
+        table.setBackground(new Image(hpBarTexture).getDrawable());
+
+        table.setBounds(hitbox.x + hitbox.width/2 - 25,
+                hitbox.y - 10,
+                50, 8);
+
+        float red, green;
+        if(percentage >= 0.5f) {
+            red = 1 - 2 * percentage;
+            green = 1;
+        }else {
+            green = 2 * percentage;
+            red = 1;
+        }
+        Pixmap pixmap = new Pixmap(46, 6, Pixmap.Format.RGBA8888);
+        pixmap.setColor(red, green, 0, 1);
+        pixmap.fillRectangle(0,
+                1,
+                (int) (58 * percentage), 6);
+        Image img = new Image(new Texture(pixmap));
+        pixmap.dispose();
+        if(percentage > 0) table.add(img);
+
+        for(int i = 0; i < hpBars.size; i++) {
+            if(hpBars.get(i).getX() == table.getX() && hpBars.get(i).getY() == table.getY()) {
+               hpBars.removeIndex(i);
+               break;
+            }
+        }
+
+        hpBars.add(table);
+    }
+
+    public static void removeHpBar(Rectangle rect) {
+        for(int i = 0; i < hpBars.size; i++) {
+            if(hpBars.get(i).getX() == rect.getX() + rect.getWidth()/2 - 25 && hpBars.get(i).getY() == rect.getY() - 10) {
+                hpBars.removeIndex(i);
+                break;
+            }
+        }
+    }
+    public static void changeHp(Rectangle hitbox, int hp) {
+        String name = "";
+        int number = 0;
+        for (Map.Entry<String, Rectangle> entry : ItemsList.buildings.entrySet()) {
+            if(entry.getValue().equals(hitbox)) {
+                name = entry.getKey().toLowerCase().split("-")[0];
+                number = Integer.parseInt(entry.getKey().toLowerCase().split("-")[1]);
+                break;
+            }
+        }
+
+        switch (name) {
+            case "barrack" -> {
+                Buildings.barracks.get(number).setHealth(hp);
+            }
+            case "city" -> {
+               Buildings.cities.get(number).setHealth(hp);
+            }
+            case "dam" -> {
+               Buildings.dams.get(number).setHealth(hp);
+            }
+            case "factory" -> {
+                Buildings.factories.get(number).setHealth(hp);
+            }
+            case "hub1" -> {
+                Buildings.hub1s.get(number).setHealth(hp);
+            }
+            case "hub2" -> {
+               Buildings.hub2s.get(number).setHealth(hp);
+            }
+            case "hub3" -> {
+                Buildings.hub3s.get(number).setHealth(hp);
+            }
+            case "powerstation" -> {
+                Buildings.powerStations.get(number).setHealth(hp);
+            }
+        }
+    }
     public static void setDisabled() {
         Polygon territory = CountryTerritory.map;
 

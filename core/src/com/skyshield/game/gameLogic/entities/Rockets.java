@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.Array;
 import com.skyshield.game.gameObjects.rockets.*;
+import com.skyshield.game.gui.GUIComponents;
 import com.skyshield.game.particles.Particles;
 import com.skyshield.game.particles.SmokeParticle;
 import com.skyshield.game.screens.GameScreen;
@@ -90,7 +91,9 @@ public class Rockets {
             }
 
             if (targetReached(hitbox, rocket.getTargetHitbox())) {
-
+                Buildings.changeHp(rocket.getTargetHitbox(), (int) -rocket.getPower());
+                Buildings.addHpBar(rocket.getTargetHitbox());
+                if(GUIComponents.repairTable != null) GUIComponents.updateRepairBuildingMenu(rocket.getTargetName());
                 rocket.setEliminated(true);
                 iter.remove();
             }
@@ -194,8 +197,7 @@ public class Rockets {
     }
 
     public static boolean targetReached(Rectangle current, Rectangle target) {
-        if(target.contains(current.x+ current.width/2, current.y+ current.height/2)) {
-        }
+
         return target.contains(current.x+ current.width/2, current.y+ current.height/2);
     }
 

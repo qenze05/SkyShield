@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.skyshield.game.gameObjects.buildings.City;
 import com.skyshield.game.screens.GameScreen;
+import org.w3c.dom.css.RGBColor;
 
 public class TextElements {
     private static BitmapFont moneyFont, hpFont;
@@ -18,12 +19,12 @@ public class TextElements {
         FreeTypeFontGenerator.FreeTypeFontParameter fontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
 
         fontParameter.size = size;
-        fontParameter.color = Color.YELLOW;
+        fontParameter.color = new Color(0, 215, 255, 1);
         fontParameter.borderWidth = 1;
         fontParameter.borderColor = Color.BLACK;
         moneyFont = fontGenerator.generateFont(fontParameter);
 
-        fontParameter.color = Color.RED;
+        fontParameter.size = 12;
         hpFont = fontGenerator.generateFont(fontParameter);
 
         fontGenerator.dispose();
@@ -39,15 +40,15 @@ public class TextElements {
         }
 
         if(sellValue != -1) {
-            moneyFont.draw(GameScreen.stage.getBatch(), String.valueOf(sellValue), 630, 400);
+            moneyFont.draw(GameScreen.stage.getBatch(), String.valueOf(sellValue), 630, 382);
         }
 
         if(repairValue != -1) {
-            moneyFont.draw(GameScreen.stage.getBatch(), String.valueOf(repairValue), 630, 380);
+            moneyFont.draw(GameScreen.stage.getBatch(), String.valueOf(repairValue), 630, 382);
         }
 
         if(!hpValue.equals("")) {
-            hpFont.draw(GameScreen.stage.getBatch(), hpValue, 630, 420);
+            hpFont.draw(GameScreen.stage.getBatch(), hpValue, 620, 420);
         }
 
         GameScreen.stage.getBatch().end();

@@ -22,7 +22,7 @@ public class City {
     private final float ProductionInterval;
     private int health;
     public static int totalPopulation = 0;
-    private static int totalMoney = 1000;
+    private static int totalMoney = 13000000;
     private final Rectangle hitbox;
     private boolean disabled;
     private final int maxhealth;
@@ -96,8 +96,19 @@ public class City {
     public int getHealth() {
         return health;
     }
-    public void setHealth(int health) {
-        this.health = health;
+
+    public int getMaxhealth() {
+        return maxhealth;
+    }
+
+    public void setHealth(int hp) {
+        this.health = Math.min ( Math.max(health+hp, 0), maxhealth );
+        if(health <= 0) setTexture (new Texture(Gdx.files.internal("buildings/city-destroyed.png")));
+        else setTexture (new Texture(Gdx.files.internal("buildings/city.png")));
+    }
+
+    public void setTexture(Texture texture) {
+        this.texture = texture;
     }
     public static int getTotalPopulation() {
         return totalPopulation;

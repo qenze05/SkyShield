@@ -22,8 +22,8 @@ public class Phase {
             label.act(1 / 60f);
             bg.act(1 / 60f);
 
-            label.draw(GameScreen.stage.getBatch(), 1);
             bg.draw(GameScreen.stage.getBatch(), 1);
+            label.draw(GameScreen.stage.getBatch(), 1);
 
             GameScreen.stage.getBatch().end();
 

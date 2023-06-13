@@ -11,9 +11,9 @@ public class Hub1 {
     private final int maxhealth;
     public int checkDamageBefore;
     private final int limit;
-    private final Texture texture;
+    private Texture texture;
     private final PowerStation powerStation;
-    private final int health;
+    private int health;
     private float[] pos;
     private float timeSinceLastProduction;
 
@@ -39,6 +39,14 @@ public class Hub1 {
         this.trainingDuration = 180*3;
         this.isTraining = false;
         this.disabled = false;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public int getMaxhealth() {
+        return maxhealth;
     }
 
     public void setDisabled(boolean value) {
@@ -79,7 +87,15 @@ public class Hub1 {
     public Texture getTexture() {
         return texture;
     }
+    public void setHealth(int hp) {
+        this.health = Math.min ( Math.max(health+hp, 0), maxhealth );
+        if(health <= 0) setTexture (new Texture(Gdx.files.internal("buildings/armshub-destroyed.png")));
+        else setTexture (new Texture(Gdx.files.internal("buildings/armshub.png")));
+    }
 
+    public void setTexture(Texture texture) {
+        this.texture = texture;
+    }
     public float[] getPos() {
         return pos;
     }

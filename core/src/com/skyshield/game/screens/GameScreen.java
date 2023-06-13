@@ -6,12 +6,16 @@ import java.util.Map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 import com.badlogic.gdx.utils.TimeUtils;
@@ -85,6 +89,8 @@ public class GameScreen implements Screen {
 
         drawLockedMap();
 
+        drawHpBars();
+
         if (DialogActions.afterDialogActionActive) DialogActions.action();
 
         if (GUIComponents.dialogWindow == null
@@ -92,7 +98,7 @@ public class GameScreen implements Screen {
                 && GUIComponents.goldTable == null
                 && !Phase.draw) {
             Attack.attack();
-//            if(MathUtils.random(1, 1000) > 970) Rockets.spawnRocket("snovyda", "City-3", Rockets.spawn[2]);
+//            if(MathUtils.random(1, 1000) > 975) Rockets.spawnRocket("korshun", "Dam-2", Rockets.spawn[2]);
         }
 
         if (Rockets.rockets != null) {
@@ -125,6 +131,15 @@ public class GameScreen implements Screen {
         if(Phase.draw) Phase.drawPhase();
 //        drawSmoke();
 
+    }
+
+    public static void drawHpBars() {
+        if(Buildings.hpBars.size == 0) return;
+        game.batch.begin();
+        for(Table bar : Buildings.hpBars) {
+            bar.draw(game.batch, 1);
+        }
+        game.batch.end();
     }
 
     //    private void drawLockedMapParticles() {
@@ -270,7 +285,7 @@ public class GameScreen implements Screen {
 
     public static void changeGameSpeed() {
 
-        if (gameSpeed == 3) {
+        if (gameSpeed == 10) {
             gameSpeed = 1;
         } else {
             gameSpeed++;
@@ -287,6 +302,8 @@ public class GameScreen implements Screen {
             Rectangle buildingHitbox;
 
             for (AirDef airDef : AirDefence.airDefs) {
+
+                if(airDef.getName().contains("OkoHora")) continue;
 
                 airDefHitbox.x = airDef.getPos()[0] - (float) airDef.getTexture().getWidth() * textureScale / 5;
                 airDefHitbox.y = airDef.getPos()[1] - (float) airDef.getTexture().getHeight() * textureScale / 5;
@@ -322,7 +339,12 @@ public class GameScreen implements Screen {
                         GUIComponents.airDefButtonJustPressed = false;
                         GUIComponents.buildingButtonJustPressed = false;
                     } else {
-                        GUIComponents.addRepairBuildingMenu(building.getKey(), "1000", 1000);
+
+                        String name = building.getKey().toLowerCase().split("-")[0];
+                        int number = Integer.parseInt(building.getKey().toLowerCase().split("-")[1]);
+
+                        String[] values = GUIComponents.getRepairCost(name, number).split("-");
+                        if(!values[1].equals("0")) GUIComponents.addRepairBuildingMenu(building.getValue(), values[0], Integer.parseInt(values[1]));
                     }
                     break;
                 }

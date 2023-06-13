@@ -104,7 +104,8 @@ public class AirDefence {
                 iter.remove();
             }
 
-            airDefRocketSprite = new Sprite(rocket.getTexture());
+            if (airDefRocketSprite == null) airDefRocketSprite = new Sprite(rocket.getTexture());
+            airDefRocketSprite.setTexture(rocket.getTexture());
             airDefRocketSprite.setBounds(rocket.getHitbox().x, rocket.getHitbox().y, rocket.getHitbox().width, rocket.getHitbox().height);
             airDefRocketSprite.setOrigin(rocket.getHitbox().width/2, rocket.getHitbox().height/2);
             airDefRocketSprite.rotate(rocket.getAngle() * (-1)-180);

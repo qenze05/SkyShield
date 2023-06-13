@@ -14,7 +14,7 @@ public class Barracks {
 
     private final int maxhealth;
     private City city;
-    private static int trainedSoldiers =0;
+    private static int trainedSoldiers;
     private int limit;
     private Texture texture;
     private PowerStation powerStation;
@@ -46,6 +46,24 @@ public class Barracks {
         this.trainingDuration = 180/GameScreen.gameSpeed;
         this.isTraining = false;
         this.disabled = false;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int hp) {
+        this.health = Math.min ( Math.max(health+hp, 0), maxhealth );
+        if(health <= 0) setTexture (new Texture(Gdx.files.internal("buildings/military-destroyed.png")));
+        else setTexture (new Texture(Gdx.files.internal("buildings/military.png")));
+    }
+
+    public void setTexture(Texture texture) {
+        this.texture = texture;
+    }
+
+    public int getMaxhealth() {
+        return maxhealth;
     }
 
     public void setDisabled(boolean value) {
@@ -80,7 +98,7 @@ public class Barracks {
         }
     }
     private void finishTraining() {
-        trainedSoldiers += trainingSize*(calculateHealthPercentage()/checkDamageBefore);
+        trainedSoldiers += (checkDamageBefore == 0) ? 0 : trainingSize*(calculateHealthPercentage()/checkDamageBefore);
         isTraining = false;
         timeSinceLastProduction -= trainingDuration;
     }
