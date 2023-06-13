@@ -35,7 +35,7 @@ public class Hub3 {
                 30 * GameScreen.textureScale * 1.25f,
                 30 * GameScreen.textureScale * 1.25f);
         this.timeSinceLastProduction = 0;
-        this.trainingDuration = 180*3;
+        this.trainingDuration = 1800;
         this.isTraining = false;
         this.disabled = false;
     }

@@ -29,13 +29,13 @@ public class Barracks {
     public int trainingSize;
     private Rectangle hitbox;
     private boolean disabled;
-    public Barracks(float[] pos, City city, PowerStation powerStation, int maxhealth, int limit) {
+    public Barracks(float[] pos, City city, PowerStation powerStation, int maxhealth) {
         this.pos = pos;
         this.city = city;
         this.powerStation = powerStation;
         this.health = maxhealth;
         this.maxhealth = maxhealth;
-        this.limit = (int) (limit*Attack.coef);
+        this.limit = (int) (maxhealth*Attack.coef);
         this.texture = new Texture(Gdx.files.internal("buildings/military.png"));
         this.hitbox = new Rectangle(pos[0], pos[1],
                 30 * GameScreen.textureScale * 1.25f,
@@ -43,11 +43,10 @@ public class Barracks {
         this.timeSinceLastProduction = 0;
         this.productionInterval = 3600f/GameScreen.gameSpeed;;
         this.timeSinceLastTraining = 0;
-        this.trainingDuration = 180/GameScreen.gameSpeed;
+        this.trainingDuration = 1800/GameScreen.gameSpeed;
         this.isTraining = false;
         this.disabled = false;
     }
-
     public int getHealth() {
         return health;
     }
@@ -86,7 +85,6 @@ public class Barracks {
             }
         }
     }
-
     private void produceSoldiers() {
         checkDamageBefore=health/maxhealth;
         int healthPercentage = (int) (powerStation.calculateHealthPercentage() *checkDamageBefore*calculateHealthPercentage());
