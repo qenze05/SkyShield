@@ -37,10 +37,7 @@ public class Rockets {
             case "mukha" -> rockets.add(new Mukha(target, spawnPoint));
             case "r1" -> rockets.add(new R1(target, spawnPoint));
             case "r2" -> rockets.add(new R2(target, spawnPoint));
-            case "r3" -> {
-                rockets.add(new R3(target, spawnPoint));
-//                Particles.pooled.add(new SmokeParticle(rockets.peek()).effect);
-            }
+            case "r3" -> rockets.add(new R3(target, spawnPoint));
             case "sapsan" -> rockets.add(new Sapsan(target, spawnPoint));
             case "snovyda" -> rockets.add(new Snovyda(target, spawnPoint));
             case "troyanskyykin" -> rockets.add(new TroyanskyyKin(target, spawnPoint));
@@ -174,9 +171,6 @@ public class Rockets {
         shift *= GameScreen.gameSpeed;
 
         int triangleDegree = getTriangleDegree(current, target);
-
-//        System.out.println("a: "+angle+"\n" +
-//                "t: "+triangleDegree);
 
         if (target[0] <= current[0]) {
 

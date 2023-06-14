@@ -72,11 +72,6 @@ public class ItemsList {
                 map.put("Hub3-" + i, Buildings.hub3s.get(i).getHitbox());
             }
         }
-//        for(int i = 0; i < Buildings.superFactories.size; i++) {
-//            if(!Buildings.superFactories.get(i).isDisabled()) {
-//                map.put("SuperFactory-" + i, Buildings.superFactories.get(i).getHitbox());
-//            }
-//        }
         for(int i = 0; i < Buildings.cities.size; i++) {
             if(!Buildings.cities.get(i).isDisabled()) {
                 map.put("City-" + i, Buildings.cities.get(i).getHitbox());
@@ -137,7 +132,7 @@ public class ItemsList {
             case "mushlya" -> {
                 return uniqueAirDefs.get(7);
             }
-            case "kronas" -> {
+            case "krona-s" -> {
                 return uniqueAirDefs.get(8);
             }
             case "slon-s" -> {

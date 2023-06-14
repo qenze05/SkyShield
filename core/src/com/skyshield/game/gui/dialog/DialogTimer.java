@@ -2,7 +2,6 @@ package com.skyshield.game.gui.dialog;
 
 import com.badlogic.gdx.utils.TimeUtils;
 import com.skyshield.game.gui.GUIComponents;
-import com.skyshield.game.sound.GameDialog;
 
 public class DialogTimer {
 

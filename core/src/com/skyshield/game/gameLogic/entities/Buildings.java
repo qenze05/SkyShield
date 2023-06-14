@@ -1,22 +1,17 @@
 package com.skyshield.game.gameLogic.entities;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.skyshield.game.gameObjects.buildings.*;
-import com.skyshield.game.gui.camera.Camera;
 import com.skyshield.game.screens.GameScreen;
 import com.skyshield.game.utils.CountryTerritory;
 import com.skyshield.game.utils.ItemsList;
-import org.w3c.dom.css.Rect;
 
 import java.util.Map;
 
@@ -81,30 +76,14 @@ public class Buildings {
         float percentage = 0;
 
         switch (name) {
-            case "barrack" -> {
-                percentage = (float) Buildings.barracks.get(number).getHealth() / Buildings.barracks.get(number).getMaxhealth();
-            }
-            case "city" -> {
-                percentage = (float) Buildings.cities.get(number).getHealth() / Buildings.cities.get(number).getMaxhealth();
-            }
-            case "dam" -> {
-                percentage = (float) Buildings.dams.get(number).getHealth() / Buildings.dams.get(number).getMaxhealth();
-            }
-            case "factory" -> {
-                percentage = (float) Buildings.factories.get(number).getHealth() / Buildings.factories.get(number).getMaxhealth();
-            }
-            case "hub1" -> {
-                percentage = (float) Buildings.hub1s.get(number).getHealth() / Buildings.hub1s.get(number).getMaxhealth();
-            }
-            case "hub2" -> {
-                percentage = (float) Buildings.hub2s.get(number).getHealth() / Buildings.hub2s.get(number).getMaxhealth();
-            }
-            case "hub3" -> {
-                percentage = (float) Buildings.hub3s.get(number).getHealth() / Buildings.hub3s.get(number).getMaxhealth();
-            }
-            case "powerstation" -> {
-                percentage = (float) Buildings.powerStations.get(number).getHealth() / Buildings.powerStations.get(number).getMaxhealth();
-            }
+            case "barrack" -> percentage = (float) Buildings.barracks.get(number).getHealth() / Buildings.barracks.get(number).getMaxhealth();
+            case "city" -> percentage = (float) Buildings.cities.get(number).getHealth() / Buildings.cities.get(number).getMaxhealth();
+            case "dam" -> percentage = (float) Buildings.dams.get(number).getHealth() / Buildings.dams.get(number).getMaxhealth();
+            case "factory" -> percentage = (float) Buildings.factories.get(number).getHealth() / Buildings.factories.get(number).getMaxhealth();
+            case "hub1" -> percentage = (float) Buildings.hub1s.get(number).getHealth() / Buildings.hub1s.get(number).getMaxhealth();
+            case "hub2" -> percentage = (float) Buildings.hub2s.get(number).getHealth() / Buildings.hub2s.get(number).getMaxhealth();
+            case "hub3" -> percentage = (float) Buildings.hub3s.get(number).getHealth() / Buildings.hub3s.get(number).getMaxhealth();
+            case "powerstation" -> percentage = (float) Buildings.powerStations.get(number).getHealth() / Buildings.powerStations.get(number).getMaxhealth();
         }
 
         addHpBarTable(hitbox, percentage);
@@ -166,97 +145,49 @@ public class Buildings {
         }
 
         switch (name) {
-            case "barrack" -> {
-                Buildings.barracks.get(number).setHealth(hp);
-            }
-            case "city" -> {
-               Buildings.cities.get(number).setHealth(hp);
-            }
-            case "dam" -> {
-               Buildings.dams.get(number).setHealth(hp);
-            }
-            case "factory" -> {
-                Buildings.factories.get(number).setHealth(hp);
-            }
-            case "hub1" -> {
-                Buildings.hub1s.get(number).setHealth(hp);
-            }
-            case "hub2" -> {
-               Buildings.hub2s.get(number).setHealth(hp);
-            }
-            case "hub3" -> {
-                Buildings.hub3s.get(number).setHealth(hp);
-            }
-            case "powerstation" -> {
-                Buildings.powerStations.get(number).setHealth(hp);
-            }
+            case "barrack" -> Buildings.barracks.get(number).setHealth(hp);
+            case "city" -> Buildings.cities.get(number).setHealth(hp);
+            case "dam" -> Buildings.dams.get(number).setHealth(hp);
+            case "factory" -> Buildings.factories.get(number).setHealth(hp);
+            case "hub1" -> Buildings.hub1s.get(number).setHealth(hp);
+            case "hub2" -> Buildings.hub2s.get(number).setHealth(hp);
+            case "hub3" -> Buildings.hub3s.get(number).setHealth(hp);
+            case "powerstation" -> Buildings.powerStations.get(number).setHealth(hp);
         }
     }
     public static void setDisabled() {
         Polygon territory = CountryTerritory.map;
 
         for(Hub1 hub1 : hub1s) {
-            if(!territory.contains(hub1.getPos()[0]+20, hub1.getPos()[1]+20)) {
-                hub1.setDisabled(true);
-            }else{
-                hub1.setDisabled(false);
-            }
+            hub1.setDisabled(!territory.contains(hub1.getPos()[0] + 20, hub1.getPos()[1] + 20));
         }
 
         for(Hub2 hub2 : hub2s) {
-            if(!territory.contains(hub2.getPos()[0]+20, hub2.getPos()[1]+20)) {
-                hub2.setDisabled(true);
-            }else{
-                hub2.setDisabled(false);
-            }
+            hub2.setDisabled(!territory.contains(hub2.getPos()[0] + 20, hub2.getPos()[1] + 20));
         }
 
         for(Hub3 hub3 : hub3s) {
-            if(!territory.contains(hub3.getPos()[0]+20, hub3.getPos()[1]+20)) {
-                hub3.setDisabled(true);
-            }else{
-                hub3.setDisabled(false);
-            }
+            hub3.setDisabled(!territory.contains(hub3.getPos()[0] + 20, hub3.getPos()[1] + 20));
         }
 
         for(PowerStation powerStation : powerStations) {
-            if(!territory.contains(powerStation.getPos()[0]+20, powerStation.getPos()[1]+20)) {
-                powerStation.setDisabled(true);
-            }else{
-                powerStation.setDisabled(false);
-            }
+            powerStation.setDisabled(!territory.contains(powerStation.getPos()[0] + 20, powerStation.getPos()[1] + 20));
         }
 
         for(Dam dam : dams) {
-            if(!territory.contains(dam.getPos()[0]+20, dam.getPos()[1]+20)) {
-                dam.setDisabled(true);
-            }else{
-                dam.setDisabled(false);
-            }
+            dam.setDisabled(!territory.contains(dam.getPos()[0] + 20, dam.getPos()[1] + 20));
         }
 
         for(City city : cities) {
-            if(!territory.contains(city.getPos()[0]+20, city.getPos()[1]+20)) {
-                city.setDisabled(true);
-            }else{
-                city.setDisabled(false);
-            }
+            city.setDisabled(!territory.contains(city.getPos()[0] + 20, city.getPos()[1] + 20));
         }
 
         for(Factory factory : factories) {
-            if(!territory.contains(factory.getPos()[0]+20, factory.getPos()[1]+20)) {
-                factory.setDisabled(true);
-            }else{
-                factory.setDisabled(false);
-            }
+            factory.setDisabled(!territory.contains(factory.getPos()[0] + 20, factory.getPos()[1] + 20));
         }
 
         for(Barracks barrack : barracks) {
-            if(!territory.contains(barrack.getPos()[0]+20, barrack.getPos()[1]+20)) {
-                barrack.setDisabled(true);
-            }else{
-                barrack.setDisabled(false);
-            }
+            barrack.setDisabled(!territory.contains(barrack.getPos()[0] + 20, barrack.getPos()[1] + 20));
         }
     }
     public static void addBuildings() {
@@ -283,21 +214,8 @@ public class Buildings {
         drawHub2();
         drawHub3();
         GameScreen.game.font.draw(GameScreen.game.batch, "Money: " + City.getTotalMoney(), 1120, 200);
-//        GameScreen.game.font.draw(GameScreen.game.batch, "civil: " + City.totalPopulation, 1000, 50);
         GameScreen.game.font.draw(GameScreen.game.batch, "Soldiers: " + Barracks.getTotalTrainedSoldiers(), 1120, 300);
         GameScreen.game.font.draw(GameScreen.game.batch, "Weapons: " + Factory.getRocketCount(), 1120, 250);
-//        GameScreen.game.font.draw(GameScreen.game.batch, "factory1: " + superFactories.get(0).weaponsProduced, 100, 200);
-//        GameScreen.game.font.draw(GameScreen.game.batch, "factory2: " + superFactories.get(1).weaponsProduced, 100, 150);
-//        GameScreen.game.font.draw(GameScreen.game.batch, "factory3: " + superFactories.get(2).weaponsProduced, 100, 100);
-//        GameScreen.game.font.draw(GameScreen.game.batch, "level11: " + hub1s.get(0).weapons, 300, 200);
-//        GameScreen.game.font.draw(GameScreen.game.batch, "level12: " + hub1s.get(1).weapons, 300, 150);
-//        GameScreen.game.font.draw(GameScreen.game.batch, "level13: " + hub1s.get(2).weapons, 300, 100);
-//        GameScreen.game.font.draw(GameScreen.game.batch, "level21: " + hub2s.get(0).weapons, 500, 200);
-//        GameScreen.game.font.draw(GameScreen.game.batch, "level22: " + hub2s.get(1).weapons, 500, 150);
-//        GameScreen.game.font.draw(GameScreen.game.batch, "level23: " + hub2s.get(2).weapons, 500, 100);
-//        GameScreen.game.font.draw(GameScreen.game.batch, "level31: " + hub3s.get(0).weapons, 700, 200);
-//        GameScreen.game.font.draw(GameScreen.game.batch, "level32: " + hub3s.get(1).weapons, 700, 150);
-//        GameScreen.game.font.draw(GameScreen.game.batch, "level33: " + hub3s.get(2).weapons, 700, 100);
         GameScreen.game.batch.end();
     }
 

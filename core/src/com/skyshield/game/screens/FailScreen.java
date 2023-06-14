@@ -17,8 +17,6 @@ import com.skyshield.game.SkyShield;
 import com.skyshield.game.sound.GameDialog;
 import com.skyshield.game.sound.GameMusic;
 
-import java.io.IOException;
-
 public class FailScreen implements Screen {
 
     public final SkyShield game;

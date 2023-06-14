@@ -13,8 +13,6 @@ import com.skyshield.game.screens.MainMenu;
 import com.skyshield.game.sound.GameDialog;
 import com.skyshield.game.sound.GameMusic;
 
-import java.io.IOException;
-
 public class PauseMenu extends Table {
 
     public PauseMenu() {
@@ -24,8 +22,6 @@ public class PauseMenu extends Table {
         ImageButton exit = new ImageButton(new Image(new Texture(Gdx.files.internal("pause/exit.png"))).getDrawable());
 
         setBounds(GameScreen.screenWidth/2f-resume.getWidth()/2f, 170, resume.getWidth(), GameScreen.screenHeight-340);
-//        setFillParent(true);
-//        setDebug(true);
 
         add(resume).expand();
         row();

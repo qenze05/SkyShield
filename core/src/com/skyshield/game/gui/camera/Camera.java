@@ -4,8 +4,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
 import com.skyshield.game.screens.GameScreen;
 
-import java.util.Arrays;
-
 public class Camera {
 
     public static OrthographicCamera camera;

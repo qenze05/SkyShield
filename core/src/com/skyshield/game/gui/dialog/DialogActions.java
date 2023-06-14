@@ -1,6 +1,5 @@
 package com.skyshield.game.gui.dialog;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.utils.Array;
@@ -10,7 +9,6 @@ import com.skyshield.game.gui.GUIComponents;
 import com.skyshield.game.gui.phase.Phase;
 import com.skyshield.game.screens.FailScreen;
 import com.skyshield.game.screens.GameScreen;
-import com.skyshield.game.screens.LoadingScreen;
 import com.skyshield.game.sound.GameDialog;
 import com.skyshield.game.sound.GameMusic;
 import com.skyshield.game.utils.ItemsList;

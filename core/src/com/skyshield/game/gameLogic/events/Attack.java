@@ -12,7 +12,6 @@ import com.skyshield.game.gui.dialog.DialogText;
 import com.skyshield.game.gui.phase.Phase;
 import com.skyshield.game.screens.FailScreen;
 import com.skyshield.game.screens.GameScreen;
-import com.skyshield.game.screens.LoadingScreen;
 import com.skyshield.game.sound.GameDialog;
 import com.skyshield.game.sound.GameMusic;
 import com.skyshield.game.utils.CountryTerritory;
@@ -253,19 +252,24 @@ public class Attack {
 
                     } else if (random > 1) {
 
-                        int amount = MathUtils.random(3, 5);
-                        String target = ItemsList.getRandomBuilding();
-
-                        for (int i = 0; i < amount; i++) {
-                            rocket = "r" + MathUtils.random(1, 3);
-                            Rockets.spawnRocket(rocket, target, Rockets.getRandomSpawn());
-                        }
+                        phase3ComboAttack();
                     } else {
 
                         Rockets.spawnRocket("korshun", ItemsList.getRandomBuilding(), Rockets.getRandomSpawn());
                     }
                 }
             }
+        }
+    }
+
+    private static void phase3ComboAttack() {
+        String rocket;
+        int amount = MathUtils.random(3, 5);
+        String target = ItemsList.getRandomBuilding();
+
+        for (int i = 0; i < amount; i++) {
+            rocket = "r" + MathUtils.random(1, 3);
+            Rockets.spawnRocket(rocket, target, Rockets.getRandomSpawn());
         }
     }
 
@@ -381,13 +385,7 @@ public class Attack {
 
             } else if (random > 15) {
 
-                int amount = MathUtils.random(3, 5);
-                String target = ItemsList.getRandomBuilding();
-
-                for (int i = 0; i < amount; i++) {
-                    rocket = "r" + MathUtils.random(1, 3);
-                    Rockets.spawnRocket(rocket, target, Rockets.getRandomSpawn());
-                }
+                phase3ComboAttack();
 
             } else {
 
@@ -592,50 +590,7 @@ public class Attack {
 
             } else if (Clock.compareTimer(Clock.getTime(), Clock.setTimer(60 * 3, attackStartTime))) {
 
-                if (Clock.compareTimer(Clock.getTime(), Clock.setTimer(MathUtils.random(4, 6), lastRocketSpawnTime))) {
-
-                    lastRocketSpawnTime = Clock.getTime();
-
-                    int type = MathUtils.random(1, 4);
-                    String rocket = "";
-                    switch (type) {
-                        case 1 -> rocket = "r3";
-                        case 2 -> rocket = "korshun";
-                        case 3 -> rocket = "harpun";
-                        case 4 -> rocket = "sapsan";
-                    }
-
-                    int random = MathUtils.random(1, 100);
-
-                    if (random > 30) {
-                        if (type == 3)
-                            Rockets.spawnRocket(rocket, ItemsList.getRandomBuilding(), Rockets.getRandomSeaSpawn());
-                        else Rockets.spawnRocket(rocket, ItemsList.getRandomBuilding(), Rockets.getRandomSpawn());
-
-                    } else {
-
-                        int amount = MathUtils.random(3, 5);
-                        String target = ItemsList.getRandomBuilding();
-
-                        for (int i = 0; i < amount; i++) {
-                            type = MathUtils.random(1, 4);
-                            switch (type) {
-                                case 1 -> rocket = "r3";
-                                case 2 -> rocket = "korshun";
-                                case 3 -> rocket = "harpun";
-                                case 4 -> rocket = "sapsan";
-                            }
-                            if (type == 3) Rockets.spawnRocket(rocket, target, Rockets.getRandomSeaSpawn());
-                            else Rockets.spawnRocket(rocket, target, Rockets.getRandomSpawn());
-                        }
-
-                    }
-                }
-
-                if (eventCooldown == null || event2Cooldown == null) {
-                    eventCooldown = Clock.getTime();
-                    event2Cooldown = Clock.getTime();
-                }
+                phase6NormalAttack();
 
                 if (Clock.compareTimer(Clock.getTime(), Clock.setTimer(15, eventCooldown))) {
 
@@ -658,61 +613,8 @@ public class Attack {
 
             } else if (Clock.compareTimer(Clock.getTime(), Clock.setTimer(60 * 2, attackStartTime))){
 
-                if (Clock.compareTimer(Clock.getTime(), Clock.setTimer(MathUtils.random(4, 6), lastRocketSpawnTime))) {
-
-                    lastRocketSpawnTime = Clock.getTime();
-
-                    int type = MathUtils.random(1, 4);
-                    String rocket = "";
-                    switch (type) {
-                        case 1 -> rocket = "r3";
-                        case 2 -> rocket = "korshun";
-                        case 3 -> rocket = "harpun";
-                        case 4 -> rocket = "sapsan";
-                    }
-
-                    int random = MathUtils.random(1, 100);
-
-                    if (random > 30) {
-                        if (type == 3)
-                            Rockets.spawnRocket(rocket, ItemsList.getRandomBuilding(), Rockets.getRandomSeaSpawn());
-                        else Rockets.spawnRocket(rocket, ItemsList.getRandomBuilding(), Rockets.getRandomSpawn());
-
-                    } else {
-
-                        int amount = MathUtils.random(3, 5);
-                        String target = ItemsList.getRandomBuilding();
-
-                        for (int i = 0; i < amount; i++) {
-                            type = MathUtils.random(1, 4);
-                            switch (type) {
-                                case 1 -> rocket = "r3";
-                                case 2 -> rocket = "korshun";
-                                case 3 -> rocket = "harpun";
-                                case 4 -> rocket = "sapsan";
-                            }
-                            if (type == 3) Rockets.spawnRocket(rocket, target, Rockets.getRandomSeaSpawn());
-                            else Rockets.spawnRocket(rocket, target, Rockets.getRandomSpawn());
-                        }
-
-                    }
-                }
-
-                if (eventCooldown == null || event2Cooldown == null) {
-                    eventCooldown = Clock.getTime();
-                    event2Cooldown = Clock.getTime();
-                }
-                if (Clock.compareTimer(Clock.getTime(), Clock.setTimer(15, eventCooldown))) {
-
-                    eventCooldown = Clock.getTime();
-
-                    int amount = (MathUtils.randomBoolean()) ? MathUtils.random(4, 7) : MathUtils.random(8, 10);
-                    float[] spawn = Rockets.getRandomSpawn();
-
-                    for (int i = 0; i < amount; i++) {
-                        Rockets.spawnRocket("mukha", ItemsList.getRandomBuilding(), spawn);
-                    }
-                }
+                phase6NormalAttack();
+                mukhaEvent();
 
                 if (Clock.compareTimer(Clock.getTime(), Clock.setTimer(19, event2Cooldown))) {
 
@@ -723,58 +625,10 @@ public class Attack {
 
             } else if (Clock.compareTimer(Clock.getTime(), Clock.setTimer(60, attackStartTime))) {
 
-                if (Clock.compareTimer(Clock.getTime(), Clock.setTimer(MathUtils.random(4, 6), lastRocketSpawnTime))) {
-
-                    lastRocketSpawnTime = Clock.getTime();
-
-                    int type = MathUtils.random(1, 4);
-                    String rocket = "";
-                    switch (type) {
-                        case 1 -> rocket = "r3";
-                        case 2 -> rocket = "korshun";
-                        case 3 -> rocket = "harpun";
-                        case 4 -> rocket = "sapsan";
-                    }
-
-                    int random = MathUtils.random(1, 100);
-
-                    if (random > 30) {
-                        if (type == 3)
-                            Rockets.spawnRocket(rocket, ItemsList.getRandomBuilding(), Rockets.getRandomSeaSpawn());
-                        else Rockets.spawnRocket(rocket, ItemsList.getRandomBuilding(), Rockets.getRandomSpawn());
-
-                    } else {
-
-                        int amount = MathUtils.random(3, 5);
-                        String target = ItemsList.getRandomBuilding();
-
-                        for (int i = 0; i < amount; i++) {
-                            type = MathUtils.random(1, 4);
-                            switch (type) {
-                                case 1 -> rocket = "r3";
-                                case 2 -> rocket = "korshun";
-                                case 3 -> rocket = "harpun";
-                                case 4 -> rocket = "sapsan";
-                            }
-                            if (type == 3) Rockets.spawnRocket(rocket, target, Rockets.getRandomSeaSpawn());
-                            else Rockets.spawnRocket(rocket, target, Rockets.getRandomSpawn());
-                        }
-
-                    }
-                }
+                phase6NormalAttackSecond();
 
                 if (eventCooldown == null) eventCooldown = Clock.getTime();
-                else if (Clock.compareTimer(Clock.getTime(), Clock.setTimer(15, eventCooldown))) {
-
-                    eventCooldown = Clock.getTime();
-
-                    int amount = (MathUtils.randomBoolean()) ? MathUtils.random(4, 7) : MathUtils.random(8, 10);
-                    float[] spawn = Rockets.getRandomSpawn();
-
-                    for (int i = 0; i < amount; i++) {
-                        Rockets.spawnRocket("mukha", ItemsList.getRandomBuilding(), spawn);
-                    }
-                }
+                else mukhaEvent();
 
             } else {
 
@@ -817,18 +671,73 @@ public class Attack {
                 }
 
                 if (eventCooldown == null) eventCooldown = Clock.getTime();
-                else if (Clock.compareTimer(Clock.getTime(), Clock.setTimer(15, eventCooldown))) {
-
-                    eventCooldown = Clock.getTime();
-
-                    int amount = (MathUtils.randomBoolean()) ? MathUtils.random(4, 7) : MathUtils.random(8, 10);
-                    float[] spawn = Rockets.getRandomSpawn();
-
-                    for (int i = 0; i < amount; i++) {
-                        Rockets.spawnRocket("mukha", ItemsList.getRandomBuilding(), spawn);
-                    }
-                }
+                else mukhaEvent();
             }
+        }
+    }
+
+    private static void phase6NormalAttackSecond() {
+        if (Clock.compareTimer(Clock.getTime(), Clock.setTimer(MathUtils.random(4, 6), lastRocketSpawnTime))) {
+
+            lastRocketSpawnTime = Clock.getTime();
+
+            int type = MathUtils.random(1, 4);
+            String rocket = "";
+            switch (type) {
+                case 1 -> rocket = "r3";
+                case 2 -> rocket = "korshun";
+                case 3 -> rocket = "harpun";
+                case 4 -> rocket = "sapsan";
+            }
+
+            int random = MathUtils.random(1, 100);
+
+            if (random > 30) {
+                if (type == 3)
+                    Rockets.spawnRocket(rocket, ItemsList.getRandomBuilding(), Rockets.getRandomSeaSpawn());
+                else Rockets.spawnRocket(rocket, ItemsList.getRandomBuilding(), Rockets.getRandomSpawn());
+
+            } else {
+
+                int amount = MathUtils.random(3, 5);
+                String target = ItemsList.getRandomBuilding();
+
+                for (int i = 0; i < amount; i++) {
+                    type = MathUtils.random(1, 4);
+                    switch (type) {
+                        case 1 -> rocket = "r3";
+                        case 2 -> rocket = "korshun";
+                        case 3 -> rocket = "harpun";
+                        case 4 -> rocket = "sapsan";
+                    }
+                    if (type == 3) Rockets.spawnRocket(rocket, target, Rockets.getRandomSeaSpawn());
+                    else Rockets.spawnRocket(rocket, target, Rockets.getRandomSpawn());
+                }
+
+            }
+        }
+    }
+
+    private static void mukhaEvent() {
+        if (Clock.compareTimer(Clock.getTime(), Clock.setTimer(15, eventCooldown))) {
+
+            eventCooldown = Clock.getTime();
+
+            int amount = (MathUtils.randomBoolean()) ? MathUtils.random(4, 7) : MathUtils.random(8, 10);
+            float[] spawn = Rockets.getRandomSpawn();
+
+            for (int i = 0; i < amount; i++) {
+                Rockets.spawnRocket("mukha", ItemsList.getRandomBuilding(), spawn);
+            }
+        }
+    }
+
+    private static void phase6NormalAttack() {
+        phase6NormalAttackSecond();
+
+        if (eventCooldown == null || event2Cooldown == null) {
+            eventCooldown = Clock.getTime();
+            event2Cooldown = Clock.getTime();
         }
     }
 
@@ -855,13 +764,7 @@ public class Attack {
 
                 int type = MathUtils.random(1, 5);
                 String rocket = "";
-                switch (type) {
-                    case 1 -> rocket = "r3";
-                    case 2 -> rocket = "korshun";
-                    case 3 -> rocket = "harpun";
-                    case 4 -> rocket = "sapsan";
-                    case 5 -> rocket = "snovyda";
-                }
+                rocket = phase7GetRocket(type, rocket);
 
                 int random = MathUtils.random(1, 100);
 
@@ -877,13 +780,7 @@ public class Attack {
 
                     for (int i = 0; i < amount; i++) {
                         type = MathUtils.random(1, 5);
-                        switch (type) {
-                            case 1 -> rocket = "r3";
-                            case 2 -> rocket = "korshun";
-                            case 3 -> rocket = "harpun";
-                            case 4 -> rocket = "sapsan";
-                            case 5 -> rocket = "snovyda";
-                        }
+                        rocket = phase7GetRocket(type, rocket);
                         if (type == 3) Rockets.spawnRocket(rocket, target, Rockets.getRandomSeaSpawn());
                         else Rockets.spawnRocket(rocket, target, Rockets.getRandomSpawn());
                     }
@@ -891,32 +788,47 @@ public class Attack {
                 }
             }
 
-            if (eventCooldown == null || event2Cooldown == null) {
-                eventCooldown = Clock.getTime();
-                event2Cooldown = Clock.getTime();
-            }
+            phase7Event();
+        }
+    }
 
-            if (Clock.compareTimer(Clock.getTime(), Clock.setTimer(15, eventCooldown))) {
+    private static void phase7Event() {
+        if (eventCooldown == null || event2Cooldown == null) {
+            eventCooldown = Clock.getTime();
+            event2Cooldown = Clock.getTime();
+        }
 
-                eventCooldown = Clock.getTime();
+        if (Clock.compareTimer(Clock.getTime(), Clock.setTimer(15, eventCooldown))) {
 
-                String type = MathUtils.randomBoolean() ? "troyanskyykin" : "kobra";
-                Rockets.spawnRocket(type, ItemsList.getRandomBuilding(), Rockets.getRandomSpawn());
-            }
+            eventCooldown = Clock.getTime();
 
-            if (Clock.compareTimer(Clock.getTime(), Clock.setTimer(20, event2Cooldown))) {
+            String type = MathUtils.randomBoolean() ? "troyanskyykin" : "kobra";
+            Rockets.spawnRocket(type, ItemsList.getRandomBuilding(), Rockets.getRandomSpawn());
+        }
 
-                event2Cooldown = Clock.getTime();
+        if (Clock.compareTimer(Clock.getTime(), Clock.setTimer(20, event2Cooldown))) {
 
-                int amount = (MathUtils.random(1, 4) > 1) ? MathUtils.random(4, 7) : MathUtils.random(8, 10);
-                String type = (MathUtils.random(1, 4) > 1) ? "mukha" : "elektra";
-                float[] spawn = Rockets.getRandomSpawn();
+            event2Cooldown = Clock.getTime();
 
-                for (int i = 0; i < amount; i++) {
-                    Rockets.spawnRocket(type, ItemsList.getRandomBuilding(), spawn);
-                }
+            int amount = (MathUtils.random(1, 4) > 1) ? MathUtils.random(4, 7) : MathUtils.random(8, 10);
+            String type = (MathUtils.random(1, 4) > 1) ? "mukha" : "elektra";
+            float[] spawn = Rockets.getRandomSpawn();
+
+            for (int i = 0; i < amount; i++) {
+                Rockets.spawnRocket(type, ItemsList.getRandomBuilding(), spawn);
             }
         }
+    }
+
+    private static String phase7GetRocket(int type, String rocket) {
+        switch (type) {
+            case 1 -> rocket = "r3";
+            case 2 -> rocket = "korshun";
+            case 3 -> rocket = "harpun";
+            case 4 -> rocket = "sapsan";
+            case 5 -> rocket = "snovyda";
+        }
+        return rocket;
     }
 
     public static void phase8() {
@@ -987,31 +899,7 @@ public class Attack {
                 }
             }
 
-            if (eventCooldown == null || event2Cooldown == null) {
-                eventCooldown = Clock.getTime();
-                event2Cooldown = Clock.getTime();
-            }
-
-            if (Clock.compareTimer(Clock.getTime(), Clock.setTimer(15, eventCooldown))) {
-
-                eventCooldown = Clock.getTime();
-
-                String type = MathUtils.randomBoolean() ? "troyanskyykin" : "kobra";
-                Rockets.spawnRocket(type, ItemsList.getRandomBuilding(), Rockets.getRandomSpawn());
-            }
-
-            if (Clock.compareTimer(Clock.getTime(), Clock.setTimer(20, event2Cooldown))) {
-
-                event2Cooldown = Clock.getTime();
-
-                int amount = (MathUtils.random(1, 4) > 1) ? MathUtils.random(4, 7) : MathUtils.random(8, 10);
-                String type = (MathUtils.random(1, 4) > 1) ? "mukha" : "elektra";
-                float[] spawn = Rockets.getRandomSpawn();
-
-                for (int i = 0; i < amount; i++) {
-                    Rockets.spawnRocket(type, ItemsList.getRandomBuilding(), spawn);
-                }
-            }
+            phase7Event();
         }
     }
 

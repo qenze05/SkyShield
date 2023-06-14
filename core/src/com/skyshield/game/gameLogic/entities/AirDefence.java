@@ -323,7 +323,7 @@ public class AirDefence {
         float totalEff = speedEff * sizeEff * centralEff * distanceEff;
 //        System.out.println("speed: "+speedEff+"\n" +
 //                "size: "+sizeEff+"\n" +
-//                "cental: "+centralEff+"\n" +
+//                "central: "+centralEff+"\n" +
 //                "dist: "+distanceEff+"\n"+
 //                "total: "+totalEff);
 

@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.skyshield.game.gameObjects.buildings.City;
 import com.skyshield.game.screens.GameScreen;
-import org.w3c.dom.css.RGBColor;
 
 public class TextElements {
     public static BitmapFont moneyFont, hpFont;

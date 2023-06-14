@@ -66,7 +66,7 @@ public class DialogText extends Table {
         drawText = text;
         stringIndex = drawText.length();
         GameDialog.removeSound();
-    };
+    }
 
     public static String getFormattedText() {
         StringBuilder sb = new StringBuilder();

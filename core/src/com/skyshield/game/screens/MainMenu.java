@@ -16,8 +16,6 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.skyshield.game.SkyShield;
 import com.skyshield.game.sound.GameMusic;
 
-import java.io.IOException;
-
 public class MainMenu implements Screen {
 
     public final SkyShield game;
