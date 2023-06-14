@@ -52,15 +52,15 @@ public class GUIComponents {
     public static boolean dialogWindowIsClosing;
 
     public static Table goldTable, noMoneyTable;
+    public static Texture territory;
+    public static Sprite territorySprite;
 
     public static void addGoldTable(String amount) {
         Texture bg = new Texture(Gdx.files.internal("gold++/"+amount+".png"));
         goldTable = new Table();
         goldTable.setBounds(GameScreen.screenWidth/2f-bg.getWidth()/2f, GameScreen.screenHeight, bg.getWidth(), bg.getHeight());
         goldTable.setBackground(new Image(bg).getDrawable());
-        goldTable.addAction(Actions.sequence(Actions.moveTo(GameScreen.screenWidth/2f-bg.getWidth()/2f, GameScreen.screenHeight-goldTable.getHeight(), 1f, Interpolation.sine),
-                Actions.moveBy(0, 0, 1f),
-                Actions.moveTo(GameScreen.screenWidth/2f-bg.getWidth()/2f, GameScreen.screenHeight, 1f, Interpolation.sine)));
+        addMoneyWindowAnimation(goldTable, bg.getWidth());
         GameScreen.stage.addActor(goldTable);
 
         City.sellItem(Integer.parseInt(amount.substring(0, amount.length()-1)) * 1000);
@@ -294,23 +294,37 @@ public class GUIComponents {
                     }else{
                         noMoneyTable.clearActions();
 
-                        noMoneyTable.addAction(Actions.sequence(Actions.moveTo(GameScreen.screenWidth/2f-noMoneyTable.getWidth()/2f, GameScreen.screenHeight-noMoneyTable.getHeight(), 1f, Interpolation.sine),
-                                Actions.moveBy(0, 0, 1f),
-                                Actions.moveTo(GameScreen.screenWidth/2f-noMoneyTable.getWidth()/2f, GameScreen.screenHeight, 1f, Interpolation.sine)));
+                        addMoneyWindowAnimation(noMoneyTable, noMoneyTable.getWidth());
                         return false;
                     }
                 }
                 removeMovingButton();
+                clearArea();
                 return true;
             }
         });
     }
 
+    private static void addMoneyWindowAnimation(Table noMoneyTable, float width) {
+        noMoneyTable.addAction(Actions.sequence(Actions.moveTo(GameScreen.screenWidth/2f- width /2f, GameScreen.screenHeight- noMoneyTable.getHeight(), 1f, Interpolation.sine),
+                Actions.moveBy(0, 0, 1f),
+                Actions.moveTo(GameScreen.screenWidth/2f- width /2f, GameScreen.screenHeight, 1f, Interpolation.sine)));
+    }
+
+    public static void clearArea() {
+        if(territory != null && territorySprite != null) {
+            territory.dispose();
+            territorySprite.getTexture().dispose();
+            territorySprite = null;
+            territory = null;
+        }
+    }
     public static void showAvailableArea(boolean sea) {
 
-        Texture territory = CountryTerritory.getTerritoryTexture(sea);
-
-        Sprite territorySprite = new Sprite(territory);
+        if(territory == null || territorySprite == null) {
+            territory = CountryTerritory.getTerritoryTexture(sea);
+            territorySprite = new Sprite(territory);
+        }
 
         if (animationFrame <= 30) {
             territorySprite.setColor(1f, 0, 0, animationFrame / 90f);
@@ -558,7 +572,10 @@ public class GUIComponents {
                     repairTable = null;
                     airDefButtonJustPressed = true;
                 }else{
-                    // show error
+                    noMoneyTable.clearActions();
+
+                    addMoneyWindowAnimation(noMoneyTable, noMoneyTable.getWidth());
+                    return false;
                 }
                 return true;
             }

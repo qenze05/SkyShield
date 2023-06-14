@@ -56,7 +56,7 @@ public class GameScreen implements Screen {
 
     public static int gameSpeed = 1;
     public static final float WIDTH_TO_HEIGHT_RATIO = (float) GameScreen.screenWidth / GameScreen.screenHeight;
-    private final Texture mapImage = new Texture(Gdx.files.internal("bg-720.png"));;
+    private final Texture mapImage = new Texture(Gdx.files.internal("bg-720.png"));
     public static int lastClickX, lastClickY;
     public static int inputX, inputY;
     public static Stage stage, pauseStage;
@@ -419,6 +419,8 @@ public class GameScreen implements Screen {
 
     private static void inputListener() {
         if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+
+            if(GUIComponents.movingButton != null) return;
 
             float[] inputCoords = Camera.getRelativeCoords(Gdx.input.getX(), screenHeight - Gdx.input.getY());
             if (GUIComponents.shopButton.isChecked() && inputCoords[1] < 200) return;
