@@ -8,7 +8,7 @@ import com.skyshield.game.screens.GameScreen;
 
 public class ShopBackground extends Table{
 
-    Texture bg = new Texture(Gdx.files.internal("shop-menu/background.png"));
+    public Texture bg = new Texture(Gdx.files.internal("shop-menu/background.png"));
 
 
     public ShopBackground() {

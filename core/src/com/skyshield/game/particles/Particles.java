@@ -13,7 +13,9 @@ public class Particles {
 
     public static void initAtlas() {
         textureAtlas = new TextureAtlas();
-        textureAtlas.addRegion("cloud_1",new TextureRegion(new Texture(Gdx.files.internal("Burnout/cloud_1.png"))));
+        textureAtlas.addRegion("cloud_1",new TextureRegion(new Texture(Gdx.files.internal("particles/Explosion.png"))));
+        textureAtlas.addRegion("cloud_1",new TextureRegion(new Texture(Gdx.files.internal("particles/Explosion Enemy.png"))));
+        textureAtlas.addRegion("cloud_1",new TextureRegion(new Texture(Gdx.files.internal("particles/Smoke.png"))));
     }
 
 }

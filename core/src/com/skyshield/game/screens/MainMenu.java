@@ -14,12 +14,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.skyshield.game.SkyShield;
+import com.skyshield.game.sound.GameMusic;
 
 import java.io.IOException;
 
 public class MainMenu implements Screen {
 
-    final SkyShield game;
+    public final SkyShield game;
     private final Stage stage;
     OrthographicCamera camera;
 
@@ -60,12 +61,10 @@ public class MainMenu implements Screen {
         newGameButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                try {
-                    game.setScreen(new GameScreen(game));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                GameMusic.removeSound();
+                game.setScreen(new LoadingScreen(game));
                 dispose();
+
             }
         });
 
@@ -75,6 +74,9 @@ public class MainMenu implements Screen {
                 System.out.println("pref");
             }
         });
+
+        GameMusic.removeSound();
+        GameMusic.addSound("menu");
     }
 
     @Override

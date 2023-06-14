@@ -1,15 +1,14 @@
 package com.skyshield.game.gameLogic.entities;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.Array;
+import com.skyshield.game.gameObjects.buildings.PowerStation;
 import com.skyshield.game.gameObjects.rockets.*;
-import com.skyshield.game.particles.Particles;
-import com.skyshield.game.particles.SmokeParticle;
+import com.skyshield.game.gui.GUIComponents;
 import com.skyshield.game.screens.GameScreen;
+import com.skyshield.game.sound.Sounds;
 
 import java.util.Iterator;
 
@@ -18,9 +17,10 @@ public class Rockets {
     public static Array<Rocket> rockets;
     public static float[][] spawn = new float[][]{{1060, 95}, {1200, 120}, {1175, 460}, {1120, 640}, {780, 675}};
     public static float[][] seaSpawn = new float[][]{{400, 25}, {650, 20}, {1000, 50}, {920, 185}};
+    public static Sprite rocketSprite;
 
     public static String getRandomRocket() {
-        String[] arr = new String[]{"elektra", "harpun", "kobra", "korshun", "mukha", "r1", "r2", "r3", "sapsan", "troyanskyykin"};
+        String[] arr = new String[]{"elektra", "harpun", "kobra", "korshun", "mukha", "r1", "r2", "r3", "sapsan", "troyanskyykin", "snovyda"};
         return arr[MathUtils.random(0, arr.length-1)];
     }
     public static float[] getRandomSpawn() {
@@ -49,6 +49,7 @@ public class Rockets {
             case "immortalrocket" -> rockets.add(new ImmortalRocket(target, spawnPoint));
 
         }
+        if(!type.equalsIgnoreCase("mukha") && !type.equalsIgnoreCase("elektra")) Sounds.addSound("rocket_start");
     }
 
     public static void launchRockets() {
@@ -59,7 +60,6 @@ public class Rockets {
 
             Rocket rocket;
             Rectangle hitbox;
-            Sprite rocketSprite;
 
             rocket = iter.next();
             hitbox = rocket.getHitbox();
@@ -85,14 +85,29 @@ public class Rockets {
             rocketSprite.setOrigin(rocket.getHitbox().width/2, rocket.getHitbox().height/2);
             rocketSprite.rotate(rocket.getAngle() * (-1));
 
-            if (targetReached(hitbox, rocket.getTargetHitbox())) {
+            if(rocket.getName().equalsIgnoreCase("Snovyda") && !rocket.isTargeted()) {
+                rocketSprite.setAlpha(0.2f);
+            }
 
+            if (targetReached(hitbox, rocket.getTargetHitbox())) {
+                if(rocket.getTargetName().contains("City")) Sounds.addSound("city_explode");
+                else Sounds.addSound("building_explode");
+                Buildings.changeHp(rocket.getTargetHitbox(), (int) -rocket.getPower());
+                if(rocket.getName().equalsIgnoreCase("elektra")) {
+                    for(PowerStation station : Buildings.powerStations) {
+                        if(!station.getHitbox().equals(rocket.getTargetHitbox())) Buildings.changeHp(station.getHitbox(), -5);
+                    }
+                }
+                Buildings.addHpBar(rocket.getTargetHitbox());
+                if(GUIComponents.repairTable != null) GUIComponents.updateRepairBuildingMenu(rocket.getTargetName());
                 rocket.setEliminated(true);
+                GameScreen.disposableTextures.add(rocket.getTexture());
                 iter.remove();
             }
             GameScreen.game.batch.begin();
             rocketSprite.draw(GameScreen.game.batch);
             GameScreen.game.batch.end();
+            GameScreen.disposableTextures.add(rocketSprite.getTexture());
         }
     }
 
@@ -190,21 +205,8 @@ public class Rockets {
     }
 
     public static boolean targetReached(Rectangle current, Rectangle target) {
-        if(target.contains(current.x+ current.width/2, current.y+ current.height/2)) {
-        }
+
         return target.contains(current.x+ current.width/2, current.y+ current.height/2);
-    }
-
-    public static boolean isVisible(Rocket rocket) {
-        if(rocket.isTargeted()) return true;
-
-        rocket.setTargetedState(true);
-        if(rocket.isTargeted()) {
-            rocket.setTargetedState(false);
-            return true;
-        } else {
-            return false;
-        }
     }
 
 }

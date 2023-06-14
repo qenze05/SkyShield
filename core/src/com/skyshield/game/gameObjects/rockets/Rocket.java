@@ -7,6 +7,7 @@ public abstract class Rocket {
     public Rocket(String target, float[] spawnPoint) {
     }
 
+    public abstract String getName();
     public abstract boolean isTargeted();
     public abstract boolean isEliminated();
     public abstract void setTargetedState(boolean state);

@@ -7,7 +7,10 @@ import com.skyshield.game.gameLogic.entities.Buildings;
 import com.skyshield.game.gameObjects.airDefence.*;
 import com.skyshield.game.gameObjects.rockets.Rocket;
 import com.skyshield.game.gameObjects.rockets.SimpleRocket;
+import com.skyshield.game.gui.GUIComponents;
+import com.skyshield.game.screens.GameScreen;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -26,7 +29,12 @@ public class ItemsList {
                 map.put(entry.getKey(), entry.getValue());
             }
         }
-        return getBuilding(map);
+
+        String building;
+        do{
+            building = getBuilding(map);
+        }while(Buildings.isDestroyed(building));
+        return building;
     }
 
     private static String getBuilding(TreeMap<String, Rectangle> map) {
@@ -40,7 +48,11 @@ public class ItemsList {
     }
 
     public static String getRandomBuilding() {
-        return getBuilding(buildings);
+        String building;
+        do {
+            building = getBuilding(buildings);
+        }while(Buildings.isDestroyed(building));
+        return building;
     }
 
     public static TreeMap<String, Rectangle> getBuildings() {
@@ -101,13 +113,13 @@ public class ItemsList {
     
     public static AirDef getAirDef(String name) {
         switch (name.toLowerCase()) {
-            case "kronamk1" -> {
+            case "krona-mk1" -> {
                 return uniqueAirDefs.get(0);
             }
-            case "kronamk2" -> {
+            case "krona-mk2" -> {
                 return uniqueAirDefs.get(1);
             }
-            case "kronamk3" -> {
+            case "krona-mk3" -> {
                 return uniqueAirDefs.get(2);
             }
             case "slon" -> {
@@ -122,23 +134,35 @@ public class ItemsList {
             case "pulsar" -> {
                 return uniqueAirDefs.get(6);
             }
-            case "kronas" -> {
+            case "mushlya" -> {
                 return uniqueAirDefs.get(7);
             }
-            case "slons" -> {
+            case "kronas" -> {
                 return uniqueAirDefs.get(8);
             }
-            case "skorpions" -> {
+            case "slon-s" -> {
                 return uniqueAirDefs.get(9);
             }
-            case "pulsars" -> {
+            case "skorpion-s" -> {
                 return uniqueAirDefs.get(10);
             }
-            case "armahedon" -> {
+            case "pulsar-s" -> {
                 return uniqueAirDefs.get(11);
             }
+            case "armahedon" -> {
+                return uniqueAirDefs.get(12);
+            }
+            case "okohora1" -> {
+                return uniqueAirDefs.get(13);
+            }
+            case "okohora2" -> {
+                return uniqueAirDefs.get(14);
+            }
+            case "okohora3" -> {
+                return uniqueAirDefs.get(15);
+            }
             default -> {
-                return uniqueAirDefs.get(0);
+                return uniqueAirDefs.first();
             }
         }
 
@@ -152,13 +176,34 @@ public class ItemsList {
         arr.add(new Skorpion(pos));
         arr.add(new Mukhobiyka(pos));
         arr.add(new Pulsar(pos));
-//        arr.add(new Mushlya(pos));
+        arr.add(new Mushlya(pos));
         arr.add(new KronaS(pos));
-//        arr.add(new Lut(pos));
         arr.add(new SlonS(pos));
         arr.add(new SkorpionS(pos));
         arr.add(new PulsarS(pos));
         arr.add(new Armahedon(pos));
+        arr.add(new OkoHora1(pos));
+        arr.add(new OkoHora2(pos));
+        arr.add(new OkoHora3(pos));
+        for(AirDef airDef : arr) {
+            airDef.setLocked(true);
+            airDef.setTexture();
+        }
         return arr;
+    }
+
+    public static void unlockAirDefs(int count) {
+        Iterator<AirDef> iter = uniqueAirDefs.iterator();
+        AirDef airDef;
+        for(int i = 0; i < count; i++) {
+            if(!iter.hasNext()) break;
+           airDef = iter.next();
+           airDef.setLocked(false);
+           airDef.setTexture();
+        }
+        if(GameScreen.stage.getActors().contains(GUIComponents.shopScrollBar, false)) {
+            GUIComponents.removeShop();
+            GUIComponents.addShop();
+        }
     }
 }

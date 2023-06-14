@@ -10,7 +10,7 @@ public class Camera {
 
     public static OrthographicCamera camera;
     public static boolean moveCamera = false;
-    public static final Vector3 cameraPos = new Vector3((float) GameScreen.screenWidth / 2, (float) GameScreen.screenHeight / 2, 0);
+    public static Vector3 cameraPos = new Vector3((float) GameScreen.screenWidth / 2, (float) GameScreen.screenHeight / 2, 0);
 
     public static void createCamera() {
         camera = new OrthographicCamera();

@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.skyshield.game.gameLogic.entities.AirDefence;
+import com.skyshield.game.gameLogic.entities.Buildings;
 import com.skyshield.game.gameObjects.airDefence.AirDef;
 import com.skyshield.game.gameObjects.buildings.City;
 import com.skyshield.game.gui.camera.Camera;
@@ -25,34 +26,88 @@ import com.skyshield.game.gui.dialog.DialogWindow;
 import com.skyshield.game.gui.shop.ShopBackground;
 import com.skyshield.game.gui.shop.ShopScrollBar;
 import com.skyshield.game.screens.GameScreen;
+import com.skyshield.game.sound.GameDialog;
 import com.skyshield.game.utils.CountryTerritory;
+import com.skyshield.game.utils.ItemsList;
 
 
 public class GUIComponents {
 
-    private static ShopBackground shopBackground = new ShopBackground();
-    private static ShopScrollBar shopScrollBar = new ShopScrollBar();
-    private static Skin skin;
+    public static ShopBackground shopBackground;
+    public static ShopScrollBar shopScrollBar;
+    public static Skin skin;
     public static ImageButton movingButton, okButton, skipButton;
     public static Sprite movingButtonCircle;
     public static TextButton zoomInButton, zoomOutButton, shopButton, gameSpeedButton;
     public static int animationFrame = 0;
-    private static long popUpTimer;
-    private static Texture popUpTexture;
+    public static long popUpTimer;
+    public static Texture popUpTexture;
     public static Actor popUpImage;
-    public static boolean buttonJustPressed = false;
+    public static boolean airDefButtonJustPressed = false;
+    public static boolean buildingButtonJustPressed = false;
     public static Table sellTable;
+    public static Table repairTable;
     public static DialogWindow dialogWindow;
     public static DialogText dialogText;
     public static boolean dialogWindowIsClosing;
+
+    public static Table goldTable, noMoneyTable;
+
+    public static void addGoldTable(String amount) {
+        Texture bg = new Texture(Gdx.files.internal("gold++/"+amount+".png"));
+        goldTable = new Table();
+        goldTable.setBounds(GameScreen.screenWidth/2f-bg.getWidth()/2f, GameScreen.screenHeight, bg.getWidth(), bg.getHeight());
+        goldTable.setBackground(new Image(bg).getDrawable());
+        goldTable.addAction(Actions.sequence(Actions.moveTo(GameScreen.screenWidth/2f-bg.getWidth()/2f, GameScreen.screenHeight-goldTable.getHeight(), 1f, Interpolation.sine),
+                Actions.moveBy(0, 0, 1f),
+                Actions.moveTo(GameScreen.screenWidth/2f-bg.getWidth()/2f, GameScreen.screenHeight, 1f, Interpolation.sine)));
+        GameScreen.stage.addActor(goldTable);
+
+        City.sellItem(Integer.parseInt(amount.substring(0, amount.length()-1)) * 1000);
+    }
+
+    public static void addNoMoneyTable() {
+        Texture bg = new Texture(Gdx.files.internal("notEnoughMoney.png"));
+        noMoneyTable = new Table();
+        noMoneyTable.setBounds(GameScreen.screenWidth/2f-bg.getWidth()/2f, GameScreen.screenHeight, bg.getWidth(), bg.getHeight());
+        noMoneyTable.setBackground(new Image(bg).getDrawable());
+        GameScreen.disposableTextures.add(bg);
+        GameScreen.stage.addActor(noMoneyTable);
+    }
+
+    public static void removeGoldTable() {
+        goldTable.remove();
+        goldTable = null;
+    }
 
     public static void addStageInputListener() {
         GameScreen.stage.addListener(new InputListener() {
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
                 if (keycode == Input.Keys.ESCAPE) {
-                    removeShop();
-                    shopButton.setChecked(false);
+                    if(shopButton.isChecked()) {
+                        removeShop();
+                        shopButton.setChecked(false);
+                    }else{
+                        GameScreen.game.pause();
+                    }
+                }
+                if (keycode == Input.Keys.SPACE) {
+                    if(skipButton != null) {
+                        skipButton.remove();
+                        skipButton = null;
+                        dialogText.skip();
+                        addOkButton();
+                    }else if(okButton != null) {
+                        okButton.remove();
+                        dialogText.remove();
+                        DialogTimer.start = 0;
+                        DialogTimer.textStart = 0;
+                        dialogText = null;
+                        okButton = null;
+                        hideDialogTable();
+                        DialogActions.afterDialogActionActive = true;
+                    }
                 }
                 return true;
             }
@@ -110,12 +165,13 @@ public class GUIComponents {
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                     okButton.remove();
                     dialogText.remove();
-                    DialogTimer.start = null;
-                    DialogTimer.textStart = null;
+                    DialogTimer.start = 0;
+                    DialogTimer.textStart = 0;
                     dialogText = null;
                     okButton = null;
                     hideDialogTable();
                     DialogActions.afterDialogActionActive = true;
+                    GameDialog.removeSound();
                     return true;
                 }
             });
@@ -228,10 +284,21 @@ public class GUIComponents {
                 if (button == Input.Buttons.LEFT) {
                     float[] coords = Camera.getRelativeCoords(movingButton.getX() + movingButton.getWidth() / 2,
                             movingButton.getY() + movingButton.getHeight() / 2);
-                    if (!CountryTerritory.isInsideTerritory(coords[0], coords[1])) {
+                    if (!CountryTerritory.isInsideTerritory(coords[0], coords[1], movingButton.getName())) {
                         return false;
                     }
-                    placeWeapon();
+                    float price = ItemsList.getAirDef(movingButton.getName()).getPrice();
+                    if(City.getTotalMoney()>=price){
+                        City.buyItem(price);
+                        placeWeapon();
+                    }else{
+                        noMoneyTable.clearActions();
+
+                        noMoneyTable.addAction(Actions.sequence(Actions.moveTo(GameScreen.screenWidth/2f-noMoneyTable.getWidth()/2f, GameScreen.screenHeight-noMoneyTable.getHeight(), 1f, Interpolation.sine),
+                                Actions.moveBy(0, 0, 1f),
+                                Actions.moveTo(GameScreen.screenWidth/2f-noMoneyTable.getWidth()/2f, GameScreen.screenHeight, 1f, Interpolation.sine)));
+                        return false;
+                    }
                 }
                 removeMovingButton();
                 return true;
@@ -239,9 +306,9 @@ public class GUIComponents {
         });
     }
 
-    public static void showAvailableArea() {
+    public static void showAvailableArea(boolean sea) {
 
-        Texture territory = CountryTerritory.getTerritoryTexture();
+        Texture territory = CountryTerritory.getTerritoryTexture(sea);
 
         Sprite territorySprite = new Sprite(territory);
 
@@ -294,7 +361,7 @@ public class GUIComponents {
         pos[0] += movingButton.getWidth() * Camera.camera.zoom / 2;
         pos[1] += movingButton.getHeight() * Camera.camera.zoom / 2;
         AirDefence.addAirDef(pos, movingButton.getName());
-        buttonJustPressed = true;
+        airDefButtonJustPressed = true;
     }
 
     public static void addPopUpMenu(int x, int y) {
@@ -339,7 +406,7 @@ public class GUIComponents {
 
     public static void addSellAirDefMenu(AirDef airDef) {
 
-        if (buttonJustPressed) return;
+        if (airDefButtonJustPressed) return;
 
         TextElements.addSellValueText(airDef.getPrice() / 2);
 
@@ -374,7 +441,7 @@ public class GUIComponents {
                 TextElements.deleteSellValue();
                 sellTable.remove();
                 sellTable = null;
-                buttonJustPressed = true;
+                airDefButtonJustPressed = true;
                 return true;
             }
         });
@@ -382,10 +449,129 @@ public class GUIComponents {
         cancelButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                sellTable.remove();
                 TextElements.deleteSellValue();
+                sellTable.remove();
                 sellTable = null;
-                buttonJustPressed = true;
+                airDefButtonJustPressed = true;
+                return true;
+            }
+        });
+    }
+
+    public static String getRepairCost(String name, int number) {
+
+        String hp = "";
+        int price = 0;
+
+        switch (name) {
+            case "barrack" -> {
+                hp = Buildings.barracks.get(number).getHealth()+"/"+Buildings.barracks.get(number).getMaxhealth();
+                price = Buildings.barracks.get(number).calculateRepairCost();
+            }
+            case "city" -> {
+                hp = Buildings.cities.get(number).getHealth()+"/"+Buildings.cities.get(number).getMaxhealth();
+                price = Buildings.cities.get(number).calculateRepairCost();
+            }
+            case "dam" -> {
+                hp = Buildings.dams.get(number).getHealth()+"/"+Buildings.dams.get(number).getMaxhealth();
+                price = Buildings.dams.get(number).calculateRepairCost();
+            }
+            case "factory" -> {
+                hp = Buildings.factories.get(number).getHealth()+"/"+Buildings.factories.get(number).getMaxhealth();
+                price = Buildings.factories.get(number).calculateRepairCost();
+            }
+            case "hub1" -> {
+                hp = Buildings.hub1s.get(number).getHealth()+"/"+Buildings.hub1s.get(number).getMaxhealth();
+                price = Buildings.hub1s.get(number).calculateRepairCost();
+            }
+            case "hub2" -> {
+                hp = Buildings.hub2s.get(number).getHealth()+"/"+Buildings.hub2s.get(number).getMaxhealth();
+                price = Buildings.hub2s.get(number).calculateRepairCost();
+            }
+            case "hub3" -> {
+                hp = Buildings.hub3s.get(number).getHealth()+"/"+Buildings.hub3s.get(number).getMaxhealth();
+                price = Buildings.hub3s.get(number).calculateRepairCost();
+            }
+            case "powerstation" -> {
+                hp = Buildings.powerStations.get(number).getHealth()+"/"+Buildings.powerStations.get(number).getMaxhealth();
+                price = Buildings.powerStations.get(number).calculateRepairCost();
+            }
+        }
+        return hp+"-"+price;
+    }
+    public static void updateRepairBuildingMenu(String build) {
+        if(repairTable.getName().equals(ItemsList.buildings.get(build).toString())) {
+
+            TextElements.deleteRepairValue();
+            TextElements.deleteHpValue();
+            repairTable.remove();
+            repairTable = null;
+
+            String name = build.toLowerCase().split("-")[0];
+            int number = Integer.parseInt(build.toLowerCase().split("-")[1]);
+
+            String[] values = GUIComponents.getRepairCost(name, number).split("-");
+            if(!values[1].equals("0")) GUIComponents.addRepairBuildingMenu(ItemsList.buildings.get(build), values[0], Integer.parseInt(values[1]));
+        }
+    }
+    public static void addRepairBuildingMenu(Rectangle hitbox, String hp, int price) {
+
+        if (airDefButtonJustPressed) return;
+
+        TextElements.addRepairValueText(price);
+        TextElements.addHpValueText(hp);
+
+        Texture repairButtonTexture = new Texture(Gdx.files.internal("repairButton.png"));
+        Texture cancelButtonTexture = new Texture(Gdx.files.internal("cancelButton.png"));
+        Texture bgTexture = new Texture(Gdx.files.internal("repairBuildingBg.png"));
+
+        repairTable = new Table();
+        repairTable.setName(hitbox.toString());
+        repairTable.setBounds((float) GameScreen.screenWidth / 2 - (float) bgTexture.getWidth() / 2,
+                (float) GameScreen.screenHeight / 2 - (float) bgTexture.getHeight() / 2,
+                bgTexture.getWidth(), bgTexture.getHeight());
+
+        GameScreen.stage.addActor(repairTable);
+
+        ImageButton repairButton = new ImageButton(new Image(repairButtonTexture).getDrawable());
+        ImageButton cancelButton = new ImageButton(new Image(cancelButtonTexture).getDrawable());
+
+        Table buttonsTable = new Table();
+        buttonsTable.setSize(repairButton.getWidth(), repairButton.getHeight() * 2);
+        buttonsTable.add(repairButton);
+        buttonsTable.row();
+        buttonsTable.add(cancelButton);
+
+        repairTable.setBackground(new Image(bgTexture).getDrawable());
+        repairTable.add(buttonsTable).bottom().expand();
+
+        repairButton.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if(City.getTotalMoney()>=price){
+                    City.buyItem(price);
+                    TextElements.deleteRepairValue();
+                    TextElements.deleteHpValue();
+                    Buildings.changeHp(hitbox, 100000);
+                    Buildings.removeHpBar(hitbox);
+                    repairTable.remove();
+                    repairTable = null;
+                    airDefButtonJustPressed = true;
+                }else{
+                    // show error
+                }
+                return true;
+            }
+        });
+
+        cancelButton.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                TextElements.deleteRepairValue();
+                TextElements.deleteHpValue();
+                repairTable.remove();
+                repairTable = null;
+                airDefButtonJustPressed = true;
                 return true;
             }
         });
