@@ -154,7 +154,7 @@ public class GameScreen implements Screen {
                 && GUIComponents.goldTable == null
                 && !Phase.draw) {
             Attack.attack();
-            if(MathUtils.random(1, 100) > 90) Rockets.spawnRocket("snovyda", "Dam-2", Rockets.spawn[2]);
+//            if(MathUtils.random(1, 100) > 90) Rockets.spawnRocket("snovyda", "Dam-2", Rockets.spawn[2]);
         }
 
         if (Rockets.rockets != null) {
@@ -202,6 +202,8 @@ public class GameScreen implements Screen {
         disposableTextures.clear();
         disposableFonts.clear();
         disposableSounds.clear();
+
+        GUIComponents.updateNoMoneyTableTexture();
     }
     public static void drawPauseMenu() {
         if (pauseStage.getActors().size == 0) {

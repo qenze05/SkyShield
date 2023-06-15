@@ -66,6 +66,11 @@ public class GUIComponents {
         City.sellItem(Integer.parseInt(amount.substring(0, amount.length()-1)) * 1000);
     }
 
+    public static void updateNoMoneyTableTexture() {
+        Texture bg = new Texture(Gdx.files.internal("notEnoughMoney.png"));
+        noMoneyTable.setBackground(new Image(bg).getDrawable());
+        GameScreen.disposableTextures.add(bg);
+    }
     public static void addNoMoneyTable() {
         Texture bg = new Texture(Gdx.files.internal("notEnoughMoney.png"));
         noMoneyTable = new Table();
