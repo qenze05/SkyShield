@@ -566,7 +566,7 @@ public class GUIComponents {
                     City.buyItem(price);
                     TextElements.deleteRepairValue();
                     TextElements.deleteHpValue();
-                    Buildings.changeHp(hitbox, 100000);
+                    Buildings.changeHp(hitbox, 100000, false);
                     Buildings.removeHpBar(hitbox);
                     repairTable.remove();
                     repairTable = null;

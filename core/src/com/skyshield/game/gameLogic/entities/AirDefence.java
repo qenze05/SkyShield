@@ -93,11 +93,13 @@ public class AirDefence {
                 rocket.getTarget().setTargetedState(false);
                 GameScreen.disposableTextures.add(rocket.getTexture());
                 iter.remove();
+                continue;
             }
 
             if (!rocket.getOrigin().getCircleHitbox().contains(rocket.getHitbox())) {
                 GameScreen.disposableTextures.add(rocket.getTexture());
                 iter.remove();
+                continue;
             }
 
             if (airDefRocketSprite == null) airDefRocketSprite = new Sprite(rocket.getTexture());

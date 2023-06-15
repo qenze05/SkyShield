@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
-import com.skyshield.game.gameObjects.buildings.PowerStation;
 import com.skyshield.game.gui.GUIComponents;
 import com.skyshield.game.gui.dialog.DialogActions;
 import com.skyshield.game.gui.phase.Phase;
@@ -110,8 +109,21 @@ public class City {
 
     public void setHealth(int hp) {
         this.health = Math.min ( Math.max(health+hp, 0), maxhealth );
-        if(health <= 0) setTexture (new Texture(Gdx.files.internal("buildings/city-destroyed.png")));
-        else setTexture (new Texture(Gdx.files.internal("buildings/city.png")));
+        if(health <= 0) {
+            if(maxhealth == 1000) {
+                setTexture (new Texture(Gdx.files.internal("buildings/capital-destroyed.png")));
+                GameScreen.addFailScreen();
+            }else {
+                setTexture (new Texture(Gdx.files.internal("buildings/city-destroyed.png")));
+            }
+        }
+        else {
+            if(maxhealth == 1000) {
+                setTexture (new Texture(Gdx.files.internal("buildings/capital.png")));
+            }else {
+                setTexture (new Texture(Gdx.files.internal("buildings/city.png")));
+            }
+        }
     }
 
     public void setTexture(Texture texture) {

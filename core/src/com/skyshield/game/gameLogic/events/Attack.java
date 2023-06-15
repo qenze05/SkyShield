@@ -8,11 +8,8 @@ import com.skyshield.game.gameObjects.buildings.Barracks;
 import com.skyshield.game.gameObjects.buildings.Factory;
 import com.skyshield.game.gui.GUIComponents;
 import com.skyshield.game.gui.clock.Clock;
-import com.skyshield.game.gui.dialog.DialogText;
 import com.skyshield.game.gui.phase.Phase;
-import com.skyshield.game.screens.FailScreen;
 import com.skyshield.game.screens.GameScreen;
-import com.skyshield.game.sound.GameDialog;
 import com.skyshield.game.sound.GameMusic;
 import com.skyshield.game.utils.CountryTerritory;
 import com.skyshield.game.utils.ItemsList;
@@ -83,9 +80,7 @@ public class Attack {
 
     public static boolean success(int min) {
         if(Math.min(Barracks.getTotalTrainedSoldiers(), Factory.getRocketCount()) < min) {
-            DialogText.textCounter = 25;
-            GameDialog.removeSound();
-            GameScreen.game.setScreen(new FailScreen(GameScreen.game));
+            GameScreen.addFailScreen();
         }
         return Math.min(Barracks.getTotalTrainedSoldiers(), Factory.getRocketCount()) >= min;
     }
@@ -843,10 +838,14 @@ public class Attack {
 
         } else if (Clock.compareTimer(Clock.getTime(), Clock.setTimer(60 * 5, attackStartTime))) {
 
-            GUIComponents.addDialogTable();
+            if(!dialogAdded) {
+                GUIComponents.addDialogTable();
+                dialogAdded = true;
+                return;
+            }
             for(int i = 0; i < 10; i++) {
                 String rocket = Rockets.getRandomRocket();
-                String target = "City-3";
+                String target = "City-2";
 
                 if (rocket.equalsIgnoreCase("harpun")) {
 
@@ -872,7 +871,7 @@ public class Attack {
                 switch (random) {
                     case 1 -> target = ItemsList.getRandomBuilding("PowerStation");
                     case 2 -> target = ItemsList.getRandomBuilding("Dam");
-                    case 3 -> target = "City-3";
+                    case 3 -> target = "City-2";
                 }
 
                 if (rocket.equalsIgnoreCase("harpun")) {
@@ -890,7 +889,7 @@ public class Attack {
                         switch (random) {
                             case 1 -> target = ItemsList.getRandomBuilding("PowerStation");
                             case 2 -> target = ItemsList.getRandomBuilding("Dam");
-                            case 3 -> target = "City-3";
+                            case 3 -> target = "City-2";
                         }
                         Rockets.spawnRocket(rocket, target, spawn);
                     }

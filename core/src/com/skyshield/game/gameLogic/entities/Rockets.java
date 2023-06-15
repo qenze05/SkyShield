@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
-import com.skyshield.game.gameObjects.buildings.PowerStation;
 import com.skyshield.game.gameObjects.rockets.*;
 import com.skyshield.game.gui.GUIComponents;
 import com.skyshield.game.screens.GameScreen;
@@ -89,12 +88,7 @@ public class Rockets {
             if (targetReached(hitbox, rocket.getTargetHitbox())) {
                 if(rocket.getTargetName().contains("City")) Sounds.addSound("city_explode");
                 else Sounds.addSound("building_explode");
-                Buildings.changeHp(rocket.getTargetHitbox(), (int) -rocket.getPower());
-                if(rocket.getName().equalsIgnoreCase("elektra")) {
-                    for(PowerStation station : Buildings.powerStations) {
-                        if(!station.getHitbox().equals(rocket.getTargetHitbox())) Buildings.changeHp(station.getHitbox(), -5);
-                    }
-                }
+                Buildings.changeHp(rocket.getTargetHitbox(), (int) -rocket.getPower(), rocket.getName().equalsIgnoreCase("elektra"));
                 Buildings.addHpBar(rocket.getTargetHitbox());
                 if(GUIComponents.repairTable != null) GUIComponents.updateRepairBuildingMenu(rocket.getTargetName());
                 rocket.setEliminated(true);

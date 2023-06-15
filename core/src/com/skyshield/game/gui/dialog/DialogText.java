@@ -9,7 +9,7 @@ import com.skyshield.game.sound.GameDialog;
 
 public class DialogText extends Table {
 
-    public static int textCounter = 1;
+    public static int textCounter = 4;
     final float letterSpawnTime = .077f;
     float timer = 0;
 

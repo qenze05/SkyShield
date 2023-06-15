@@ -4,10 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.skyshield.game.gameLogic.entities.Buildings;
 import com.skyshield.game.screens.GameScreen;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class PowerStation {
     private Texture texture;
@@ -54,7 +52,10 @@ public class PowerStation {
     }
     public void setHealth(int hp) {
         this.health = Math.min ( Math.max(health+hp, 0), maxhealth );
-        if(health <= 0) setTexture (new Texture(Gdx.files.internal("buildings/aetherstation-destroyed.png")));
+        if(health <= 0) {
+            setTexture (new Texture(Gdx.files.internal("buildings/aetherstation-destroyed.png")));
+            if (Buildings.allStationsDestroyed()) GameScreen.addFailScreen();
+        }
         else setTexture (new Texture(Gdx.files.internal("buildings/aetherstation.png")));
     }
 

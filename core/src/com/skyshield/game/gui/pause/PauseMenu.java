@@ -7,6 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.skyshield.game.gui.encyclopedia.EncyclopediaTable;
 import com.skyshield.game.screens.GameScreen;
 import com.skyshield.game.screens.LoadingScreen;
 import com.skyshield.game.screens.MainMenu;
@@ -34,6 +36,7 @@ public class PauseMenu extends Table {
         resume.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+
                 GameScreen.game.resume();
                 return true;
             }
@@ -49,15 +52,21 @@ public class PauseMenu extends Table {
             }
         });
 
+        encyclopedia.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                GameScreen.pauseStage.addActor(new EncyclopediaTable());
+            }
+        });
+
         exit.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                GameScreen.game.resume();
                 GameScreen.gameContinued = true;
                 GameDialog.pauseSound();
-                GameDialog.removeSound();
+//                GameDialog.removeSound();
                 GameMusic.pauseSound();
-                GameMusic.removeSound();
+//                GameMusic.removeSound();
                 GameScreen.game.setScreen(new MainMenu(GameScreen.game));
                 return true;
             }

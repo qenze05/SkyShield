@@ -29,11 +29,17 @@ public class Buildings {
     public static Array<Table> hpBars = new Array<>();
     public static final Texture hpBarTexture = new Texture(Gdx.files.internal("hp-bar/bg.png"));
 
+    public static boolean allStationsDestroyed() {
+        for(PowerStation station : powerStations) {
+            if(!station.isDisabled() && station.getHealth() > 0) return false;
+        }
+        return true;
+    }
     public static boolean isDestroyed(String building) {
         String name = building.split("-")[0];
         int number = Integer.parseInt(building.split("-")[1]);
 
-        switch (name) {
+        switch (name.toLowerCase()) {
             case "barrack" -> {
                 return Buildings.barracks.get(number).getHealth() <= 0;
             }
@@ -110,7 +116,7 @@ public class Buildings {
         pixmap.setColor(red, green, 0, 1);
         pixmap.fillRectangle(0,
                 1,
-                (int) (58 * percentage), 6);
+                (int) (46 * percentage), 6);
         Image img = new Image(new Texture(pixmap));
         pixmap.dispose();
         if(percentage > 0) table.add(img);
@@ -133,7 +139,13 @@ public class Buildings {
             }
         }
     }
-    public static void changeHp(Rectangle hitbox, int hp) {
+
+    /**
+     * @param hitbox - target hitbox
+     * @param hp - hp modifier
+     * @param elektra - elektra ability
+     */
+    public static void changeHp(Rectangle hitbox, int hp, boolean elektra) {
         String name = "";
         int number = 0;
         for (Map.Entry<String, Rectangle> entry : ItemsList.buildings.entrySet()) {
@@ -152,7 +164,15 @@ public class Buildings {
             case "hub1" -> Buildings.hub1s.get(number).setHealth(hp);
             case "hub2" -> Buildings.hub2s.get(number).setHealth(hp);
             case "hub3" -> Buildings.hub3s.get(number).setHealth(hp);
-            case "powerstation" -> Buildings.powerStations.get(number).setHealth(hp);
+            case "powerstation" -> {
+                if(elektra) {
+                    for(int i = 0; i < powerStations.size; i++) {
+                        if(i==number) Buildings.powerStations.get(i).setHealth(hp);
+                        else Buildings.powerStations.get(i).setHealth(-5);
+                    }
+                }
+
+            }
         }
     }
     public static void setDisabled() {

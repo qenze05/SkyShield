@@ -41,7 +41,10 @@ public class Dam {
 
     public void setHealth(int hp) {
         this.health = Math.min ( Math.max(health+hp, 0), maxhealth );
-        if(health <= 0) setTexture (new Texture(Gdx.files.internal("buildings/dam-destroyed.png")));
+        if(health <= 0) {
+            setTexture (new Texture(Gdx.files.internal("buildings/dam-destroyed.png")));
+            GameScreen.addFailScreen();
+        }
         else setTexture (new Texture(Gdx.files.internal("buildings/dam.png")));
     }
 
@@ -66,7 +69,7 @@ public class Dam {
         return hitbox;
     }
     public double calculateHealthPercentage() {
-        return health/maxhealth;
+        return (double) health /maxhealth;
     }
     public int calculateRepairCost() {
         return (maxhealth-health) * 10;

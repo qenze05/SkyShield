@@ -8,6 +8,10 @@ public class GameMusic {
 
     private static Music music;
 
+    public static boolean isMusicPlaying() {
+        if(music == null) return false;
+        return music.isPlaying();
+    }
     public static void addSound(String name) {
         if(Attack.phase>8) return;
         music = Gdx.audio.newMusic(Gdx.files.internal("music/"+name+".mp3"));

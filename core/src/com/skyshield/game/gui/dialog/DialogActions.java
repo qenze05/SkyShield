@@ -7,10 +7,7 @@ import com.skyshield.game.gameLogic.entities.Buildings;
 import com.skyshield.game.gameLogic.entities.Rockets;
 import com.skyshield.game.gui.GUIComponents;
 import com.skyshield.game.gui.phase.Phase;
-import com.skyshield.game.screens.FailScreen;
 import com.skyshield.game.screens.GameScreen;
-import com.skyshield.game.sound.GameDialog;
-import com.skyshield.game.sound.GameMusic;
 import com.skyshield.game.utils.ItemsList;
 
 public class DialogActions {
@@ -197,10 +194,9 @@ public class DialogActions {
                 DialogText.textCounter++;
             }
             case 19 -> {
-                GameMusic.removeSound();
-                GameDialog.removeSound();
+
                 GameScreen.win = true;
-                GameScreen.game.setScreen(new FailScreen(GameScreen.game));
+                GameScreen.addFailScreen();
             }
 
             default -> {

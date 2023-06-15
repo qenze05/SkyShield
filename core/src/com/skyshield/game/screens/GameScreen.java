@@ -10,6 +10,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
@@ -71,7 +72,6 @@ public class GameScreen implements Screen {
     public static boolean win = false;
 
     public GameScreen(final SkyShield game) throws IOException {
-        System.out.println("game started");
         GameScreen.game = game;
 
         if(gameRestarted) {
@@ -94,6 +94,7 @@ public class GameScreen implements Screen {
         if(!gameContinued) {
             stage = new Stage(new ScreenViewport());
             pauseStage = new Stage(new ScreenViewport());
+            GameScreen.game.resume();
         }
         Gdx.input.setInputProcessor(stage);
         if(gameContinued) return;
@@ -153,7 +154,7 @@ public class GameScreen implements Screen {
                 && GUIComponents.goldTable == null
                 && !Phase.draw) {
             Attack.attack();
-//            if(MathUtils.random(1, 1000) > 975) Rockets.spawnRocket("korshun", "Dam-2", Rockets.spawn[2]);
+            if(MathUtils.random(1, 100) > 90) Rockets.spawnRocket("snovyda", "Dam-2", Rockets.spawn[2]);
         }
 
         if (Rockets.rockets != null) {
@@ -499,6 +500,13 @@ public class GameScreen implements Screen {
         } else if (Camera.moveCamera) Camera.moveCamera = false;
     }
 
+    public static void addFailScreen() {
+        game.pause();
+        DialogText.textCounter = -1;
+        GameDialog.removeSound();
+        GameMusic.removeSound();
+        game.setScreen(new FailScreen(GameScreen.game));
+    }
     public static void resetGame() {
         AirDefence.airDefs = new Array<>();
         AirDefence.airDefRockets = new Array<>();
@@ -582,9 +590,6 @@ public class GameScreen implements Screen {
         TextElements.sellValue = -1;
         TextElements.repairValue = -1;
         TextElements.hpValue = "";
-
-
-
     }
 
 
