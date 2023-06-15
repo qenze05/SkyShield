@@ -105,7 +105,7 @@ public class Buildings {
                 50, 8);
 
         float red, green;
-        if(percentage >= 0.5f) {
+        if(percentage > 0.5f) {
             red = 1 - 2 * percentage;
             green = 1;
         }else {
@@ -169,6 +169,13 @@ public class Buildings {
                     for(int i = 0; i < powerStations.size; i++) {
                         if(i==number) Buildings.powerStations.get(i).setHealth(hp);
                         else Buildings.powerStations.get(i).setHealth(-5);
+                    }
+                }else {
+                    for(int i = 0; i < powerStations.size; i++) {
+                        if(i==number) {
+                            Buildings.powerStations.get(i).setHealth(hp);
+                            break;
+                        }
                     }
                 }
 
@@ -389,10 +396,10 @@ public class Buildings {
     }
 
     private static void addDams() {
-        dams.add( new Dam(new float[]{455, 185},15000));
-        dams.add( new Dam(new float[]{610, 440},15000));
-        dams.add( new Dam(new float[]{500, 310},15000));
-        dams.add( new Dam(new float[]{275, 400},15000));
+        dams.add( new Dam(new float[]{455, 185},2000));
+        dams.add( new Dam(new float[]{610, 440},2000));
+        dams.add( new Dam(new float[]{500, 310},2000));
+        dams.add( new Dam(new float[]{275, 400},2000));
     }
 
     private static void addSuperFactories() {

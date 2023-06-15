@@ -64,9 +64,7 @@ public class PauseMenu extends Table {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 GameScreen.gameContinued = true;
                 GameDialog.pauseSound();
-//                GameDialog.removeSound();
                 GameMusic.pauseSound();
-//                GameMusic.removeSound();
                 GameScreen.game.setScreen(new MainMenu(GameScreen.game));
                 return true;
             }

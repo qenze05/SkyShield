@@ -53,8 +53,7 @@ public class Attack {
 
             Rockets.rockets = new Array<>();
 
-            if (phase == 8) CountryTerritory.updateMap(7);
-            else CountryTerritory.updateMap(phase);
+            CountryTerritory.updateMap(phase);
 
             Buildings.setDisabled();
             ItemsList.buildings = ItemsList.getBuildings();

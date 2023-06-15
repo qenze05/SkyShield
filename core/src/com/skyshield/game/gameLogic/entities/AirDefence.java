@@ -320,7 +320,7 @@ public class AirDefence {
         float speedEff = (airDef.getOptimalSpeed() >= rocket.getSpeed()) ? 1 : (airDef.getOptimalSpeed()/rocket.getSpeed());
         float sizeEff = (airDef.getOptimalSize() <= rocket.getRocketSize()) ? 1 : (rocket.getRocketSize()/airDef.getOptimalSize());
         float centralEff = 1 - (1 - airDef.getCentrality())*(Rockets.getDistance(airDef.getPos(), rocketPos)/(airDef.getRadius()*GameScreen.globalScale));
-        float distanceEff = 0.5f + Math.abs(0.5f * (Rockets.getDistance(rocketPos, rocket.getTargetPos()) / Rockets.getDistance(rocket.getSpawnPoint(), rocket.getTargetPos())) - 0.5f);
+        float distanceEff = 0.5f + (0.5f * (Rockets.getDistance(rocketPos, rocket.getTargetPos()) / Rockets.getDistance(rocket.getSpawnPoint(), rocket.getTargetPos())));
 
         float totalEff = speedEff * sizeEff * centralEff * distanceEff;
 //        System.out.println("speed: "+speedEff+"\n" +

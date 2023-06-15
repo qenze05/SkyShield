@@ -58,11 +58,11 @@ public class LoadingScreen implements Screen {
         game.batch.begin();
 
         switch(frame) {
-            case 50 -> bar = new Texture(Gdx.files.internal("loading-screen/start.png"));
-            case 100 -> bar = new Texture(Gdx.files.internal("loading-screen/more.png"));
-            case 160 -> bar = new Texture(Gdx.files.internal("loading-screen/half.png"));
-            case 220 -> bar = new Texture(Gdx.files.internal("loading-screen/almost.png"));
-            case 300 -> {
+            case 25 -> bar = new Texture(Gdx.files.internal("loading-screen/start.png"));
+            case 50 -> bar = new Texture(Gdx.files.internal("loading-screen/more.png"));
+            case 75 -> bar = new Texture(Gdx.files.internal("loading-screen/half.png"));
+            case 100 -> bar = new Texture(Gdx.files.internal("loading-screen/almost.png"));
+            case 125 -> {
                 try {
                     frame = 0;
                     game.setScreen(new GameScreen(game));
