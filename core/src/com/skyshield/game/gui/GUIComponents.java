@@ -383,7 +383,7 @@ public class GUIComponents {
         airDefButtonJustPressed = true;
     }
 
-    public static void addPopUpMenu(int x, int y) {
+    public static void addPopUpMenu(int x, int y, String name) {
 
         if (popUpImage != null) {
             popUpImage.remove();
@@ -393,7 +393,7 @@ public class GUIComponents {
 
             popUpTimer = TimeUtils.millis();
 
-            popUpTexture = new Texture(Gdx.files.internal("popup.png"));
+            popUpTexture = new Texture(Gdx.files.internal("airdef-cards/"+name+".png"));
             popUpImage = new Image(popUpTexture);
             popUpImage.setPosition(x, y);
             popUpImage.setVisible(false);

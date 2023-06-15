@@ -30,7 +30,8 @@ public class ShopScrollBar extends Table {
         GameScreen.stage.setScrollFocus(pane);
         Texture airDefTexture;
         for (int i = 0; i < ItemsList.uniqueAirDefs.size; i++) {
-            if(ItemsList.uniqueAirDefs.get(i).getName().contains("OkoHora")) break;
+            String name = ItemsList.uniqueAirDefs.get(i).getName();
+            if(name.contains("OkoHora")) break;
             airDefTexture = ItemsList.uniqueAirDefs.get(i).getTexture();
             boolean locked = ItemsList.uniqueAirDefs.get(i).isLocked();
 
@@ -53,7 +54,7 @@ public class ShopScrollBar extends Table {
                 @Override
                 public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
                     super.enter(event, x, y, pointer, fromActor);
-                    GUIComponents.addPopUpMenu((int) (Gdx.input.getX()+button.getWidth()/4), (int) (GameScreen.screenHeight - Gdx.input.getY()+button.getHeight()));
+                    GUIComponents.addPopUpMenu((int) (Gdx.input.getX()+button.getWidth()/4), (int) (GameScreen.screenHeight - Gdx.input.getY()+button.getHeight()), name);
                 }
 
                 @Override
