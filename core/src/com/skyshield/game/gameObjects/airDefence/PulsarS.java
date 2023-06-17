@@ -20,6 +20,8 @@ public class PulsarS extends AirDef{
     private final String name;
     private final int price;
     private boolean locked;
+    private float health;
+    private final float maxHealth;
 
     public PulsarS(float[] pos) {
         super(pos);
@@ -39,6 +41,28 @@ public class PulsarS extends AirDef{
                 radius * GameScreen.globalScale * 2,
                 radius * GameScreen.globalScale * 2);
         this.locked = false;
+        this.maxHealth = 100;
+        this.health = 100;
+    }
+
+    @Override
+    public float getHealth() {
+        return this.health;
+    }
+
+    @Override
+    public float getHealthPercentage() {
+        return health/maxHealth;
+    }
+
+    @Override
+    public void setHealth(float value) {
+        this.health += value;
+    }
+
+    @Override
+    public float getMaxHealth() {
+        return maxHealth;
     }
 
     @Override

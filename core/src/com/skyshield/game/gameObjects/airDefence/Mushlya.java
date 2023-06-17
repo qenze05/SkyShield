@@ -20,6 +20,8 @@ public class Mushlya extends AirDef{
     private final String name;
     private final int price;
     private boolean locked;
+    private final float maxHealth;
+    private float health;
 
     public Mushlya(float[] pos) {
         super(pos);
@@ -39,8 +41,29 @@ public class Mushlya extends AirDef{
                 radius * GameScreen.globalScale * 2,
                 radius * GameScreen.globalScale * 2);
         this.locked = false;
+        this.maxHealth = 100;
+        this.health = 100;
     }
 
+    @Override
+    public float getHealth() {
+        return this.health;
+    }
+
+    @Override
+    public float getHealthPercentage() {
+        return health/maxHealth;
+    }
+
+    @Override
+    public void setHealth(float value) {
+        this.health += value;
+    }
+
+    @Override
+    public float getMaxHealth() {
+        return maxHealth;
+    }
     @Override
     public boolean isLocked() {
         return this.locked;

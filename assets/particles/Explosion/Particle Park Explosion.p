@@ -60,8 +60,8 @@ timeline0: 0.0
 - X Scale - 
 lowMin: 0.0
 lowMax: 0.0
-highMin: 64.0
-highMax: 64.0
+highMin: 32.0
+highMax: 32.0
 relative: false
 scalingCount: 3
 scaling0: 1.0
@@ -112,9 +112,9 @@ active: false
 active: false
 - Tint - 
 colorsCount: 3
-colors0: 1.0
-colors1: 0.12156863
-colors2: 0.047058824
+colors0: 0.03529412
+colors1: 0.23529412
+colors2: 1.0
 timelineCount: 1
 timeline0: 0.0
 - Transparency - 
@@ -138,9 +138,9 @@ behind: false
 premultipliedAlpha: false
 spriteMode: random
 - Image Paths -
-particles/Explison/explosion-1.png
-particles/Explison/explosion-2.png
-particles/Explison/explosion-3.png
+/C:/Users/UserX/Downloads/particles/Explison/explosion-1.png
+/C:/Users/UserX/Downloads/particles/Explison/explosion-2.png
+/C:/Users/UserX/Downloads/particles/Explison/explosion-3.png
 
 
 spark
@@ -272,7 +272,7 @@ behind: false
 premultipliedAlpha: false
 spriteMode: single
 - Image Paths -
-particles/Explosion/circle2.png
+/C:/Users/UserX/Downloads/particles/Explosion/circle2.png
 
 
 spark
@@ -404,5 +404,5 @@ behind: false
 premultipliedAlpha: false
 spriteMode: single
 - Image Paths -
-particles/Explosion/circle2.png
+/C:/Users/UserX/Downloads/particles/Explosion/circle2.png
 

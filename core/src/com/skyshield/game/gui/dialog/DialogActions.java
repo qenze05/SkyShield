@@ -193,6 +193,24 @@ public class DialogActions {
                 afterDialogActionActive = false;
                 DialogText.textCounter++;
             }
+            case 18 -> {
+                for(int i = 0; i < 10; i++) {
+                    String rocket = Rockets.getRandomRocket();
+                    String target = "City-2";
+
+                    if (rocket.equalsIgnoreCase("harpun")) {
+
+                        Rockets.spawnRocket(rocket, target, Rockets.getRandomSeaSpawn());
+
+                    } else if (rocket.equalsIgnoreCase("elektra") || rocket.equalsIgnoreCase("mukha")) {
+                        i--;
+                    } else {
+                        Rockets.spawnRocket(rocket, target, Rockets.getRandomSpawn());
+                    }
+                }
+                afterDialogActionActive = false;
+                DialogText.textCounter++;
+            }
             case 19 -> {
 
                 GameScreen.win = true;

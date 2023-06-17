@@ -8,6 +8,10 @@ public abstract class AirDef {
     public AirDef(float[] pos) {
     }
 
+    public abstract float getHealth();
+    public abstract float getHealthPercentage();
+    public abstract void setHealth(float value);
+    public abstract float getMaxHealth();
     public abstract float[] getPos();
     public abstract boolean isLocked();
     public abstract void setLocked(boolean value);

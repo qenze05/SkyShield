@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.skyshield.game.gameObjects.rockets.*;
 import com.skyshield.game.gui.GUIComponents;
+import com.skyshield.game.particles.Particles;
 import com.skyshield.game.screens.GameScreen;
 import com.skyshield.game.sound.Sounds;
 
@@ -45,7 +46,10 @@ public class Rockets {
             case "immortalrocket" -> rockets.add(new ImmortalRocket(target, spawnPoint));
 
         }
-        if(!type.equalsIgnoreCase("mukha") && !type.equalsIgnoreCase("elektra")) Sounds.addSound("rocket_start");
+        if(!type.equalsIgnoreCase("mukha") && !type.equalsIgnoreCase("elektra")) {
+            Sounds.addSound("rocket_start");
+            Particles.addParticle("trail", rockets.peek().getHitbox());
+        }
     }
 
     public static void launchRockets() {
@@ -86,13 +90,25 @@ public class Rockets {
             }
 
             if (targetReached(hitbox, rocket.getTargetHitbox())) {
+
+                AirDefence.removeSmoke(rocket);
+
                 if(rocket.getTargetName().contains("City")) Sounds.addSound("city_explode");
                 else Sounds.addSound("building_explode");
+
                 Buildings.changeHp(rocket.getTargetHitbox(), (int) -rocket.getPower(), rocket.getName().equalsIgnoreCase("elektra"));
                 Buildings.addHpBar(rocket.getTargetHitbox());
+
+                Particles.addParticle("building_explosion", rocket.getTargetHitbox());
+
                 if(GUIComponents.repairTable != null) GUIComponents.updateRepairBuildingMenu(rocket.getTargetName());
+
                 rocket.setEliminated(true);
                 GameScreen.disposableTextures.add(rocket.getTexture());
+
+
+
+
                 iter.remove();
             }
             GameScreen.game.batch.begin();

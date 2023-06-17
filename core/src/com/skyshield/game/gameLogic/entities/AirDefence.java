@@ -1,17 +1,24 @@
 package com.skyshield.game.gameLogic.entities;
 
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.skyshield.game.gameObjects.airDefence.*;
 import com.skyshield.game.gameObjects.rockets.Rocket;
 import com.skyshield.game.gameObjects.rockets.SimpleRocket;
+import com.skyshield.game.particles.Particles;
 import com.skyshield.game.screens.GameScreen;
 import com.skyshield.game.sound.Sounds;
 
 import java.util.Iterator;
+import java.util.Map;
 import java.util.TreeMap;
 
 public class AirDefence {
@@ -22,6 +29,50 @@ public class AirDefence {
     public static boolean snovydaLost = false;
     public static Sprite airDefRocketSprite;
 
+    public static void addHpBarTable(AirDef airDef, float percentage) {
+
+        Table table = new Table();
+        table.setBackground(new Image(Buildings.hpBarTexture).getDrawable());
+
+        table.setBounds(airDef.getPos()[0] - 25,
+                airDef.getPos()[1] - 30,
+                50, 8);
+
+        float red, green;
+        if(percentage > 0.5f) {
+            red = 1 - 2 * percentage;
+            green = 1;
+        }else {
+            green = 2 * percentage;
+            red = 1;
+        }
+        Pixmap pixmap = new Pixmap(46, 6, Pixmap.Format.RGBA8888);
+        pixmap.setColor(red, green, 100, 1);
+        pixmap.fillRectangle(0,
+                1,
+                (int) (46 * percentage), 6);
+        Image img = new Image(new Texture(pixmap));
+        pixmap.dispose();
+        if(percentage > 0) table.add(img);
+
+        for(int i = 0; i < Buildings.hpBars.size; i++) {
+            if(Buildings.hpBars.get(i).getX() == table.getX() && Buildings.hpBars.get(i).getY() == table.getY()) {
+                Buildings.hpBars.removeIndex(i);
+                break;
+            }
+        }
+
+        Buildings.hpBars.add(table);
+    }
+
+    public static void removeHpBar(AirDef airDef) {
+        for(int i = 0; i < Buildings.hpBars.size; i++) {
+            if(Buildings.hpBars.get(i).getX() == airDef.getPos()[0] - 25 && Buildings.hpBars.get(i).getY() == airDef.getPos()[1] - 30) {
+                Buildings.hpBars.removeIndex(i);
+                break;
+            }
+        }
+    }
     public static void addAirDef(float[] pos, String type) {
         if (airDefs == null) AirDefence.airDefs = new Array<>();
         switch (type.toLowerCase()) {
@@ -48,6 +99,9 @@ public class AirDefence {
         if (airDefRockets == null) airDefRockets = new Array<>();
         airDefRockets.add(new AirDefRocket(airDefUnit.getPos(), rocket, airDefUnit));
         Sounds.addSound("airdef_start");
+
+        airDefUnit.setHealth(-1);
+        addHpBarTable(airDefUnit, airDefUnit.getHealthPercentage());
     }
 
     public static void moveRockets() {
@@ -69,6 +123,7 @@ public class AirDefence {
             } else if (rocket.getHitbox().overlaps(rocket.getTarget().getHitbox())) {
 
                 if(rocket.getTarget().getName().equalsIgnoreCase("SimpleRocket")) { //simple rocket ability
+                    Particles.addParticle("rocket_explosion", rocket.getHitbox());
                     removeTarget(rocket.getTarget().getHitbox(), rocket.getOrigin());
                     GameScreen.disposableTextures.add(rocket.getTexture());
                     iter.remove();
@@ -81,6 +136,7 @@ public class AirDefence {
                     if(miss(rocket)) {
                         setCornerTarget(rocket);
                     }else{
+                        Particles.addParticle("rocket_explosion", rocket.getHitbox());
                         removeTarget(rocket.getTarget().getHitbox(), rocket.getOrigin());
                         GameScreen.disposableTextures.add(rocket.getTexture());
                         iter.remove();
@@ -182,6 +238,11 @@ public class AirDefence {
         while (airDefIter.hasNext()) {
 
             AirDef airDefUnit = airDefIter.next();
+            if(airDefUnit.getHealth() == 0) {
+                removeHpBar(airDefUnit);
+                airDefIter.remove();
+                continue;
+            }
             rocketsIter = Rockets.rockets.iterator();
 
             while (rocketsIter.hasNext()) {
@@ -285,15 +346,33 @@ public class AirDefence {
         while (iter.hasNext()) {
             rocket = iter.next();
             if (rocket.getHitbox().overlaps(hitbox)) {
+
                 Sounds.addSound("rocket_explode");
+                removeSmoke(rocket);
+
                 if(airDef.getName().equalsIgnoreCase("armahedon")) rocket.disableAbility("spawn");
+
                 rocket.setEliminated(true);
+
                 if(rocket.isEliminated()) {
+
                     GameScreen.disposableTextures.add(rocket.getTexture());
+
                     iter.remove();
                 }
                 break;
 
+            }
+        }
+    }
+
+    public static void removeSmoke(Rocket rocket) {
+        for(Map.Entry<Rectangle, ParticleEffectPool.PooledEffect> entry : Particles.rocketTrailEffects.entrySet()) {
+            if(entry.getKey().x == rocket.getHitbox().x && entry.getKey().y == rocket.getHitbox().y) {
+                if(entry.getValue() == null) break;
+                entry.getValue().free();
+                entry.setValue(null);
+                break;
             }
         }
     }
@@ -323,10 +402,10 @@ public class AirDefence {
         float distanceEff = 0.5f + (0.5f * (Rockets.getDistance(rocketPos, rocket.getTargetPos()) / Rockets.getDistance(rocket.getSpawnPoint(), rocket.getTargetPos())));
 
         float totalEff = speedEff * sizeEff * centralEff * distanceEff;
-//        System.out.println("speed: "+speedEff+"\n" +
-//                "size: "+sizeEff+"\n" +
-//                "central: "+centralEff+"\n" +
-//                "dist: "+distanceEff+"\n"+
+//        System.out.println(//"speed: "+speedEff+"\n" +
+////                "size: "+sizeEff+"\n" +
+////                "central: "+centralEff+"\n" +
+////                "dist: "+distanceEff+"\n"+
 //                "total: "+totalEff);
 
         return MathUtils.random(0, 100) > totalEff * 100;

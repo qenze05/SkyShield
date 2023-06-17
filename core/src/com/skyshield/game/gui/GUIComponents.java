@@ -38,7 +38,7 @@ public class GUIComponents {
     public static Skin skin;
     public static ImageButton movingButton, okButton, skipButton;
     public static Sprite movingButtonCircle;
-    public static TextButton zoomInButton, zoomOutButton, shopButton, gameSpeedButton;
+    public static ImageButton zoomInButton, zoomOutButton, shopButton, gameSpeedButton;
     public static int animationFrame = 0;
     public static long popUpTimer;
     public static Texture popUpTexture;
@@ -54,6 +54,9 @@ public class GUIComponents {
     public static Table goldTable, noMoneyTable;
     public static Texture territory;
     public static Sprite territorySprite;
+    public static Image speed1 = new Image(new Texture(Gdx.files.internal("speed1.png")));
+    public static Image speed2 = new Image(new Texture(Gdx.files.internal("speed2.png")));
+    public static Image speed3 = new Image(new Texture(Gdx.files.internal("speed3.png")));
 
     public static void addGoldTable(String amount) {
         Texture bg = new Texture(Gdx.files.internal("gold++/"+amount+".png"));
@@ -196,22 +199,22 @@ public class GUIComponents {
     public static void addButtonsTable() {
         Table buttonsTable = new Table();
         buttonsTable.setBounds(0, GameScreen.screenHeight - (float) GameScreen.screenHeight / 1.5f,
-                (float) GameScreen.screenWidth / 2, (float) GameScreen.screenHeight / 2);
+                156, 240);
 
         GameScreen.stage.addActor(buttonsTable);
 
-        zoomInButton = new TextButton("+", skin);
-        zoomOutButton = new TextButton("-", skin);
-        shopButton = new TextButton("Shop", skin);
-        gameSpeedButton = new TextButton("Speed: 1x", skin);
+        zoomInButton = new ImageButton(new Image(new Texture(Gdx.files.internal("plus.png"))).getDrawable());
+        zoomOutButton = new ImageButton(new Image(new Texture(Gdx.files.internal("minus.png"))).getDrawable());
+        shopButton = new ImageButton(new Image(new Texture(Gdx.files.internal("shop.png"))).getDrawable());
+        gameSpeedButton = new ImageButton(new Image(new Texture(Gdx.files.internal("speed1.png"))).getDrawable());
 
-        buttonsTable.add(shopButton).left().bottom().expandX().size(100, 50);
+        buttonsTable.add(shopButton);
         buttonsTable.row();
-        buttonsTable.add(zoomInButton).left().bottom().expandX().size(100, 50);
+        buttonsTable.add(zoomInButton);
         buttonsTable.row();
-        buttonsTable.add(zoomOutButton).left().bottom().expandX().size(100, 50);
+        buttonsTable.add(zoomOutButton);
         buttonsTable.row();
-        buttonsTable.add(gameSpeedButton).left().bottom().expandX().size(150, 50);
+        buttonsTable.add(gameSpeedButton);
 
         zoomInButton.addListener(new ChangeListener() {
             @Override
@@ -248,8 +251,17 @@ public class GUIComponents {
         gameSpeedButton.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                buttonsTable.removeActor(gameSpeedButton);
                 GameScreen.changeGameSpeed();
-                gameSpeedButton.setText("Speed: " + GameScreen.gameSpeed + "x");
+                switch (GameScreen.gameSpeed) {
+                    case 1 -> gameSpeedButton = new ImageButton(speed1.getDrawable());
+                    case 2 -> gameSpeedButton = new ImageButton(speed2.getDrawable());
+                    case 3 -> gameSpeedButton = new ImageButton(speed3.getDrawable());
+                }
+                gameSpeedButton.addListener(this);
+                buttonsTable.row();
+                buttonsTable.add(gameSpeedButton);
+
                 return true;
             }
         });

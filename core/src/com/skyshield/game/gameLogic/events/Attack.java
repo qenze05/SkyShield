@@ -840,21 +840,6 @@ public class Attack {
             if(!dialogAdded) {
                 GUIComponents.addDialogTable();
                 dialogAdded = true;
-                return;
-            }
-            for(int i = 0; i < 10; i++) {
-                String rocket = Rockets.getRandomRocket();
-                String target = "City-2";
-
-                if (rocket.equalsIgnoreCase("harpun")) {
-
-                    Rockets.spawnRocket(rocket, target, Rockets.getRandomSeaSpawn());
-
-                } else if (rocket.equalsIgnoreCase("elektra") || rocket.equalsIgnoreCase("mukha")) {
-                    i--;
-                } else {
-                    Rockets.spawnRocket(rocket, target, Rockets.getRandomSpawn());
-                }
             }
 
         }else if (!Clock.compareTimer(Clock.getTime(), Clock.setTimer(60 * 5, attackStartTime))) {

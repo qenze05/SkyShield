@@ -9,8 +9,8 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
@@ -40,6 +40,7 @@ import com.skyshield.game.gui.dialog.DialogTimer;
 import com.skyshield.game.gui.phase.Phase;
 import com.skyshield.game.gui.shop.ShopBackground;
 import com.skyshield.game.gui.shop.ShopScrollBar;
+import com.skyshield.game.particles.Particles;
 import com.skyshield.game.sound.GameDialog;
 import com.skyshield.game.sound.GameMusic;
 import com.skyshield.game.utils.CountryTerritory;
@@ -116,7 +117,7 @@ public class GameScreen implements Screen {
         Buildings.addBuildings();
         Buildings.cities.get(2).texture = new Texture(Gdx.files.internal("buildings/capital.png"));
 
-//        Particles.initAtlas();
+        Particles.initParticles();
     }
 
     @Override
@@ -145,6 +146,8 @@ public class GameScreen implements Screen {
 
         drawHpBars();
 
+        drawParticles();
+
         if (DialogActions.afterDialogActionActive) {
             DialogActions.action();
         }
@@ -165,10 +168,6 @@ public class GameScreen implements Screen {
 
         inputListener();
 
-//        drawLockedMapParticles();
-//        particleStage.act();
-//        particleStage.draw();
-
         if (GUIComponents.popUpImage != null) GUIComponents.showPopUpMenu();
         if (GUIComponents.movingButton != null) {
             GUIComponents.moveMovingButton();
@@ -185,7 +184,6 @@ public class GameScreen implements Screen {
         drawDialog();
 
         if (Phase.draw) Phase.drawPhase();
-//        drawSmoke();
 
     }
 
@@ -193,9 +191,6 @@ public class GameScreen implements Screen {
         for(Texture texture : disposableTextures) {
             texture.dispose();
         }
-//        for(BitmapFont font : disposableFonts) {
-//            font.dispose();
-//        }
         for(Sound sound : disposableSounds) {
             sound.dispose();
         }
@@ -224,15 +219,6 @@ public class GameScreen implements Screen {
         game.batch.end();
     }
 
-    //    private void drawLockedMapParticles() {
-//        if(CountryTerritory.territory>6) return;
-//        particleStage.getBatch().begin();
-//        for(LockedMapParticle particle : LockedMapParticle.particles) {
-//            particle.act(1/60f);
-//            particle.draw(particleStage.getBatch(), 0);
-//        }
-//        particleStage.getBatch().end();
-//    }
     private void drawDialog() {
         if (GUIComponents.dialogWindow != null) {
 
@@ -265,15 +251,26 @@ public class GameScreen implements Screen {
         }
     }
 
-    private void drawSmoke() {
-//        game.batch.begin();
-//        for(ParticleEffectPool.PooledEffect particle : Particles.pooled) {
-//            particle.draw(game.batch, 1/60f);
-//            if(particle.isComplete()) {
-//                particle.free();
-//            }
-//        }
-//        game.batch.end();
+    private void drawParticles() {
+        game.batch.begin();
+
+        for(Map.Entry<Rectangle, ParticleEffectPool.PooledEffect> entry : Particles.rocketTrailEffects.entrySet()) {
+            ParticleEffectPool.PooledEffect effect = entry.getValue();
+            if (effect == null) continue;
+
+            effect.setPosition(entry.getKey().x + entry.getKey().width/2, entry.getKey().y + entry.getKey().height/2);
+            effect.draw(game.batch, 1/60f);
+        }
+
+        for (int i = Particles.explosionEffects.size - 1; i >= 0; i--) {
+            ParticleEffectPool.PooledEffect effect = Particles.explosionEffects.get(i);
+            effect.draw(game.batch, 1/60f);
+            if (effect.isComplete()) {
+                effect.free();
+                Particles.explosionEffects.removeIndex(i);
+            }
+        }
+        game.batch.end();
     }
 
 

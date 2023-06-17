@@ -93,8 +93,8 @@ active: false
 active: true
 lowMin: 0.0
 lowMax: 0.0
-highMin: 32.0
-highMax: 32.0
+highMin: 48.0
+highMax: 48.0
 relative: false
 scalingCount: 1
 scaling0: 1.0
@@ -149,5 +149,5 @@ behind: false
 premultipliedAlpha: false
 spriteMode: single
 - Image Paths -
-Smoke/circle2.png
+/C:/Users/UserX/Downloads/Smoke/circle2.png
 
