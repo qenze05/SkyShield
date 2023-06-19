@@ -42,7 +42,7 @@ public class SlonS extends AirDef{
                 radius * GameScreen.globalScale * 2);
         this.locked = false;
         this.maxHealth = 100;
-        this.health = 100;
+        this.health = 1000;
     }
 
     @Override

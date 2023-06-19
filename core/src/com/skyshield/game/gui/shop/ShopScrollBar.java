@@ -31,7 +31,7 @@ public class ShopScrollBar extends Table {
         Texture airDefTexture;
         for (int i = 0; i < ItemsList.uniqueAirDefs.size; i++) {
             String name = ItemsList.uniqueAirDefs.get(i).getName();
-            if(name.contains("OkoHora")) break;
+
             airDefTexture = ItemsList.uniqueAirDefs.get(i).getTexture();
             boolean locked = ItemsList.uniqueAirDefs.get(i).isLocked();
 

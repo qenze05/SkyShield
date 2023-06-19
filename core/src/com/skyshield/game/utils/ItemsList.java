@@ -141,19 +141,19 @@ public class ItemsList {
             case "skorpion-s" -> {
                 return uniqueAirDefs.get(10);
             }
-            case "pulsar-s" -> {
+            case "okohora1" -> {
                 return uniqueAirDefs.get(11);
             }
-            case "armahedon" -> {
+            case "okohora2" -> {
                 return uniqueAirDefs.get(12);
             }
-            case "okohora1" -> {
+            case "okohora3" -> {
                 return uniqueAirDefs.get(13);
             }
-            case "okohora2" -> {
+            case "pulsar-s" -> {
                 return uniqueAirDefs.get(14);
             }
-            case "okohora3" -> {
+            case "armahedon" -> {
                 return uniqueAirDefs.get(15);
             }
             default -> {
@@ -175,11 +175,11 @@ public class ItemsList {
         arr.add(new KronaS(pos));
         arr.add(new SlonS(pos));
         arr.add(new SkorpionS(pos));
-        arr.add(new PulsarS(pos));
-        arr.add(new Armahedon(pos));
         arr.add(new OkoHora1(pos));
         arr.add(new OkoHora2(pos));
         arr.add(new OkoHora3(pos));
+        arr.add(new PulsarS(pos));
+        arr.add(new Armahedon(pos));
         for(AirDef airDef : arr) {
             airDef.setLocked(true);
             airDef.setTexture();

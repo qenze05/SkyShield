@@ -8,6 +8,9 @@ public class GameDialog {
 
     private static Sound sound;
 
+    public static Sound getSound() {
+        return sound;
+    }
     public static void addSound() {
         if(DialogText.textCounter>19) return;
         sound = Gdx.audio.newSound(Gdx.files.internal("replicas/"+ DialogText.textCounter+".mp3"));

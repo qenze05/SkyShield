@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.skyshield.game.gameLogic.events.Attack;
 import com.skyshield.game.gui.GUIComponents;
 import com.skyshield.game.gui.dialog.DialogActions;
+import com.skyshield.game.gui.dialog.DialogText;
 import com.skyshield.game.gui.phase.Phase;
 import com.skyshield.game.screens.GameScreen;
 
@@ -17,7 +18,7 @@ public class SuperFactory {
     private int height;
     private float[] pos;
     public static int rocketCount = 0;
-    private float timeSinceLastProduction;
+    public float timeSinceLastProduction;
     private final float productionInterval;
     private int health;
     private int number;
@@ -40,7 +41,7 @@ public class SuperFactory {
 
     public void update(float deltaTime) {
         if(disabled
-                || GUIComponents.dialogWindow != null
+                || (GUIComponents.dialogWindow != null && DialogText.textCounter != 18)
                 || DialogActions.afterDialogActionActive
                 || GUIComponents.goldTable != null
                 || Phase.draw) return;

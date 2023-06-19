@@ -36,7 +36,7 @@ public class CountryTerritory {
     }
     // 0 - full territory, 7 - all territory is lost
     public static void setTerritory(int value) {
-        if(value >= 0 && value <= 7) territory = value;
+        if(value >= 1 && value <= 8) territory = value;
     }
 
     public static void setMapPolygon() {
@@ -63,9 +63,10 @@ public class CountryTerritory {
     }
 
     public static boolean isInsideTerritory(float x, float y, String name) {
-        return name.equalsIgnoreCase("mushlya")
-                ? sea.contains(x, y) && !island.contains(x, y)
-                : map.contains(x, y) && !sea.contains(x, y) || island.contains(x, y);
+        return true;
+//        return name.equalsIgnoreCase("mushlya")
+//                ? sea.contains(x, y) && !island.contains(x, y)
+//                : map.contains(x, y) && !sea.contains(x, y) || island.contains(x, y);
     }
 
     public static void updateMap(int stage) {

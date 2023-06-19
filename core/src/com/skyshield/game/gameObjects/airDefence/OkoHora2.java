@@ -32,7 +32,7 @@ public class OkoHora2 extends AirDef{
         this.reload = 0.1f;
         this.radius = 75;
         this.centrality = 1;
-        this.price = 0;
+        this.price = 20000;
         this.lastLaunchTime = 0;
         this.texture = new Texture(Gdx.files.internal("air-defence/OkoHora2.png"));
         this.circleTexture = new Texture(Gdx.files.internal("air-defence/range.png"));

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.skyshield.game.gui.GUIComponents;
 import com.skyshield.game.gui.dialog.DialogActions;
+import com.skyshield.game.gui.dialog.DialogText;
 import com.skyshield.game.gui.phase.Phase;
 import com.skyshield.game.screens.GameScreen;
 import com.skyshield.game.gameLogic.events.Attack;
@@ -17,14 +18,14 @@ public class City {
     private final PowerStation powerStation;
     private int population;
     private int money;
-    private float timeSinceLastProductionMoney;
-    private float timeSinceLastProductionPeople;
+    public float timeSinceLastProductionMoney;
+    public float timeSinceLastProductionPeople;
     private final int peopleProduction;
     private final int moneyProduction;
     private final float ProductionInterval;
     private int health;
     public static int totalPopulation = 0;
-    public static int totalMoney = 1300;
+    public static int totalMoney = 13000000;
     private final Rectangle hitbox;
     private boolean disabled;
     private final int maxhealth;
@@ -53,7 +54,7 @@ public class City {
     }
     public void update(float deltaTime) {
         if(disabled || health <= 0
-                || GUIComponents.dialogWindow != null
+                || (GUIComponents.dialogWindow != null && DialogText.textCounter != 18)
                 || DialogActions.afterDialogActionActive
                 || GUIComponents.goldTable != null
                 || Phase.draw) return;

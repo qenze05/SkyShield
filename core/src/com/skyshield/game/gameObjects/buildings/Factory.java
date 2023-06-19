@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.skyshield.game.gui.GUIComponents;
 import com.skyshield.game.gui.dialog.DialogActions;
+import com.skyshield.game.gui.dialog.DialogText;
 import com.skyshield.game.gui.phase.Phase;
 import com.skyshield.game.screens.GameScreen;
 import static com.badlogic.gdx.math.MathUtils.random;
@@ -18,7 +19,7 @@ public class Factory {
     private float[] pos;
     private PowerStation powerStation;
     public static int rocketCount = 0;
-    private float timeSinceLastProduction;
+    public float timeSinceLastProduction;
     private final float productionInterval;
     private int health;
     int maxhealth;
@@ -49,7 +50,7 @@ public class Factory {
     }
     public void update(float deltaTime) {
         if(disabled || health <= 0
-                || GUIComponents.dialogWindow != null
+                || (GUIComponents.dialogWindow != null && DialogText.textCounter != 18)
                 || DialogActions.afterDialogActionActive
                 || GUIComponents.goldTable != null
                 || Phase.draw) return;

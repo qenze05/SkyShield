@@ -7,6 +7,7 @@ import com.skyshield.game.gameLogic.events.Attack;
 import com.skyshield.game.gameObjects.buildings.City;
 import com.skyshield.game.gui.GUIComponents;
 import com.skyshield.game.gui.dialog.DialogActions;
+import com.skyshield.game.gui.dialog.DialogText;
 import com.skyshield.game.gui.phase.Phase;
 import com.skyshield.game.screens.GameScreen;
 
@@ -24,7 +25,7 @@ public class Barracks {
     private int health;
     public double checkDamageBefore;
     private float[] pos;
-    private float timeSinceLastProduction;
+    public float timeSinceLastProduction;
     private float productionInterval;
     private float timeSinceLastTraining;
     private float trainingDuration;
@@ -78,7 +79,7 @@ public class Barracks {
     }
     public void update(float deltaTime) {
         if(disabled
-                || GUIComponents.dialogWindow != null
+                || (GUIComponents.dialogWindow != null && DialogText.textCounter != 18)
                 || DialogActions.afterDialogActionActive
                 || GUIComponents.goldTable != null
                 || Phase.draw

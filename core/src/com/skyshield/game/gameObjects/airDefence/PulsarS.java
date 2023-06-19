@@ -42,7 +42,7 @@ public class PulsarS extends AirDef{
                 radius * GameScreen.globalScale * 2);
         this.locked = false;
         this.maxHealth = 100;
-        this.health = 100;
+        this.health = 10000;
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.skyshield.game.gui.GUIComponents;
 import com.skyshield.game.gui.dialog.DialogActions;
+import com.skyshield.game.gui.dialog.DialogText;
 import com.skyshield.game.gui.phase.Phase;
 import com.skyshield.game.screens.GameScreen;
 import com.skyshield.game.gameLogic.events.Attack;
@@ -18,7 +19,7 @@ public class Hub3 {
     private PowerStation powerStation;
     private int health;
     private float[] pos;
-    private float timeSinceLastProduction;
+    public float timeSinceLastProduction;
     private float trainingDuration;
     private boolean isTraining;
     private int trainingSize;
@@ -69,7 +70,7 @@ public class Hub3 {
 
     public void update(float deltaTime) {
         if(disabled || health <= 0
-                || GUIComponents.dialogWindow != null
+                || (GUIComponents.dialogWindow != null && DialogText.textCounter != 18)
                 || DialogActions.afterDialogActionActive
                 || GUIComponents.goldTable != null
                 || Phase.draw) return;

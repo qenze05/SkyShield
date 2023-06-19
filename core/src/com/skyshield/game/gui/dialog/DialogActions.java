@@ -7,7 +7,9 @@ import com.skyshield.game.gameLogic.entities.Buildings;
 import com.skyshield.game.gameLogic.entities.Rockets;
 import com.skyshield.game.gui.GUIComponents;
 import com.skyshield.game.gui.phase.Phase;
+import com.skyshield.game.particles.Particles;
 import com.skyshield.game.screens.GameScreen;
+import com.skyshield.game.sound.Sounds;
 import com.skyshield.game.utils.ItemsList;
 
 public class DialogActions {
@@ -74,9 +76,17 @@ public class DialogActions {
                 }
             }
             case 4 -> {
-                afterDialogActionActive = false;
-                DialogText.textCounter++;
-                Rockets.rockets = null;
+                if (GUIComponents.goldTable == null) {
+                    GUIComponents.addGoldTable("5k");
+                }
+
+                else if(GUIComponents.goldTable.getY() == GameScreen.screenHeight) {
+                    GUIComponents.removeGoldTable();
+                    afterDialogActionActive = false;
+                    DialogText.textCounter++;
+                    Rockets.rockets = null;
+                }
+
             }
             case 5 -> {
                 if (GUIComponents.goldTable == null) {
@@ -173,7 +183,7 @@ public class DialogActions {
 
                     DialogText.textCounter++;
 
-                    ItemsList.unlockAirDefs(11);
+                    ItemsList.unlockAirDefs(14);
                 }
             }
             case 15 -> {
@@ -189,27 +199,41 @@ public class DialogActions {
                 }
             }
             case 16 -> {
-                ItemsList.unlockAirDefs(13);
+                ItemsList.unlockAirDefs(16);
                 afterDialogActionActive = false;
                 DialogText.textCounter++;
             }
             case 18 -> {
-                for(int i = 0; i < 10; i++) {
-                    String rocket = Rockets.getRandomRocket();
-                    String target = "City-2";
-
-                    if (rocket.equalsIgnoreCase("harpun")) {
-
-                        Rockets.spawnRocket(rocket, target, Rockets.getRandomSeaSpawn());
-
-                    } else if (rocket.equalsIgnoreCase("elektra") || rocket.equalsIgnoreCase("mukha")) {
-                        i--;
-                    } else {
-                        Rockets.spawnRocket(rocket, target, Rockets.getRandomSpawn());
-                    }
+                if(counter == -1) {
+                    counter = 5;
                 }
-                afterDialogActionActive = false;
-                DialogText.textCounter++;
+                if(counter < 55 ) {
+                    if(counter % 5 == 0) {
+                        String rocket = Rockets.getRandomRocket();
+                        String target = "City-2";
+
+                        if (rocket.equalsIgnoreCase("harpun")) {
+
+                            Rockets.spawnRocket(rocket, target, Rockets.getRandomSeaSpawn());
+                            Sounds.addSound("rocket_start");
+                            Particles.addParticle("trail", Rockets.rockets.peek());
+                            counter++;
+
+                        } else if (!rocket.equalsIgnoreCase("elektra") && !rocket.equalsIgnoreCase("mukha")) {
+                            Rockets.spawnRocket(rocket, target, Rockets.getRandomSpawn());
+                            Sounds.addSound("rocket_start");
+                            Particles.addParticle("trail", Rockets.rockets.peek());
+                            counter++;
+                        }
+                    }else{
+                        counter++;
+                    }
+
+                }else{
+                    afterDialogActionActive = false;
+                    DialogText.textCounter++;
+                }
+
             }
             case 19 -> {
 

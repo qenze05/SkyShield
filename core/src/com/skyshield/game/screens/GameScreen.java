@@ -25,6 +25,7 @@ import com.skyshield.game.SkyShield;
 import com.skyshield.game.gameLogic.entities.Buildings;
 import com.skyshield.game.gameLogic.events.Attack;
 import com.skyshield.game.gameObjects.buildings.*;
+import com.skyshield.game.gameObjects.rockets.Rocket;
 import com.skyshield.game.gui.pause.PauseBg;
 import com.skyshield.game.gui.pause.PauseMenu;
 import com.skyshield.game.gui.TextElements;
@@ -100,8 +101,6 @@ public class GameScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
         if(gameContinued) return;
 
-//        particleStage = new Stage(new ScreenViewport());
-
         if(gameRestarted) {
             Camera.camera = null;
             Camera.moveCamera = false;
@@ -152,7 +151,7 @@ public class GameScreen implements Screen {
             DialogActions.action();
         }
 
-        if (GUIComponents.dialogWindow == null
+        if ((GUIComponents.dialogWindow == null || DialogText.textCounter == 18)
                 && !DialogActions.afterDialogActionActive
                 && GUIComponents.goldTable == null
                 && !Phase.draw) {
@@ -241,6 +240,11 @@ public class GameScreen implements Screen {
                 }
 
                 GUIComponents.updateDialogText();
+
+                if(TimeUtils.millis() > DialogTimer.textStart + 4300
+                        && GUIComponents.okButton != null
+                        && Attack.phase == 8
+                        && Rockets.rockets != null) GUIComponents.okButtonListener();
             } else {
                 if (GUIComponents.dialogWindow.getY() >= screenHeight) {
                     GUIComponents.dialogWindow.remove();
@@ -254,11 +258,11 @@ public class GameScreen implements Screen {
     private void drawParticles() {
         game.batch.begin();
 
-        for(Map.Entry<Rectangle, ParticleEffectPool.PooledEffect> entry : Particles.rocketTrailEffects.entrySet()) {
+        for(Map.Entry<Rocket, ParticleEffectPool.PooledEffect> entry : Particles.rocketTrailEffects.entrySet()) {
             ParticleEffectPool.PooledEffect effect = entry.getValue();
             if (effect == null) continue;
 
-            effect.setPosition(entry.getKey().x + entry.getKey().width/2, entry.getKey().y + entry.getKey().height/2);
+            effect.setPosition(entry.getKey().getHitbox().x + entry.getKey().getHitbox().width/2, entry.getKey().getHitbox().y + entry.getKey().getHitbox().height/2);
             effect.draw(game.batch, 1/60f);
         }
 
@@ -328,6 +332,10 @@ public class GameScreen implements Screen {
 
         if(gameContinued) {
             gameContinued = false;
+            GameMusic.removeSound();
+            GameMusic.addSound(String.valueOf(Attack.phase));
+            game.resume();
+            game.pause();
             return;
         }
 

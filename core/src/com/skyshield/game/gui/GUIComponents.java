@@ -27,6 +27,7 @@ import com.skyshield.game.gui.shop.ShopBackground;
 import com.skyshield.game.gui.shop.ShopScrollBar;
 import com.skyshield.game.screens.GameScreen;
 import com.skyshield.game.sound.GameDialog;
+import com.skyshield.game.sound.GameMusic;
 import com.skyshield.game.utils.CountryTerritory;
 import com.skyshield.game.utils.ItemsList;
 
@@ -136,6 +137,9 @@ public class GUIComponents {
     }
 
     public static void addDialogTable() {
+        if(DialogText.textCounter != 18) {
+            GameMusic.removeSound();
+        }
         dialogWindowIsClosing = false;
         dialogWindow = new DialogWindow();
         GameScreen.stage.addActor(dialogWindow);
@@ -171,21 +175,25 @@ public class GUIComponents {
             okButton.addListener(new InputListener() {
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                    okButton.remove();
-                    dialogText.remove();
-                    DialogTimer.start = 0;
-                    DialogTimer.textStart = 0;
-                    dialogText = null;
-                    okButton = null;
-                    hideDialogTable();
-                    DialogActions.afterDialogActionActive = true;
+                    okButtonListener();
                     GameDialog.removeSound();
                     return true;
                 }
             });
-
         }
     }
+
+    public static void okButtonListener() {
+        okButton.remove();
+        dialogText.remove();
+        DialogTimer.start = 0;
+        DialogTimer.textStart = 0;
+        dialogText = null;
+        okButton = null;
+        hideDialogTable();
+        DialogActions.afterDialogActionActive = true;
+    }
+
     public static void updateDialogText() {
         if(dialogText == null) return;
         dialogText.update(1/60f);
@@ -468,6 +476,7 @@ public class GUIComponents {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 AirDefence.removeAirDef(airDef);
+                AirDefence.removeHpBar(airDef);
                 City.sellItem((float) airDef.getPrice() / 2);
                 TextElements.deleteSellValue();
                 sellTable.remove();

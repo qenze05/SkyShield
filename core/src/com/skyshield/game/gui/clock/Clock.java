@@ -3,8 +3,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.skyshield.game.gameLogic.entities.Rockets;
 import com.skyshield.game.gui.GUIComponents;
 import com.skyshield.game.gui.dialog.DialogActions;
+import com.skyshield.game.gui.dialog.DialogText;
 import com.skyshield.game.gui.phase.Phase;
 import com.skyshield.game.screens.GameScreen;
 
@@ -80,13 +82,13 @@ public class Clock {
 
     public static void updateClock() {
 
-        if (GUIComponents.dialogWindow != null
+        if ((GUIComponents.dialogWindow != null && DialogText.textCounter != 18)
                 || DialogActions.afterDialogActionActive
                 || GUIComponents.goldTable != null
                 || Phase.draw) return;
 
-        if (TimeUtils.millis() - Clock.timeMillis >= (1000 / 24) / GameScreen.gameSpeed) {
-            time[1]++;
+        if (TimeUtils.millis() - Clock.timeMillis >= (1000 / 12) / GameScreen.gameSpeed) {
+            time[1]+=2;
 
             if (time[1] >= 60) {
                 time[1] = 0;

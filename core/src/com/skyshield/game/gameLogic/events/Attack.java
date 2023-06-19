@@ -8,6 +8,7 @@ import com.skyshield.game.gameObjects.buildings.Barracks;
 import com.skyshield.game.gameObjects.buildings.Factory;
 import com.skyshield.game.gui.GUIComponents;
 import com.skyshield.game.gui.clock.Clock;
+import com.skyshield.game.gui.dialog.DialogActions;
 import com.skyshield.game.gui.phase.Phase;
 import com.skyshield.game.screens.GameScreen;
 import com.skyshield.game.sound.GameMusic;
@@ -15,12 +16,13 @@ import com.skyshield.game.utils.CountryTerritory;
 import com.skyshield.game.utils.ItemsList;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class Attack {
     public static double coef = 1;
-    public static int phase = 1;
+    public static int phase = 8;
     public static int[] attackStartTime;
     public static int[] lastRocketSpawnTime;
     public static int[] cooldown;
@@ -40,6 +42,7 @@ public class Attack {
         if (cooldown != null && !Clock.compareTimer(Clock.getTime(), Clock.setTimer(2, cooldown))) return;
         else cooldown = null;
 
+
         if (Rockets.rockets == null) {
 
             GameScreen.disposeGarbage();
@@ -52,7 +55,6 @@ public class Attack {
             lastRocketSpawnTime = Clock.getTime();
 
             Rockets.rockets = new Array<>();
-
             CountryTerritory.updateMap(phase);
 
             Buildings.setDisabled();
@@ -95,6 +97,7 @@ public class Attack {
             GUIComponents.addDialogTable();
             Rockets.rockets = null;
             startCooldown();
+            System.out.println(Arrays.toString(Clock.getTime()));
 
         } else if (!Clock.compareTimer(Clock.getTime(), Clock.setTimer(60 * 4, attackStartTime))) {
 
@@ -105,6 +108,8 @@ public class Attack {
                     dialogAdded = true;
                     return;
                 }
+
+
 
                 if (Clock.compareTimer(Clock.getTime(), Clock.setTimer(3, lastRocketSpawnTime))) {
 
@@ -827,9 +832,10 @@ public class Attack {
 
     public static void phase8() {
 
-        if (Clock.compareTimer(Clock.getTime(), Clock.setTimer(62 * 5, attackStartTime))
-                && Rockets.rockets.size == 0) {
+        if (Clock.compareTimer(Clock.getTime(), Clock.setTimer(60 * 5, attackStartTime))
+                && Rockets.rockets.size == 0 && dialogAdded && GUIComponents.dialogWindow == null && !DialogActions.afterDialogActionActive) {
 
+            System.out.println("game end");
             GUIComponents.addDialogTable();
             Rockets.rockets = null;
             eventCooldown = null;
@@ -837,7 +843,8 @@ public class Attack {
 
         } else if (Clock.compareTimer(Clock.getTime(), Clock.setTimer(60 * 5, attackStartTime))) {
 
-            if(!dialogAdded) {
+            System.out.println("dialog");
+            if(!dialogAdded && Rockets.rockets.size == 0) {
                 GUIComponents.addDialogTable();
                 dialogAdded = true;
             }

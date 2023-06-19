@@ -48,7 +48,7 @@ public class Rockets {
         }
         if(!type.equalsIgnoreCase("mukha") && !type.equalsIgnoreCase("elektra")) {
             Sounds.addSound("rocket_start");
-            Particles.addParticle("trail", rockets.peek().getHitbox());
+            Particles.addParticle("trail", rockets.peek());
         }
     }
 
@@ -99,7 +99,7 @@ public class Rockets {
                 Buildings.changeHp(rocket.getTargetHitbox(), (int) -rocket.getPower(), rocket.getName().equalsIgnoreCase("elektra"));
                 Buildings.addHpBar(rocket.getTargetHitbox());
 
-                Particles.addParticle("building_explosion", rocket.getTargetHitbox());
+                Particles.addParticle("building_explosion", rocket);
 
                 if(GUIComponents.repairTable != null) GUIComponents.updateRepairBuildingMenu(rocket.getTargetName());
 

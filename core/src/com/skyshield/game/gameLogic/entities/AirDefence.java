@@ -123,7 +123,7 @@ public class AirDefence {
             } else if (rocket.getHitbox().overlaps(rocket.getTarget().getHitbox())) {
 
                 if(rocket.getTarget().getName().equalsIgnoreCase("SimpleRocket")) { //simple rocket ability
-                    Particles.addParticle("rocket_explosion", rocket.getHitbox());
+                    Particles.addParticle("rocket_explosion", rocket.getTarget());
                     removeTarget(rocket.getTarget().getHitbox(), rocket.getOrigin());
                     GameScreen.disposableTextures.add(rocket.getTexture());
                     iter.remove();
@@ -136,7 +136,7 @@ public class AirDefence {
                     if(miss(rocket)) {
                         setCornerTarget(rocket);
                     }else{
-                        Particles.addParticle("rocket_explosion", rocket.getHitbox());
+                        Particles.addParticle("rocket_explosion", rocket.getTarget());
                         removeTarget(rocket.getTarget().getHitbox(), rocket.getOrigin());
                         GameScreen.disposableTextures.add(rocket.getTexture());
                         iter.remove();
@@ -238,7 +238,7 @@ public class AirDefence {
         while (airDefIter.hasNext()) {
 
             AirDef airDefUnit = airDefIter.next();
-            if(airDefUnit.getHealth() == 0) {
+            if(airDefUnit.getHealth() <= 0) {
                 removeHpBar(airDefUnit);
                 airDefIter.remove();
                 continue;
@@ -367,14 +367,7 @@ public class AirDefence {
     }
 
     public static void removeSmoke(Rocket rocket) {
-        for(Map.Entry<Rectangle, ParticleEffectPool.PooledEffect> entry : Particles.rocketTrailEffects.entrySet()) {
-            if(entry.getKey().x == rocket.getHitbox().x && entry.getKey().y == rocket.getHitbox().y) {
-                if(entry.getValue() == null) break;
-                entry.getValue().free();
-                entry.setValue(null);
-                break;
-            }
-        }
+        Particles.rocketTrailEffects.remove(rocket);
     }
 
     public static void removeAirDef(AirDef airDefToRemove) {
@@ -399,13 +392,24 @@ public class AirDefence {
         float speedEff = (airDef.getOptimalSpeed() >= rocket.getSpeed()) ? 1 : (airDef.getOptimalSpeed()/rocket.getSpeed());
         float sizeEff = (airDef.getOptimalSize() <= rocket.getRocketSize()) ? 1 : (rocket.getRocketSize()/airDef.getOptimalSize());
         float centralEff = 1 - (1 - airDef.getCentrality())*(Rockets.getDistance(airDef.getPos(), rocketPos)/(airDef.getRadius()*GameScreen.globalScale));
-        float distanceEff = 0.5f + (0.5f * (Rockets.getDistance(rocketPos, rocket.getTargetPos()) / Rockets.getDistance(rocket.getSpawnPoint(), rocket.getTargetPos())));
+        float distanceEff = Rockets.getDistance(rocketPos, rocket.getTargetPos()) / Rockets.getDistance(rocket.getSpawnPoint(), rocket.getTargetPos());
+
+        float radius = airDefRocket.getOrigin().getRadius();
+        if(radius < 150) {
+            if(radius < 50) {
+                distanceEff = distanceEff * 0.5f + 0.5f;
+            }else{
+                float multiplier = ((radius - 50) / 100) * 0.5f + 0.5f;
+                distanceEff = distanceEff * multiplier + (1 - multiplier);
+            }
+        }
 
         float totalEff = speedEff * sizeEff * centralEff * distanceEff;
-//        System.out.println(//"speed: "+speedEff+"\n" +
-////                "size: "+sizeEff+"\n" +
-////                "central: "+centralEff+"\n" +
-////                "dist: "+distanceEff+"\n"+
+//        System.out.println("name: "+airDefRocket.getTarget().getName()+"\n" +
+//                "speed: "+speedEff+"\n" +
+//                "size: "+sizeEff+"\n" +
+//                "central: "+centralEff+"\n" +
+//                "dist: "+distanceEff+"\n"+
 //                "total: "+totalEff);
 
         return MathUtils.random(0, 100) > totalEff * 100;

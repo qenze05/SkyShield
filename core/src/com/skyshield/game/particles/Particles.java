@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
+import com.skyshield.game.gameObjects.rockets.Rocket;
 
 import java.util.HashMap;
 
@@ -14,7 +15,7 @@ import java.util.HashMap;
 public class Particles {
     public static TextureAtlas textureAtlas;
     public static Array<ParticleEffectPool.PooledEffect> explosionEffects = new Array<>();
-    public static HashMap<Rectangle, ParticleEffectPool.PooledEffect> rocketTrailEffects = new HashMap<>();
+    public static HashMap<Rocket, ParticleEffectPool.PooledEffect> rocketTrailEffects = new HashMap<>();
     public static void initParticles() {
         if(textureAtlas != null) return;
         textureAtlas = new TextureAtlas();
@@ -32,27 +33,27 @@ public class Particles {
         RocketExplosion.initEffect();
     }
 
-    public static void addParticle(String name, Rectangle pos) {
+    public static void addParticle(String name, Rocket rocket) {
         ParticleEffectPool.PooledEffect pooledEffect;
         switch (name.toLowerCase()) {
             case "building_explosion" -> {
                 pooledEffect = BuildingExplosion.effectPool.obtain();
-                pooledEffect.setPosition(pos.x+pos.width/2, pos.y+pos.height/2);
+                pooledEffect.setPosition(rocket.getHitbox().x+rocket.getHitbox().width/2, rocket.getHitbox().y+rocket.getHitbox().height/2);
                 Particles.explosionEffects.add(pooledEffect);
             }
             case "trail" -> {
                 pooledEffect = Smoke.effectPool.obtain();
-                pooledEffect.setPosition(pos.x+pos.width/2, pos.y+pos.height/2);
-                Particles.rocketTrailEffects.put(pos, pooledEffect);
+                pooledEffect.setPosition(rocket.getHitbox().x+rocket.getHitbox().width/2, rocket.getHitbox().y+rocket.getHitbox().height/2);
+                Particles.rocketTrailEffects.put(rocket, pooledEffect);
             }
             case "rocket_explosion" -> {
                 pooledEffect = RocketExplosion.effectPool.obtain();
-                pooledEffect.setPosition(pos.x+pos.width/2, pos.y+pos.height/2);
+                pooledEffect.setPosition(rocket.getHitbox().x+rocket.getHitbox().width/2, rocket.getHitbox().y+rocket.getHitbox().height/2);
                 Particles.explosionEffects.add(pooledEffect);
             }
             default -> {
                 pooledEffect = Smoke.effectPool.obtain();
-                pooledEffect.setPosition(pos.x+pos.width/2, pos.y+pos.height/2);
+                pooledEffect.setPosition(rocket.getHitbox().x+rocket.getHitbox().width/2, rocket.getHitbox().y+rocket.getHitbox().height/2);
                 Particles.explosionEffects.add(pooledEffect);
             }
         }
