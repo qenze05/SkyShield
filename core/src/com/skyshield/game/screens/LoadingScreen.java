@@ -63,13 +63,13 @@ public class LoadingScreen implements Screen {
             case 75 -> bar = new Texture(Gdx.files.internal("loading-screen/half.png"));
             case 100 -> bar = new Texture(Gdx.files.internal("loading-screen/almost.png"));
             case 125 -> {
+                frame = 0;
                 try {
-                    frame = 0;
                     game.setScreen(new GameScreen(game));
-                    bar = null;
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
+                bar = null;
             }
         }
         if(bar != null) game.batch.draw(bar, stage.getWidth()/2-text.getWidth()/2f, 50);

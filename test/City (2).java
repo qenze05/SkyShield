@@ -1,8 +1,13 @@
 package com.skyshield.game.gameObjects.buildings;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.skyshield.game.gui.GUIComponents;
+import com.skyshield.game.gui.dialog.DialogActions;
+import com.skyshield.game.gui.dialog.DialogText;
+import com.skyshield.game.gui.phase.Phase;
 import com.skyshield.game.screens.GameScreen;
 import com.skyshield.game.gameLogic.events.Attack;
 
@@ -13,14 +18,14 @@ public class City {
     private final PowerStation powerStation;
     private int population;
     private int money;
-    private float timeSinceLastProductionMoney;
-    private float timeSinceLastProductionPeople;
+    public float timeSinceLastProductionMoney;
+    public float timeSinceLastProductionPeople;
     private final int peopleProduction;
     private final int moneyProduction;
     private final float ProductionInterval;
     private int health;
     public static int totalPopulation = 0;
-    private static int totalMoney = 1000;
+    public static int totalMoney = 1300;
     private final Rectangle hitbox;
     private boolean disabled;
     private final int maxhealth;
@@ -29,14 +34,14 @@ public class City {
         this.pos = pos;
         this.texture = new Texture(Gdx.files.internal("buildings/city.png"));
         this.hitbox = new Rectangle(pos[0], pos[1],
-                50 * GameScreen.textureScale,
-                50 * GameScreen.textureScale);
+                50 * GameScreen.textureScale * 1.25f,
+                50 * GameScreen.textureScale * 1.25f);
         this.health = maxhealth;
         this.powerStation = powerStation;
         this.maxhealth = maxhealth;
-        this.peopleProduction = (int) (maxhealth/5*Attack.coef);
-        this.moneyProduction = (int) (maxhealth*Attack.coef);
-        this.ProductionInterval = 3600f/GameScreen.gameSpeed;
+        this.peopleProduction = (int) (maxhealth/7*Attack.coef);
+        this.moneyProduction = (int) (maxhealth/2*Attack.coef);
+        this.ProductionInterval = 3600f;
         this.timeSinceLastProductionMoney = 0;
         this.timeSinceLastProductionPeople = 0;
         this.disabled = false;
@@ -48,7 +53,11 @@ public class City {
         return this.disabled;
     }
     public void update(float deltaTime) {
-        if(disabled) return;
+        if(disabled || health <= 0
+                || (GUIComponents.dialogWindow != null && DialogText.textCounter != 18)
+                || DialogActions.afterDialogActionActive
+                || GUIComponents.goldTable != null
+                || Phase.draw) return;
         timeSinceLastProductionMoney += deltaTime*GameScreen.gameSpeed;
         timeSinceLastProductionPeople += deltaTime*GameScreen.gameSpeed;
         if (timeSinceLastProductionMoney >= ProductionInterval) {
@@ -94,8 +103,32 @@ public class City {
     public int getHealth() {
         return health;
     }
-    public void setHealth(int health) {
-        this.health = health;
+
+    public int getMaxhealth() {
+        return maxhealth;
+    }
+
+    public void setHealth(int hp) {
+        this.health = Math.min ( Math.max(health+hp, 0), maxhealth );
+        if(health <= 0) {
+            if(maxhealth == 1000) {
+                setTexture (new Texture(Gdx.files.internal("buildings/capital-destroyed.png")));
+                GameScreen.addFailScreen();
+            }else {
+                setTexture (new Texture(Gdx.files.internal("buildings/city-destroyed.png")));
+            }
+        }
+        else {
+            if(maxhealth == 1000) {
+                setTexture (new Texture(Gdx.files.internal("buildings/capital.png")));
+            }else {
+                setTexture (new Texture(Gdx.files.internal("buildings/city.png")));
+            }
+        }
+    }
+
+    public void setTexture(Texture texture) {
+        this.texture = texture;
     }
     public static int getTotalPopulation() {
         return totalPopulation;
@@ -115,7 +148,7 @@ public class City {
         totalMoney += price;
     }
     public double calculateHealthPercentage() {
-        return health/maxhealth;
+        return (double) health /maxhealth;
     }
     public void removePopulation(int trainingSize) {
         if (population >= trainingSize) {
@@ -132,8 +165,5 @@ public class City {
     }
     public int calculateRepairCost() {
         return (maxhealth-health) * 10;
-    }
-    public int getMaxhealth() {
-        return maxhealth;
     }
 }

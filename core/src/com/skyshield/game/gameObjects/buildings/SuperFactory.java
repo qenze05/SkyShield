@@ -26,6 +26,7 @@ public class SuperFactory {
 
     public int weaponsProduced;
     private boolean disabled;
+    private double remCoef =1;
 
     public SuperFactory(float[] pos) {
         this.pos = pos;
@@ -34,7 +35,7 @@ public class SuperFactory {
                 40 * GameScreen.textureScale * 1.25f,
                 40 * GameScreen.textureScale * 1.25f);
         this.timeSinceLastProduction = 0;
-        this.productionInterval = 0.01f; // Виробляти ракету кожну 1 секунду
+        this.productionInterval = 0.1f; // Виробляти ракету кожну 1 секунду
         this.weaponsProduced -= 0;
         this.disabled = false;
     }

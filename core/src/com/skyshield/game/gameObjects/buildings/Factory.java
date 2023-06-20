@@ -27,6 +27,7 @@ public class Factory {
     private Rectangle hitbox;
     private boolean disabled;
     private int rocketProduction;
+    private double remCoef =1;
 
     public Factory(float[] pos, PowerStation powerStation, int maxhealth) {
         this.pos = pos;
@@ -40,7 +41,7 @@ public class Factory {
         this.health = maxhealth;
         this.maxhealth = maxhealth;
         this.disabled = false;
-        this.rocketProduction = (int) (maxhealth/5*Attack.coef);
+        this.rocketProduction = (int) (maxhealth/7*Attack.coef);
     }
     public void setDisabled(boolean value) {
         this.disabled = value;
@@ -137,6 +138,8 @@ public class Factory {
         return (double) health /maxhealth;
     }
     public int calculateRepairCost() {
-        return (maxhealth-health) * 10;
+        remCoef = remCoef*1.1;
+        int repair = (int) (((maxhealth-health) * 10)*remCoef);
+        return repair;
     }
 }

@@ -27,6 +27,7 @@ public class Hub2 {
     public int weapons = 0;
     private Rectangle hitbox;
     private boolean disabled;
+    private double remCoef =1;
 
     public Hub2(float[] pos, Hub1 hub1, PowerStation powerStation, int maxhealth, int limit) {
         this.pos = pos;
@@ -137,7 +138,9 @@ public class Hub2 {
         return (double) health /maxhealth;
     }
     public int calculateRepairCost() {
-        return (maxhealth-health) * 10;
+        remCoef = remCoef*1.1;
+        int repair = (int) (((maxhealth-health) * 10)*remCoef);
+        return repair;
     }
 
 }

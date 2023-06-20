@@ -4,6 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.skyshield.game.gui.GUIComponents;
+import com.skyshield.game.gui.dialog.DialogActions;
+import com.skyshield.game.gui.dialog.DialogText;
+import com.skyshield.game.gui.phase.Phase;
 import com.skyshield.game.screens.GameScreen;
 import static com.badlogic.gdx.math.MathUtils.random;
 import com.skyshield.game.gameLogic.events.Attack;
@@ -14,8 +18,8 @@ public class Factory {
     private int height;
     private float[] pos;
     private PowerStation powerStation;
-    private static int rocketCount = 0;
-    private float timeSinceLastProduction;
+    public static int rocketCount = 0;
+    public float timeSinceLastProduction;
     private final float productionInterval;
     private int health;
     int maxhealth;
@@ -28,15 +32,15 @@ public class Factory {
         this.pos = pos;
         this.texture = new Texture(Gdx.files.internal("buildings/factory.png"));
         this.hitbox = new Rectangle(pos[0], pos[1],
-                30 * GameScreen.textureScale,
-                30 * GameScreen.textureScale);
+                30 * GameScreen.textureScale * 1.25f,
+                30 * GameScreen.textureScale * 1.25f);
         this.powerStation = powerStation;
         this.timeSinceLastProduction = 0;
-        this.productionInterval = 3600f/GameScreen.gameSpeed;
+        this.productionInterval = 1800f;
         this.health = maxhealth;
         this.maxhealth = maxhealth;
         this.disabled = false;
-        this.rocketProduction = (int) (maxhealth/5*Attack.coef);
+        this.rocketProduction = (int) (maxhealth/7*Attack.coef);
     }
     public void setDisabled(boolean value) {
         this.disabled = value;
@@ -45,7 +49,11 @@ public class Factory {
         return this.disabled;
     }
     public void update(float deltaTime) {
-        if(disabled) return;
+        if(disabled || health <= 0
+                || (GUIComponents.dialogWindow != null && DialogText.textCounter != 18)
+                || DialogActions.afterDialogActionActive
+                || GUIComponents.goldTable != null
+                || Phase.draw) return;
         timeSinceLastProduction += deltaTime*GameScreen.gameSpeed;
         if (timeSinceLastProduction >= productionInterval) {
             produceRocket();
@@ -54,6 +62,10 @@ public class Factory {
     }
     public static int getRocketCount() {
         return rocketCount;
+    }
+
+    public int getMaxhealth() {
+        return maxhealth;
     }
 
     public void produceRocket() {
@@ -81,8 +93,14 @@ public class Factory {
         return health;
     }
 
-    public void setHealth(int health) {
-        this.health = health;
+    public void setHealth(int hp) {
+        this.health = Math.min ( Math.max(health+hp, 0), maxhealth );
+        if(health <= 0) setTexture (new Texture(Gdx.files.internal("buildings/factory-destroyed.png")));
+        else setTexture (new Texture(Gdx.files.internal("buildings/factory.png")));
+    }
+
+    public void setTexture(Texture texture) {
+        this.texture = texture;
     }
 
     public int getNumber() {
@@ -116,12 +134,9 @@ public class Factory {
         return hitbox;
     }
     public double calculateHealthPercentage() {
-        return health/maxhealth;
+        return (double) health /maxhealth;
     }
     public int calculateRepairCost() {
         return (maxhealth-health) * 10;
-    }
-    public int getMaxhealth() {
-        return maxhealth;
     }
 }

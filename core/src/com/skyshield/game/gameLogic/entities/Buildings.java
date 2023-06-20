@@ -349,19 +349,19 @@ public class Buildings {
         barracks.add( new Barracks(new float[]{655, 185}, cities.get(12), powerStations.get(12),150));
     }
     private static void addPowerStations() {
-        powerStations.add( new PowerStation(new float[]{240,310}, 400));
-        powerStations.add( new PowerStation(new float[]{210, 470}, 500));
-        powerStations.add( new PowerStation(new float[]{405, 335}, 1000));
-        powerStations.add( new PowerStation(new float[]{500, 270}, 500));
-        powerStations.add( new PowerStation(new float[]{500, 120}, 500));
-        powerStations.add( new PowerStation(new float[]{400, 490}, 300));
-        powerStations.add( new PowerStation(new float[]{630, 500}, 750));
-        powerStations.add( new PowerStation(new float[]{830, 350}, 750));
-        powerStations.add( new PowerStation(new float[]{720,620}, 400));
-        powerStations.add( new PowerStation(new float[]{820,530}, 750));
-        powerStations.add( new PowerStation(new float[]{930, 340}, 500));
-        powerStations.add( new PowerStation(new float[]{1050, 260}, 300));
-        powerStations.add( new PowerStation(new float[]{740,160}, 300));
+        powerStations.add( new PowerStation(new float[]{240,310}, 400*2));
+        powerStations.add( new PowerStation(new float[]{210, 470}, 500*2));
+        powerStations.add( new PowerStation(new float[]{405, 335}, 1000*2));
+        powerStations.add( new PowerStation(new float[]{500, 270}, 500*2));
+        powerStations.add( new PowerStation(new float[]{500, 120}, 500*2));
+        powerStations.add( new PowerStation(new float[]{400, 490}, 300*2));
+        powerStations.add( new PowerStation(new float[]{630, 500}, 750*2));
+        powerStations.add( new PowerStation(new float[]{830, 350}, 750*2));
+        powerStations.add( new PowerStation(new float[]{720,620}, 400*2));
+        powerStations.add( new PowerStation(new float[]{820,530}, 750*2));
+        powerStations.add( new PowerStation(new float[]{930, 340}, 500*2));
+        powerStations.add( new PowerStation(new float[]{1050, 260}, 300*2));
+        powerStations.add( new PowerStation(new float[]{740,160}, 300*2));
     }
 
     private static void addFactories() {

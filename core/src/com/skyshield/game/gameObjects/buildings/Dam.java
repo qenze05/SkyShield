@@ -12,6 +12,7 @@ public class Dam {
     private float[] pos;
     private Rectangle hitbox;
     private boolean disabled;
+    private double remCoef =1;
     public Dam(float[] pos, int maxhealth) {
         this.texture = new Texture(Gdx.files.internal("buildings/dam.png"));
         this.hitbox = new Rectangle(pos[0], pos[1],
@@ -72,6 +73,8 @@ public class Dam {
         return (double) health /maxhealth;
     }
     public int calculateRepairCost() {
-        return (maxhealth-health) * 10;
+        remCoef = remCoef*1.1;
+        int repair = (int) (((maxhealth-health) * 10)*remCoef);
+        return repair;
     }
 }

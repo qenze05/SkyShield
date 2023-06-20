@@ -12,7 +12,7 @@ public class GameDialog {
         return sound;
     }
     public static void addSound() {
-        if(DialogText.textCounter>19) return;
+        if(DialogText.textCounter>19 || DialogText.textCounter < 1) return;
         sound = Gdx.audio.newSound(Gdx.files.internal("replicas/"+ DialogText.textCounter+".mp3"));
         float volume = GameMusic.isMusicPlaying() ? 0.5f : 0.3f;
         sound.play(volume);

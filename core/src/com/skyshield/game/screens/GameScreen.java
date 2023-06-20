@@ -46,6 +46,7 @@ import com.skyshield.game.sound.GameDialog;
 import com.skyshield.game.sound.GameMusic;
 import com.skyshield.game.utils.CountryTerritory;
 import com.skyshield.game.utils.ItemsList;
+import com.skyshield.game.videos.Videos;
 
 public class GameScreen implements Screen {
 
@@ -72,6 +73,8 @@ public class GameScreen implements Screen {
     public static Array<BitmapFont> disposableFonts = new Array<>();
     public static Array<Sound> disposableSounds = new Array<>();
     public static boolean win = false;
+    public static boolean gameLost = false;
+    public static String gameLostState = "";
 
     public GameScreen(final SkyShield game) throws IOException {
         GameScreen.game = game;
@@ -117,6 +120,8 @@ public class GameScreen implements Screen {
         Buildings.cities.get(2).texture = new Texture(Gdx.files.internal("buildings/capital.png"));
 
         Particles.initParticles();
+
+
     }
 
     @Override
@@ -183,7 +188,6 @@ public class GameScreen implements Screen {
         drawDialog();
 
         if (Phase.draw) Phase.drawPhase();
-
     }
 
     public static void disposeGarbage() {

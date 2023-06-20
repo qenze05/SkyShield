@@ -15,7 +15,7 @@ import static com.badlogic.gdx.math.MathUtils.random;
 import com.skyshield.game.gameLogic.events.Attack;
 
 public class Barracks {
-
+    private double remCoef =1;
     private final int maxhealth;
     private City city;
     public static int trainedSoldiers;
@@ -136,7 +136,9 @@ public class Barracks {
         return (double) health /maxhealth;
     }
     public int calculateRepairCost() {
-        return (maxhealth-health) * 10;
+        remCoef = remCoef*1.1;
+        int repair = (int) (((maxhealth-health) * 10)*remCoef);
+        return repair;
     }
 
 }

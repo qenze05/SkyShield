@@ -17,6 +17,7 @@ public class PowerStation {
     private Rectangle hitbox;
     private boolean disabled;
     private final int maxhealth;
+    private double remCoef =1;
     public PowerStation(float[] pos, int maxhealth) {
         this.pos = pos;
         this.texture = new Texture(Gdx.files.internal("buildings/aetherstation.png"));
@@ -78,7 +79,9 @@ public class PowerStation {
         return (double) health /maxhealth;
     }
     public int calculateRepairCost() {
-        return (maxhealth-health) * 10;
+        remCoef = remCoef*1.1;
+        int repair = (int) (((maxhealth-health) * 10)*remCoef);
+        return repair;
     }
     public int getWidth() {
         return width/4;

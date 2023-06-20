@@ -4,6 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.skyshield.game.gameLogic.events.Attack;
+import com.skyshield.game.gui.GUIComponents;
+import com.skyshield.game.gui.dialog.DialogActions;
+import com.skyshield.game.gui.dialog.DialogText;
+import com.skyshield.game.gui.phase.Phase;
 import com.skyshield.game.screens.GameScreen;
 
 import static com.badlogic.gdx.math.MathUtils.random;
@@ -13,8 +17,8 @@ public class SuperFactory {
     private int width;
     private int height;
     private float[] pos;
-    private static int rocketCount = 0;
-    private float timeSinceLastProduction;
+    public static int rocketCount = 0;
+    public float timeSinceLastProduction;
     private final float productionInterval;
     private int health;
     private int number;
@@ -27,16 +31,20 @@ public class SuperFactory {
         this.pos = pos;
         this.texture = new Texture(Gdx.files.internal("buildings/factory.png"));
         this.hitbox = new Rectangle(pos[0], pos[1],
-                40 * GameScreen.textureScale,
-                40 * GameScreen.textureScale);
+                40 * GameScreen.textureScale * 1.25f,
+                40 * GameScreen.textureScale * 1.25f);
         this.timeSinceLastProduction = 0;
-        this.productionInterval = 0.01f; // Виробляти ракету кожну 1 секунду
+        this.productionInterval = 0.1f; // Виробляти ракету кожну 1 секунду
         this.weaponsProduced -= 0;
         this.disabled = false;
     }
 
     public void update(float deltaTime) {
-        if(disabled) return;
+        if(disabled
+                || (GUIComponents.dialogWindow != null && DialogText.textCounter != 18)
+                || DialogActions.afterDialogActionActive
+                || GUIComponents.goldTable != null
+                || Phase.draw) return;
         timeSinceLastProduction += deltaTime*GameScreen.gameSpeed;
         if (timeSinceLastProduction >= productionInterval) {
             produceRocket();

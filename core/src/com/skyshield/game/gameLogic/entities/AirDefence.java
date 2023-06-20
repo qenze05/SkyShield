@@ -394,6 +394,7 @@ public class AirDefence {
         float centralEff = 1 - (1 - airDef.getCentrality())*(Rockets.getDistance(airDef.getPos(), rocketPos)/(airDef.getRadius()*GameScreen.globalScale));
         float distanceEff = Rockets.getDistance(rocketPos, rocket.getTargetPos()) / Rockets.getDistance(rocket.getSpawnPoint(), rocket.getTargetPos());
 
+        distanceEff = 1 - distanceEff;
         float radius = airDefRocket.getOrigin().getRadius();
         if(radius < 150) {
             if(radius < 50) {
@@ -405,12 +406,12 @@ public class AirDefence {
         }
 
         float totalEff = speedEff * sizeEff * centralEff * distanceEff;
-//        System.out.println("name: "+airDefRocket.getTarget().getName()+"\n" +
-//                "speed: "+speedEff+"\n" +
-//                "size: "+sizeEff+"\n" +
-//                "central: "+centralEff+"\n" +
-//                "dist: "+distanceEff+"\n"+
-//                "total: "+totalEff);
+        System.out.println("name: "+airDefRocket.getTarget().getName()+"\n" +
+                "speed: "+speedEff+"\n" +
+                "size: "+sizeEff+"\n" +
+                "central: "+centralEff+"\n" +
+                "dist: "+distanceEff+"\n"+
+                "total: "+totalEff);
 
         return MathUtils.random(0, 100) > totalEff * 100;
     }

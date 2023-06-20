@@ -25,11 +25,11 @@ public class City {
     private final float ProductionInterval;
     private int health;
     public static int totalPopulation = 0;
-    public static int totalMoney = 13000000;
+    public static int totalMoney = 1300;
     private final Rectangle hitbox;
     private boolean disabled;
     private final int maxhealth;
-
+    private double remCoef =1;
     public City(float[] pos, PowerStation powerStation, int maxhealth) {
         this.pos = pos;
         this.texture = new Texture(Gdx.files.internal("buildings/city.png"));
@@ -39,8 +39,8 @@ public class City {
         this.health = maxhealth;
         this.powerStation = powerStation;
         this.maxhealth = maxhealth;
-        this.peopleProduction = (int) (maxhealth/5*Attack.coef);
-        this.moneyProduction = (int) (maxhealth*Attack.coef);
+        this.peopleProduction = (int) (maxhealth/7*Attack.coef);
+        this.moneyProduction = (int) (maxhealth/2*Attack.coef);
         this.ProductionInterval = 3600f;
         this.timeSinceLastProductionMoney = 0;
         this.timeSinceLastProductionPeople = 0;
@@ -164,6 +164,8 @@ public class City {
         return hitbox;
     }
     public int calculateRepairCost() {
-        return (maxhealth-health) * 10;
+        remCoef = remCoef*1.1;
+        int repair = (int) (((maxhealth-health) * 10)*remCoef);
+        return repair;
     }
 }

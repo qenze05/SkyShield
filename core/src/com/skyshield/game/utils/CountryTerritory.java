@@ -63,10 +63,9 @@ public class CountryTerritory {
     }
 
     public static boolean isInsideTerritory(float x, float y, String name) {
-        return true;
-//        return name.equalsIgnoreCase("mushlya")
-//                ? sea.contains(x, y) && !island.contains(x, y)
-//                : map.contains(x, y) && !sea.contains(x, y) || island.contains(x, y);
+        return name.equalsIgnoreCase("mushlya")
+                ? sea.contains(x, y) && !island.contains(x, y)
+                : map.contains(x, y) && !sea.contains(x, y) || island.contains(x, y);
     }
 
     public static void updateMap(int stage) {
